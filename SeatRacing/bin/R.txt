@@ -347,9 +347,10 @@ int layout activity_boatset_create 0x7f030018
 int layout activity_front_page 0x7f030019
 int layout activity_lineups 0x7f03001a
 int layout boatset_create_activity 0x7f03001b
-int layout fragment_lineup 0x7f03001c
-int layout fragment_select_number_pairs 0x7f03001d
-int layout support_simple_spinner_dropdown_item 0x7f03001e
+int layout fragment_boat_rower_name 0x7f03001c
+int layout fragment_lineup 0x7f03001d
+int layout fragment_select_number_pairs 0x7f03001e
+int layout support_simple_spinner_dropdown_item 0x7f03001f
 int menu lineups 0x7f0c0000
 int string abc_action_bar_home_description 0x7f0a0001
 int string abc_action_bar_up_description 0x7f0a0002
