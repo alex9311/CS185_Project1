@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
@@ -19,7 +20,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 public class LineupsActivity extends ActionBarActivity implements
-		ActionBar.TabListener {
+ActionBar.TabListener {
 
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -37,6 +38,12 @@ public class LineupsActivity extends ActionBarActivity implements
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
+		Intent startingIntent = getIntent();
+		if(startingIntent.getBooleanExtra("makeNew",false)){
+			Intent newBoatsetIntent = new Intent(this,BoatsetCreateActivity.class);
+			startActivityForResult(newBoatsetIntent, BoatsetCreateActivity.NEW_RACE_NEW_LINEUP);
+		}
+
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lineups);
 
@@ -57,12 +64,12 @@ public class LineupsActivity extends ActionBarActivity implements
 		// tab. We can also use ActionBar.Tab#select() to do this if we have
 		// a reference to the Tab.
 		mViewPager
-				.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
-					@Override
-					public void onPageSelected(int position) {
-						actionBar.setSelectedNavigationItem(position);
-					}
-				});
+		.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+			@Override
+			public void onPageSelected(int position) {
+				actionBar.setSelectedNavigationItem(position);
+			}
+		});
 
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
@@ -73,6 +80,21 @@ public class LineupsActivity extends ActionBarActivity implements
 			actionBar.addTab(actionBar.newTab()
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
+		}
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data){
+		if(resultCode == RESULT_OK){
+			switch (requestCode){
+			case BoatsetCreateActivity.NEW_RACE_NEW_LINEUP:
+				//dump current lineups, then add new lineup
+				break;
+			case BoatsetCreateActivity.OLD_RACE_NEW_LINEUP:
+				//append new lineup
+				break;
+			}
+
 		}
 	}
 

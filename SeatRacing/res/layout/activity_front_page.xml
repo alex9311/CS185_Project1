@@ -1,0 +1,39 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="${packageName}.${activityClass}" >
+
+    <Button
+        android:id="@+id/button_new_race"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:layout_weight="8"
+        android:background="@drawable/selectable_item_background"
+        android:text="@string/button_new_race" />
+
+    <Button
+        android:id="@+id/button_load_race"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/selectable_item_background"
+        android:text="@string/button_load_race" />
+
+    <Button
+        android:id="@+id/button_race_history"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_weight="1"
+        android:background="@drawable/selectable_item_background"
+        android:text="@string/button_race_history" />
+
+</LinearLayout>

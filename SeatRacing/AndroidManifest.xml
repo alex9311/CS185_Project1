@@ -5,7 +5,7 @@
     android:versionName="1.0" >
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="14"
         android:targetSdkVersion="19" />
 
     <application
@@ -18,13 +18,20 @@
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.BoatsetCreateActivity"
             android:label="@string/title_activity_boatset_create" >
+        </activity>
+        <activity
+            android:name="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
+            android:label="@string/title_activity_front_page" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 

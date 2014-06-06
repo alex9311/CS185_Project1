@@ -7,6 +7,21 @@
     <string name="title_section3">Section 3</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_boatset_create">BoatsetCreateActivity</string>
-    <string name="hello_world">Hello world!</string>
-
+    <string name="hello_world">Fuck the police</string>
+    
+    <string name="prev_button">Previous</string>
+    <string name="next_button">Next</string>
+    
+    <string name="button_one_rower">1</string>
+    <string name="button_two_rowers">2</string>
+    <string name="button_three_rowers">3</string>
+    <string name="button_four_rowers">4</string>
+    <string name="num_rowers_label">Select number of pairs to race:</string>
+    
+    <string name="title_activity_front_page">Seat Racing</string>
+    
+    <string name="button_new_race">New Race</string>
+	<string name="button_load_race">Load</string>
+    <string name="button_race_history">History</string>
+	
 </resources>

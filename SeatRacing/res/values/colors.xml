@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="new_race_button">#33b5e5</color>
+    <color name="load_race_button">#0099cc</color>
+    <color name="race_history_button">#0099cc</color>    
+    
+    <color name="button_light_holo_blue">#AFDDED</color>
+</resources>

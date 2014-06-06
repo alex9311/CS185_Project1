@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/num_rowers_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/num_rowers_label" />
+
+    <LinearLayout
+        android:id="@+id/num_rower_buttons_layout"
+        style="?android:attr/buttonBarStyle"
+        android:paddingTop="10dp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/num_rowers_label"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/button_one_rower"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="@string/button_one_rower" />
+
+        <Button
+            android:id="@+id/button_two_rowers"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="@string/button_two_rowers" />
+
+        <Button
+            android:id="@+id/button_three_rowers"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="@string/button_three_rowers" />
+
+        <Button
+            android:id="@+id/button_four_rowers"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:text="@string/button_four_rowers" />
+    </LinearLayout>
+
+</RelativeLayout>
