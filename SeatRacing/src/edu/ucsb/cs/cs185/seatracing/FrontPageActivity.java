@@ -24,7 +24,7 @@ public class FrontPageActivity extends Activity {
 			public void onClick(View arg0) {
 				//go to lineups activity with flag set for new sets
 				Intent intent = new Intent(FrontPageActivity.this,LineupsActivity.class);
-				intent.putExtra("new", true);
+				intent.putExtra("makeNew", true);
 				startActivity(intent);
 			}
 		});

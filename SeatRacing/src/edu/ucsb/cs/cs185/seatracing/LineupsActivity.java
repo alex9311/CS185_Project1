@@ -88,9 +88,11 @@ ActionBar.TabListener {
 		if(resultCode == RESULT_OK){
 			switch (requestCode){
 			case BoatsetCreateActivity.NEW_RACE_NEW_LINEUP:
+				//TODO: using mock lineup for now
 				//dump current lineups, then add new lineup
 				break;
 			case BoatsetCreateActivity.OLD_RACE_NEW_LINEUP:
+				//TODO: using mock lineup for now
 				//append new lineup
 				break;
 			}

@@ -9,7 +9,13 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class BoatsetPagerAdapter extends FragmentStatePagerAdapter {
 	
-	int NUM_PAGES = 3;
+	public static final int INDEX_NUM_PAIRS = 0;
+	public static final int INDEX_SET_NAMES_1 = 1;
+	public static final int INDEX_SET_NAMES_2 = 2;
+	
+	public static final int NUM_TOTAL_PAGES = 1;
+	
+	private int numCurrentPages = 1;
 	
 	List<Fragment> pages;
 
@@ -21,14 +27,25 @@ public class BoatsetPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public Fragment getItem(int arg0) {
-		// TODO Auto-generated method stub
-		return null;
+		return pages.get(arg0);
 	}
 
 	@Override
 	public int getCount() {
 		// TODO Auto-generated method stub
-		return NUM_PAGES;
+		return numCurrentPages;
+	}
+	
+	public void makeBoatOnePageAccessible(int numRowers){
+		numCurrentPages++;
+		pages.add(BoatRowerNameFragment.newInstance(numRowers, 'A'));
+		notifyDataSetChanged();
+	}
+	
+	public void makeBoatTwoPageAccessible(int numRowers){
+		numCurrentPages++;
+		pages.add(BoatRowerNameFragment.newInstance(numRowers, 'B'));
+		notifyDataSetChanged();
 	}
 
 }

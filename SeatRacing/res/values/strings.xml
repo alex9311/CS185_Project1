@@ -11,6 +11,7 @@
     
     <string name="prev_button">Previous</string>
     <string name="next_button">Next</string>
+    <string name="done_button">Done</string>
     
     <string name="button_one_rower">1</string>
     <string name="button_two_rowers">2</string>
@@ -23,5 +24,11 @@
     <string name="button_new_race">New Race</string>
 	<string name="button_load_race">Load</string>
     <string name="button_race_history">History</string>
+    
+    <string name="boat_name_hint">Karina, etc</string>
+    <string name="boat_name_default">Boat</string>
+    
+    <string name="rower_label_default">Rower</string>
+    <string name="rower_name_default">Bob J. Rower</string>
 	
 </resources>

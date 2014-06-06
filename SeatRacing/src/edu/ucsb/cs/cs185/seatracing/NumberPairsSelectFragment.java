@@ -1,20 +1,67 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
+import android.widget.Button;
 
-public class NumberPairsSelectFragment extends Fragment {
+public class NumberPairsSelectFragment extends Fragment implements OnClickListener {
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState) {
-        ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.fragment_select_number_pairs, container, false);
+	private NumberPairsSelectListener mCallback;
+	private Button oneRowerButton;
+	private Button twoRowersButton;
+	private Button threeRowersButton;
+	private Button fourRowersButton;
 
-        return rootView;
-    }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container,
+			Bundle savedInstanceState) {
+		ViewGroup rootView = (ViewGroup) inflater.inflate(
+				R.layout.fragment_select_number_pairs, container, false);
+
+		oneRowerButton = (Button)rootView.findViewById(R.id.button_one_rower);
+		oneRowerButton.setOnClickListener(this);
+		twoRowersButton = (Button)rootView.findViewById(R.id.button_two_rowers);
+		twoRowersButton.setOnClickListener(this);
+		threeRowersButton = (Button)rootView.findViewById(R.id.button_three_rowers);
+		threeRowersButton.setOnClickListener(this);
+		fourRowersButton = (Button)rootView.findViewById(R.id.button_four_rowers);
+		fourRowersButton.setOnClickListener(this);
+		
+		return rootView;
+	}
+
+	@Override 
+	public void onAttach(Activity activity){
+		try{
+			mCallback = (NumberPairsSelectListener)activity;
+		}catch (ClassCastException cce){
+			throw new ClassCastException(activity.toString()+" must implement NumberPairsSelectListener");
+		} finally{
+			super.onAttach(activity);
+		}
+	}
+
+	@Override
+	public void onClick(View v) {
+		if(v!=null && mCallback!=null){
+			if(v == oneRowerButton){
+				mCallback.numberPairsSelected(1);
+			}
+			else if(v == twoRowersButton){
+				mCallback.numberPairsSelected(2);
+			}
+			else if(v == threeRowersButton){
+				mCallback.numberPairsSelected(3);
+			}
+			else if(v == fourRowersButton){
+				mCallback.numberPairsSelected(4);
+			}
+		}
+	}
 	
 }
