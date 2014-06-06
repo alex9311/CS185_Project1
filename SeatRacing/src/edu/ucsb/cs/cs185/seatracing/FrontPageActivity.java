@@ -23,7 +23,7 @@ public class FrontPageActivity extends Activity {
 			@Override
 			public void onClick(View arg0) {
 				//go to lineups activity with flag set for new sets
-				Intent intent = new Intent(FrontPageActivity.this,LineupsActivity.class);
+				Intent intent = new Intent(FrontPageActivity.this,LineupsTimerActivity.class);
 				intent.putExtra("makeNew", true);
 				startActivity(intent);
 			}

@@ -1,0 +1,9 @@
+<!-- borrowed from stackoverflow: http://stackoverflow.com/questions/9420114/how-to-align-listview-text-to-right-in-android -->
+
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@android:id/text1" 
+    android:layout_width="fill_parent"  
+    android:layout_height="wrap_content"                    
+    android:paddingLeft="6dip"
+    android:minHeight="?android:attr/listPreferredItemHeight"
+    android:gravity="right"/>

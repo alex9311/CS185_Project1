@@ -2,46 +2,36 @@
 <resources>
 
     <string name="app_name">SeatRacing</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
-    <string name="action_settings">Settings</string>
-    <string name="title_activity_boatset_create">BoatsetCreateActivity</string>
-    <string name="hello_world">Fuck the police</string>
     
+    <string name="action_settings">Settings</string>
+    <string name="action_save_session">Save</string>
+    
+    <string name="title_activity_boatset_create">Create Set</string>
+    <string name="hello_world">Fuck the police</string>
     <string name="prev_button">Previous</string>
     <string name="next_button">Next</string>
     <string name="done_button">Done</string>
-    
     <string name="button_one_rower">1</string>
     <string name="button_two_rowers">2</string>
     <string name="button_three_rowers">3</string>
     <string name="button_four_rowers">4</string>
     <string name="num_rowers_label">Select number of pairs to race:</string>
-    
     <string name="title_activity_front_page">Seat Racing</string>
-    
     <string name="button_new_race">New Race</string>
-	<string name="button_load_race">Load</string>
+    <string name="button_load_race">Load</string>
     <string name="button_race_history">History</string>
-    
     <string name="boat_name_hint">Karina, etc</string>
     <string name="boat_name_default">Boat</string>
-    
     <string name="rower_label_default">Rower</string>
     <string name="rower_name_default">Bob J. Rower</string>
-
     <string name="button_results_save">Save</string>
     <string name="button_results_email">Email</string>
     <string name="results_text">This is where results go</string>
-    
     <string name="desmond_results">Evan W. 2.6 Andy V (3 wins, 1 tie)\n
         Adam R. 1.4 James A. (2 wins, 2 losses)\n
         Alex S. 2.3 Nate C. (1 win, 3 ties)\n
-        Max M. 2.4 Dillon K. (2 wins, 2 ties)
-         </string>
-    <string name="extended_results">
-		Race 1\n
+        Max M. 2.4 Dillon K. (2 wins, 2 ties)</string>
+    <string name="extended_results">		Race 1\n
 		BoatA 3:25.6\n
 		BoatB 3:26.5\n\n
 		Race 2\n
@@ -64,7 +54,23 @@
 		BoatB 3:29.7\n\n
 		Race 8\n
 		BoatA 3:31.5\n
-		BoatB 3:32.4\n\n
-		</string>
+		BoatB 3:32.4\n\n	</string>
+    <string name="title_activity_lineups_timer">Race</string>
+    <string name="timer_start_button">Start</string>
+    <string name="add_new_set_button">New Racing Set</string>
+    
+    <string-array name="mock_lineup_1">
+        <item>Alex</item>
+        <item>Bob</item>
+        <item>Charles</item>
+        <item>Danny</item>
+    </string-array>
+    
+    <string-array name="mock_lineup_2">
+        <item>Adam</item>
+        <item>Ben</item>
+        <item>Chris</item>
+        <item>Dillon</item>
+    </string-array>
 
 </resources>

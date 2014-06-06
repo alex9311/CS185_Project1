@@ -1,8 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
@@ -12,8 +12,7 @@ import android.widget.Button;
 public class BoatsetCreateActivity extends FragmentActivity 
 implements NumberPairsSelectListener, OnPageChangeListener {
 
-	public static final int NEW_RACE_NEW_LINEUP = 1;
-	public static final int OLD_RACE_NEW_LINEUP = 2;
+	public static final int NEW_LINEUP = 1;
 
 	private int numberPairs = 0;
 	private int prevPage=0;
@@ -50,19 +49,27 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 			public void onClick(View v) {
 				if(nextPage==-1){
 					//done, return from activity
-					setResult(RESULT_OK);
+					Intent result = new Intent();
+					putLineupsData(result);
+					setResult(RESULT_OK, result);
 					finish();
 				}
 				else{
 					mPager.setCurrentItem(nextPage);
 				}
 			}
+
+
 		});
 
 		prevButton.setClickable(false);
 		nextButton.setClickable(false);
 
 		mPager.setOnPageChangeListener(this);
+	}
+	
+	private void putLineupsData(Intent intent){
+		//TODO: put lineups info as extras into this intent to return them to main activity
 	}
 
 	//This borrowed from android docs
@@ -88,7 +95,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		mPagerAdapter.makeBoatTwoPageAccessible(numPairs);
 		mPager.setCurrentItem(BoatsetPagerAdapter.INDEX_SET_NAMES_1);
 	}
-
+	
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
 		//unused
