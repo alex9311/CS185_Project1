@@ -30,5 +30,41 @@
     
     <string name="rower_label_default">Rower</string>
     <string name="rower_name_default">Bob J. Rower</string>
-	
+
+    <string name="button_results_save">Save</string>
+    <string name="button_results_email">Email</string>
+    <string name="results_text">This is where results go</string>
+    
+    <string name="desmond_results">Evan W. 2.6 Andy V (3 wins, 1 tie)\n
+        Adam R. 1.4 James A. (2 wins, 2 losses)\n
+        Alex S. 2.3 Nate C. (1 win, 3 ties)\n
+        Max M. 2.4 Dillon K. (2 wins, 2 ties)
+         </string>
+    <string name="extended_results">
+		Race 1\n
+		BoatA 3:25.6\n
+		BoatB 3:26.5\n\n
+		Race 2\n
+		BoatA 3:34.7\n
+		BoatB 3:34.4\n\n
+		Race 3\n
+		BoatA 3:29.9\n
+		BoatB 3:32.1\n\n
+		Race 4\n
+		BoatA 3:33.7\n
+		BoatB 3:39.6\n\n
+		Race 5\n
+		BoatA 3:24.6\n
+		BoatB 3:22.5\n\n
+		Race 6\n
+		BoatA 3:29.5\n
+		BoatB 3:34.8\n\n
+		Race 7\n
+		BoatA 3:39.6\n
+		BoatB 3:29.7\n\n
+		Race 8\n
+		BoatA 3:31.5\n
+		BoatB 3:32.4\n\n
+		</string>
+
 </resources>
