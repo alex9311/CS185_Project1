@@ -33,6 +33,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="edu.ucsb.cs.cs185.seatracing.LineupsTimerActivity"
+            android:label="@string/title_activity_lineups_timer"
+            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
+        </activity>
     </application>
 
 </manifest>
