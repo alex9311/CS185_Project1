@@ -5,6 +5,7 @@
     
     <string name="action_settings">Settings</string>
     <string name="action_save_session">Save</string>
+    <string name="action_add_lineup">New Set</string>
     
     <string name="title_activity_boatset_create">Create Set</string>
     <string name="hello_world">Fuck the police</string>

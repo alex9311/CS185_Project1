@@ -1,9 +1,16 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import android.os.Bundle;
+
 public class RacingSet {
 
 	private Boat mBoat1;
 	private Boat mBoat2;
+	
+	public RacingSet(Bundle lineups){
+		mBoat1 = new Boat(0, lineups);
+		mBoat2 = new Boat(1, lineups);
+	}
 	
 	public RacingSet(Boat b1, Boat b2){
 		this.mBoat1 = b1;
@@ -16,5 +23,10 @@ public class RacingSet {
 	
 	public Boat getBoat2(){
 		return this.mBoat2;
+	}
+	
+	public void writeToBundle(Bundle bundle){
+		mBoat1.writeToBundle(0, bundle);
+		mBoat2.writeToBundle(1, bundle);
 	}
 }

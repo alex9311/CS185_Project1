@@ -8,26 +8,32 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class LineupsPagerContainerFragment extends Fragment {
-	
+
 	private ViewPager mPager;
 	private LineupsPagerAdapter mPagerAdapter;
-	
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-	        Bundle savedInstanceState) {
+			Bundle savedInstanceState) {
 
-	        View rootView = inflater.inflate(R.layout.fragment_lineups_pager_container, container, false);          
+		View rootView = inflater.inflate(R.layout.fragment_lineups_pager_container, container, false);          
 
-	        mPager = (ViewPager)rootView.findViewById(R.id.lineups_pager);
-	        
-	        mPagerAdapter = new LineupsPagerAdapter(getActivity().getSupportFragmentManager());
-	        
-	        mPager.setAdapter(mPagerAdapter);
-	        		
-	        return rootView;
+		mPager = (ViewPager)rootView.findViewById(R.id.lineups_pager);
+
+		mPagerAdapter = new LineupsPagerAdapter(getActivity().getSupportFragmentManager());
+
+		mPager.setAdapter(mPagerAdapter);
+
+		return rootView;
 	}
 	
+
+
 	public LineupsPagerAdapter getAdapter(){
 		return this.mPagerAdapter;
+	}
+
+	public ViewPager getPager(){
+		return this.mPager;
 	}
 }

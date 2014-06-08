@@ -1,8 +1,15 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import edu.ucsb.cs.cs185.seatracing.animation.DefaultPageTransformer;
+import edu.ucsb.cs.cs185.seatracing.animation.ZoomOutPageTransformer;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -11,13 +18,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	private enum LineupTimerState{
 		LINEUPS,
 		RACING,
+		RESULT,
 		SWITCHING
 	}
 	
+	private Handler mHandler = new Handler();
+
 	private LineupTimerState state;
 	private LineupsPagerAdapter mLineupsPagerAdapter;
 	private LineupsPagerContainerFragment lineupsFrag;
-	
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -48,16 +58,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void emplaceLineupsPagerContainerFragment(){
-		if(lineupsFrag==null){
-			lineupsFrag = new LineupsPagerContainerFragment();
+		if(state != LineupTimerState.LINEUPS){
+			if(lineupsFrag==null){
+				lineupsFrag = new LineupsPagerContainerFragment();
+			}
+			getSupportFragmentManager().beginTransaction()
+				.replace(R.id.lineups_timer_container, lineupsFrag)
+				.commit();
+
+			state = LineupTimerState.LINEUPS;
 		}
-		getSupportFragmentManager().beginTransaction()
-		.replace(R.id.lineups_timer_container, lineupsFrag)
-		.commit();
-		
-		
-		
-		state = LineupTimerState.LINEUPS;
 	}
 
 	@Override
@@ -65,14 +75,26 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		Intent newRacingSetIntent = new Intent(this,BoatsetCreateActivity.class);
 		startActivityForResult(newRacingSetIntent, BoatsetCreateActivity.NEW_LINEUP);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if(resultCode == RESULT_OK){
 			if(requestCode == BoatsetCreateActivity.NEW_LINEUP){
 				if(state==LineupTimerState.LINEUPS){
-					//TODO: pull lineup out of result intent
-					lineupsFrag.getAdapter().addNewSet();
+					//TODO: pull lineup out of result intent into model object
+					if(! data.hasExtra("lineup")){
+						throw new IllegalStateException("Got lineups result with no lineup.");
+					}
+					lineupsFrag.getAdapter().addNewSet(data.getBundleExtra("lineup"));
+					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(), false);
+					
+					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
+					mHandler.postDelayed(new Runnable() {
+						@Override
+						public void run() {
+							lineupsFrag.getPager().setCurrentItem(0, true);
+						}
+					}, 500);
 				}
 			}
 		}

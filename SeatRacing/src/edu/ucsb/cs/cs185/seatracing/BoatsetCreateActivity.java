@@ -1,5 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -67,9 +70,20 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 		mPager.setOnPageChangeListener(this);
 	}
-	
+
 	private void putLineupsData(Intent intent){
-		//TODO: put lineups info as extras into this intent to return them to main activity
+		Bundle lineupBundle = new Bundle();
+		lineupBundle.putInt("numRowers", numberPairs);
+		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
+		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(2)).getBoatName());
+		for(int i=1; i<3; ++i){
+			BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(i));
+			for(int j=0; j<numberPairs; ++j){
+				lineupBundle.putString("rower"+(i-1)+"-"+j+"Name", frag.getRowerName(j));
+			}
+		}
+		
+		intent.putExtra("lineup", lineupBundle);
 	}
 
 	//This borrowed from android docs
@@ -93,9 +107,10 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		mPagerAdapter.makeBoatOnePageAccessible(numPairs);
 		//TODO: hold off on second page until first is done?
 		mPagerAdapter.makeBoatTwoPageAccessible(numPairs);
-		mPager.setCurrentItem(BoatsetPagerAdapter.INDEX_SET_NAMES_1);
+		mPager.setCurrentItem(BoatsetPagerAdapter.INDEX_SET_NAMES_1,true);
+
 	}
-	
+
 	@Override
 	public void onPageScrollStateChanged(int arg0) {
 		//unused

@@ -4,7 +4,6 @@ public class Rower {
 	private String mName;
 	
 	public Rower(){
-		
 	}
 	
 	public Rower(String name){
