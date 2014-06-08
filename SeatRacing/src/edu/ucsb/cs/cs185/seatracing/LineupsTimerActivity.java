@@ -92,7 +92,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					mHandler.postDelayed(new Runnable() {
 						@Override
 						public void run() {
-							lineupsFrag.getPager().setCurrentItem(0, true);
+							lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, true);
 						}
 					}, 500);
 				}

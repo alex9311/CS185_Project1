@@ -35,7 +35,7 @@ public class BoatRowerNameFragment extends Fragment {
 		if(savedInstanceState==null){
 			rowers = new Rower[numRowers];
 			for(int i=0; i<numRowers; ++i){
-				rowers[i] = new Rower();
+				rowers[i] = new Rower(null);
 			}
 			rowerNameList = (ListView)rootView.findViewById(R.id.rower_name_listview);
 			RowerNamefieldListAdapter adapter = new RowerNamefieldListAdapter(getActivity(), R.layout.fragment_rower_namefield_label, rowers);
@@ -47,11 +47,11 @@ public class BoatRowerNameFragment extends Fragment {
 	}
 
 	public String getRowerName(int position){
-		if(rowers[position]!=null){
+		if(rowers[position]!=null && rowers[position].name()!=null){
 			return rowers[position].name();
 		}
 		else{
-			return null;
+			return "Rower "+boatIndex+" - "+position;
 		}
 	}
 

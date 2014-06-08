@@ -14,8 +14,7 @@ public class LineupsFragment extends Fragment {
 
 	TextView boatAName;
 	TextView boatBName;
-	ListView boatAList;
-	ListView boatBList;
+	ListView lineupPairList;
 
 	ArrayAdapter<String> boatAAdapter;
 	ArrayAdapter<String> boatBAdapter;
@@ -26,27 +25,20 @@ public class LineupsFragment extends Fragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_lineups, container, false);   
 		
-		Bundle args = getArguments();
-
 		boatAName = (TextView) rootView.findViewById(R.id.boat_name_left);
 		boatBName = (TextView) rootView.findViewById(R.id.boat_name_right);
 		
-		boatAList = (ListView) rootView.findViewById(R.id.boat_list_left);
-		boatBList = (ListView) rootView.findViewById(R.id.boat_list_right);
 		
 		RacingSet rs = new RacingSet(getArguments());
 		
 		boatAName.setText(rs.getBoat1().name());
 		boatBName.setText(rs.getBoat2().name());
-
-		if(boatAList.getAdapter()==null){
-			boatAList.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, rs.getBoat1().getRowerNames()));
-		}
-
-		if(boatBList.getAdapter()==null){
-			boatBList.setAdapter(new ArrayAdapter<String>(getActivity(),android.R.layout.simple_list_item_1, rs.getBoat2().getRowerNames()));
-		}
 		
+		lineupPairList = (ListView) rootView.findViewById(R.id.lineup_pairs_list);
+
+		if(lineupPairList.getAdapter()==null){
+			lineupPairList.setAdapter(new LineupPairListAdapter(getActivity(), rs.getRacingPairs()));
+		}
 		
 		//load arguments
 		return rootView;

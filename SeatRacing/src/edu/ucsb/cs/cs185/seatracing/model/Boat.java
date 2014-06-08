@@ -1,6 +1,5 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
-import edu.ucsb.cs.cs185.seatracing.BoatRowerNameFragment;
 import android.os.Bundle;
 
 public class Boat {
@@ -40,6 +39,10 @@ public class Boat {
 			names[i] = rowers[i].name();
 		}
 		return names;
+	}
+	
+	public Rower getRower(int position){
+		return rowers[position];
 	}
 
 	public String name(){

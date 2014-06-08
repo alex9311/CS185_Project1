@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
 import android.os.Bundle;
+import edu.ucsb.cs.cs185.seatracing.RacingPair;
 
 public class RacingSet {
 
@@ -28,5 +29,15 @@ public class RacingSet {
 	public void writeToBundle(Bundle bundle){
 		mBoat1.writeToBundle(0, bundle);
 		mBoat2.writeToBundle(1, bundle);
+	}
+	
+	public RacingPair[] getRacingPairs(){
+		RacingPair[] sets = new RacingPair[mBoat1.size()];
+		
+		for(int i=0; i<sets.length; ++i){
+			sets[i] = new RacingPair(mBoat1.getRower(i), mBoat2.getRower(i));
+		}
+		
+		return sets;
 	}
 }
