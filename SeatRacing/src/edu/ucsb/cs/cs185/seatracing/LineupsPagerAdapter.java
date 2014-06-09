@@ -32,7 +32,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		else{
 			LineupsFragment frag = new LineupsFragment();
 			Bundle bndl = new Bundle();
-			sets.get(position).writeToBundle(bndl);
+			bndl.putParcelable(null, sets.get(position));
+			//sets.get(position).writeToBundle(bndl);		
 			frag.setArguments(bndl);
 			return frag;
 		}
