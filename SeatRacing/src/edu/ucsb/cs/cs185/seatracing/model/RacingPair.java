@@ -1,6 +1,5 @@
-package edu.ucsb.cs.cs185.seatracing;
+package edu.ucsb.cs.cs185.seatracing.model;
 
-import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class RacingPair {
 	

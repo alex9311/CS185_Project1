@@ -1,7 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
 import android.os.Bundle;
-import edu.ucsb.cs.cs185.seatracing.RacingPair;
 
 public class RacingSet {
 

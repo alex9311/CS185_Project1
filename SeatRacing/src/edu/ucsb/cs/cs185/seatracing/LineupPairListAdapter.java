@@ -1,5 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import edu.ucsb.cs.cs185.seatracing.model.RacingPair;
 import android.app.Activity;
 import android.content.Context;
 import android.view.View;
