@@ -1,15 +1,9 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
-import edu.ucsb.cs.cs185.seatracing.animation.DefaultPageTransformer;
-import edu.ucsb.cs.cs185.seatracing.animation.ZoomOutPageTransformer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -86,13 +80,13 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 						throw new IllegalStateException("Got lineups result with no lineup.");
 					}
 					lineupsFrag.getAdapter().addNewSet(data.getBundleExtra("lineup"));
-					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(), false);
+					lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, false);
 					
 					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
 					mHandler.postDelayed(new Runnable() {
 						@Override
 						public void run() {
-							lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, true);
+							lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-2, true);
 						}
 					}, 500);
 				}
