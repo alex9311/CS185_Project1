@@ -37,8 +37,13 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		mPager = (ViewPager)findViewById(R.id.boatset_pager);
 		mPager.setOffscreenPageLimit(2);
 
-		mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager());
-
+		Intent myIntent = getIntent();
+		if(myIntent.hasExtra("numPairs")){
+			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),myIntent.getIntExtra("numPairs",-1));
+		}
+		else{
+			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager());
+		}
 		mPager.setAdapter(mPagerAdapter);
 
 		prevButton = (Button)findViewById(R.id.prev_button);
@@ -78,7 +83,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	private void putLineupsData(Intent intent){
 		Bundle lineupBundle = new Bundle();
 
-		
+
 		Boat b1 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName(), numberPairs);
 		Boat b2 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName(), numberPairs);
 		Rower[] b1Rowers = new Rower[numberPairs];
@@ -92,10 +97,10 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		for(int j=0; j<numberPairs; ++j){
 			b2Rowers[j] = new Rower(frag.getRowerName(j));
 		}
-		
+
 		b1.setRowers(b1Rowers);
 		b2.setRowers(b2Rowers);
-		
+
 		RacingSet rs = new RacingSet(b1, b2);
 
 		rs.writeToBundle(lineupBundle);
@@ -110,13 +115,13 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 				lineupBundle.putString("rower"+i+"-"+j+"Name", frag.getRowerName(j));
 			}
 		}
-		*/
+		 */
 		intent.putExtra("racingset", lineupBundle);
-		
+
 		/*
 		lineupBundle.putParcelable("racingset", rs);
 		intent.putExtra("racingSetBundle", lineupBundle);
-		*/
+		 */
 	}
 
 	//This borrowed from android docs

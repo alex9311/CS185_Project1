@@ -19,6 +19,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	
 	private Handler mHandler = new Handler();
 
+	
+	private int numPairs=-1;
 	private LineupTimerState state;
 	private LineupsPagerAdapter mLineupsPagerAdapter;
 	private LineupsPagerContainerFragment lineupsFrag;
@@ -68,6 +70,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	@Override
 	public void addNewRacingSet() {
 		Intent newRacingSetIntent = new Intent(this,BoatsetCreateActivity.class);
+		if(numPairs>0){
+			newRacingSetIntent.putExtra("numPairs", numPairs);
+		}
 		startActivityForResult(newRacingSetIntent, BoatsetCreateActivity.NEW_LINEUP);
 	}
 
@@ -82,6 +87,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					}
 					RacingSet rs = new RacingSet(data.getBundleExtra("racingset"));
 					
+					if(numPairs<0){
+						numPairs=rs.getBoat1().size();
+					}
 					lineupsFrag.getAdapter().addNewSet(rs);
 					lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, false);
 					
