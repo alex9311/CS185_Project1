@@ -32,7 +32,7 @@ public class BoatRowerNameFragment extends Fragment {
 
 		boatNameField = (EditText)rootView.findViewById(R.id.boat_name_field);
 
-		if(savedInstanceState==null){
+		if(savedInstanceState==null || rowers==null){
 			rowers = new Rower[numRowers];
 			for(int i=0; i<numRowers; ++i){
 				rowers[i] = new Rower(null);

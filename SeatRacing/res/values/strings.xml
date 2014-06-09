@@ -12,6 +12,7 @@
     <string name="prev_button">Previous</string>
     <string name="next_button">Next</string>
     <string name="done_button">Done</string>
+    <string name="cancel_button">Cancel</string>
     <string name="button_one_rower">1</string>
     <string name="button_two_rowers">2</string>
     <string name="button_three_rowers">3</string>

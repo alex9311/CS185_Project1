@@ -22,6 +22,7 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/boat_name_hint"
+        android:nextFocusForward="@+id/rower_name_listview"
         android:inputType="textNoSuggestions|textCapWords" >
         <requestFocus />
     </EditText>

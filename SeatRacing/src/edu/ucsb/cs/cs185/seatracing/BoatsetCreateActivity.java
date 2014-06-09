@@ -1,14 +1,13 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
+import edu.ucsb.cs.cs185.seatracing.R.string;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 
@@ -16,6 +15,8 @@ public class BoatsetCreateActivity extends FragmentActivity
 implements NumberPairsSelectListener, OnPageChangeListener {
 
 	public static final int NEW_LINEUP = 1;
+	
+
 
 	private int numberPairs = 0;
 	private int prevPage=0;
@@ -43,14 +44,18 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		prevButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(prevPage<0){
+					onBackPressed();
+				}
 				mPager.setCurrentItem(prevPage);
 			}
 		});
+		
 		nextButton = (Button)findViewById(R.id.next_button);
 		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(nextPage==-1){
+				if(nextPage<0){
 					//done, return from activity
 					Intent result = new Intent();
 					putLineupsData(result);
@@ -65,18 +70,16 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 		});
 
-		prevButton.setClickable(false);
-		nextButton.setClickable(false);
-
 		mPager.setOnPageChangeListener(this);
+		onPageSelected(0);
 	}
 
 	private void putLineupsData(Intent intent){
 		Bundle lineupBundle = new Bundle();
 		lineupBundle.putInt("numRowers", numberPairs);
-		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
-		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(2)).getBoatName());
-		for(int i=1; i<3; ++i){
+		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName());
+		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
+		for(int i=0; i<2; ++i){
 			BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(i));
 			for(int j=0; j<numberPairs; ++j){
 				lineupBundle.putString("rower"+(i-1)+"-"+j+"Name", frag.getRowerName(j));
@@ -104,11 +107,9 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	public void numberPairsSelected(int numPairs) {
 		numberPairs = numPairs;
 		System.out.println("Selected: "+numPairs+" rowers!");
-		mPagerAdapter.makeBoatOnePageAccessible(numPairs);
-		//TODO: hold off on second page until first is done?
-		mPagerAdapter.makeBoatTwoPageAccessible(numPairs);
-		mPager.setCurrentItem(BoatsetPagerAdapter.INDEX_SET_NAMES_1,true);
-
+		
+		mPagerAdapter.switchToBoatPages(numPairs);
+		onPageSelected(0);
 	}
 
 	@Override
@@ -125,29 +126,31 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	public void onPageSelected(int currPage) {
 		//check for prev button
 		System.out.println("Page "+currPage+" selected");
-		if(currPage > 0){
-			prevPage = currPage-1;
-			prevButton.setClickable(true);
+		if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.PAIR){
+			prevPage = -1;
+			prevButton.setEnabled(false);
+			nextButton.setEnabled(false);
 		}
-		else{
-			prevButton.setClickable(false);
-		}
+		else if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.LINEUPS){
+			
+			if(mPager.getCurrentItem()==0){
+				prevPage = -1;
+				prevButton.setText(R.string.prev_button);
+				prevButton.setEnabled(false);
 
-		//check for next button
-		if(currPage < mPagerAdapter.getCount()-1){
-			nextPage=currPage+1;
-			nextButton.setClickable(true);
-			nextButton.setText(getResources().getString(R.string.next_button));
-
-		}
-		else if(currPage == mPagerAdapter.getCount()-1){
-			nextPage=-1;
-			nextButton.setClickable(true);
-			nextButton.setText(getResources().getString(R.string.done_button));
-		}
-		else{
-			nextButton.setClickable(false);
-			nextButton.setText(getResources().getString(R.string.next_button));
+				nextPage=1;
+				nextButton.setText(R.string.next_button);
+				nextButton.setEnabled(true);
+			}
+			else{
+				prevPage=0;
+				prevButton.setText(R.string.prev_button);
+				prevButton.setEnabled(true);
+				
+				nextPage=-1;
+				nextButton.setText(R.string.done_button);
+				nextButton.setEnabled(true);
+			}
 		}
 	}
 }

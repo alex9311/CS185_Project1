@@ -5,4 +5,7 @@
     <color name="race_history_button">#0099cc</color>    
     
     <color name="button_light_holo_blue">#AFDDED</color>
+    
+    <color name="text_disabled">#C4C4C4</color>
+    <color name="text_enabled">#000000</color>
 </resources>
