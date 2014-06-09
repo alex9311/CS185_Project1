@@ -51,7 +51,7 @@ public class BoatRowerNameFragment extends Fragment {
 			return rowers[position].name();
 		}
 		else{
-			return "Rower "+boatIndex+" - "+position;
+			return "Rower "+boatIndex+" - "+(position+1);
 		}
 	}
 

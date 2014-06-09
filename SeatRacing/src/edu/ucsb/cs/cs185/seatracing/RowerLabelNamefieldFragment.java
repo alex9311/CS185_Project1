@@ -27,7 +27,7 @@ public class RowerLabelNamefieldFragment extends Fragment {
 		rowerNameField = (EditText)rootView.findViewById(R.id.rower_namefield);
 
 		tv.setText(getResources().getString(R.string.rower_label_default)+" "+(seatIndex+1));
-		rowerNameField.setHint("Rower "+boatIndex+" - "+seatIndex);
+		rowerNameField.setHint("Rower "+boatIndex+" - "+(seatIndex+1));
 
 
 		return rootView;
