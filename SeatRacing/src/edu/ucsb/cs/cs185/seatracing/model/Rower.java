@@ -3,7 +3,10 @@ package edu.ucsb.cs.cs185.seatracing.model;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Rower {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Rower implements Parcelable {
 	private String mName;
 	private List<Long> finishTimes;
 	
@@ -30,5 +33,31 @@ public class Rower {
 	
 	public int getNumTimes(){
 		return finishTimes.size();
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mName);
+		dest.writeList(finishTimes);
+	}
+	
+    public static final Parcelable.Creator<Rower> CREATOR = new Parcelable.Creator<Rower>() {
+    	public Rower createFromParcel(Parcel in) {
+    		return new Rower(in);
+    	}
+
+    	public Rower[] newArray(int size) {
+    		return new Rower[size];
+    	}
+    };
+
+	private Rower(Parcel in) {
+		mName = in.readString();
+		in.readList(finishTimes, null);
 	}
 }
