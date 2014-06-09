@@ -32,8 +32,7 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		else{
 			LineupsFragment frag = new LineupsFragment();
 			Bundle bndl = new Bundle();
-			bndl.putParcelable(null, sets.get(position));
-			//sets.get(position).writeToBundle(bndl);		
+			sets.get(position).writeToBundle(bndl);		
 			frag.setArguments(bndl);
 			return frag;
 		}
@@ -51,8 +50,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		//return sets.indexOf(object);
 	}
 
-	public void addNewSet(Bundle lineup) {
-		sets.add(new RacingSet(lineup));
+	public void addNewSet(RacingSet rs) {
+		sets.add(0,rs);
 		notifyDataSetChanged();
 	}
 

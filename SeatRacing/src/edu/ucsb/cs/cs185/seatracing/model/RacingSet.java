@@ -27,11 +27,11 @@ public class RacingSet implements Parcelable {
 		return this.mBoat2;
 	}
 	
-	/*
+	
 	public void writeToBundle(Bundle bundle){
 		mBoat1.writeToBundle(0, bundle);
 		mBoat2.writeToBundle(1, bundle);
-	}*/
+	}
 	
 	public RacingPair[] getRacingPairs(){
 		RacingPair[] sets = new RacingPair[mBoat1.size()];

@@ -1,21 +1,22 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import edu.ucsb.cs.cs185.seatracing.R.string;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class BoatsetCreateActivity extends FragmentActivity 
 implements NumberPairsSelectListener, OnPageChangeListener {
 
 	public static final int NEW_LINEUP = 1;
-	
+
 
 
 	private int numberPairs = 0;
@@ -50,7 +51,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 				mPager.setCurrentItem(prevPage);
 			}
 		});
-		
+
 		nextButton = (Button)findViewById(R.id.next_button);
 		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
@@ -76,17 +77,46 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 	private void putLineupsData(Intent intent){
 		Bundle lineupBundle = new Bundle();
+
+		
+		Boat b1 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName(), numberPairs);
+		Boat b2 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName(), numberPairs);
+		Rower[] b1Rowers = new Rower[numberPairs];
+		Rower[] b2Rowers = new Rower[numberPairs];
+
+		BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(0));
+		for(int j=0; j<numberPairs; ++j){
+			b1Rowers[j] = new Rower(frag.getRowerName(j));
+		}
+		frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(1));
+		for(int j=0; j<numberPairs; ++j){
+			b2Rowers[j] = new Rower(frag.getRowerName(j));
+		}
+		
+		b1.setRowers(b1Rowers);
+		b2.setRowers(b2Rowers);
+		
+		RacingSet rs = new RacingSet(b1, b2);
+
+		rs.writeToBundle(lineupBundle);
+
+		/*
 		lineupBundle.putInt("numRowers", numberPairs);
 		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName());
 		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
 		for(int i=0; i<2; ++i){
 			BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(i));
 			for(int j=0; j<numberPairs; ++j){
-				lineupBundle.putString("rower"+(i-1)+"-"+j+"Name", frag.getRowerName(j));
+				lineupBundle.putString("rower"+i+"-"+j+"Name", frag.getRowerName(j));
 			}
 		}
+		*/
+		intent.putExtra("racingset", lineupBundle);
 		
-		intent.putExtra("lineup", lineupBundle);
+		/*
+		lineupBundle.putParcelable("racingset", rs);
+		intent.putExtra("racingSetBundle", lineupBundle);
+		*/
 	}
 
 	//This borrowed from android docs
@@ -107,7 +137,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	public void numberPairsSelected(int numPairs) {
 		numberPairs = numPairs;
 		System.out.println("Selected: "+numPairs+" rowers!");
-		
+
 		mPagerAdapter.switchToBoatPages(numPairs);
 		onPageSelected(0);
 	}
@@ -132,7 +162,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 			nextButton.setEnabled(false);
 		}
 		else if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.LINEUPS){
-			
+
 			if(mPager.getCurrentItem()==0){
 				prevPage = -1;
 				prevButton.setText(R.string.prev_button);
@@ -146,7 +176,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 				prevPage=0;
 				prevButton.setText(R.string.prev_button);
 				prevButton.setEnabled(true);
-				
+
 				nextPage=-1;
 				nextButton.setText(R.string.done_button);
 				nextButton.setEnabled(true);

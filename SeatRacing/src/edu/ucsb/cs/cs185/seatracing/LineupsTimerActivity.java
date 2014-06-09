@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 
 public class LineupsTimerActivity extends FragmentActivity implements AddNewSetListener {
 
@@ -76,10 +77,12 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			if(requestCode == BoatsetCreateActivity.NEW_LINEUP){
 				if(state==LineupTimerState.LINEUPS){
 					//TODO: pull lineup out of result intent into model object
-					if(! data.hasExtra("lineup")){
+					if(! data.hasExtra("racingset")){
 						throw new IllegalStateException("Got lineups result with no lineup.");
 					}
-					lineupsFrag.getAdapter().addNewSet(data.getBundleExtra("lineup"));
+					RacingSet rs = new RacingSet(data.getBundleExtra("racingset"));
+					
+					lineupsFrag.getAdapter().addNewSet(rs);
 					lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, false);
 					
 					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
