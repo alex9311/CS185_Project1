@@ -8,4 +8,10 @@
     
     <color name="text_disabled">#C4C4C4</color>
     <color name="text_enabled">#000000</color>
+    
+    <color name="text_disabled_inverted">#3B3B3B</color>
+    <color name="text_enabled_inverted">#FFFFFF</color>
+    
+    <color name="confirm_button_pressed_background">#80DEFF</color>
+    <color name="confirm_button_background">#669900</color>
 </resources>

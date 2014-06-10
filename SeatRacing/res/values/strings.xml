@@ -59,6 +59,8 @@
 		BoatB 3:32.4\n\n	</string>
     <string name="title_activity_lineups_timer">Race</string>
     <string name="timer_start_button">Start</string>
+    <string name="timer_split_button">Split</string>
+    <string name="timer_done_button">Done</string>
     <string name="add_new_set_button">New Racing Set</string>
     
     <string-array name="mock_lineup_1">
@@ -74,5 +76,8 @@
         <item>Chris</item>
         <item>Dillon</item>
     </string-array>
+    
+    <string name="timer_default">00:00:00</string>
+    <string name="finish_boatlist_default">Boat1\nBoat2</string>
 
 </resources>

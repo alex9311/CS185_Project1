@@ -1,5 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -68,4 +71,30 @@ public class RacingSet implements Parcelable {
 		mBoat1 = (Boat) in.readParcelable(Boat.class.getClassLoader());
 		mBoat2 = (Boat) in.readParcelable(Boat.class.getClassLoader());
 	}
+	
+	public static Bundle writeSetsToBundle(Bundle bundle, List<RacingSet> sets){
+		bundle.putInt("numSets", sets.size());
+		bundle.putBoolean("startNow", true);
+		for(int i=0; i<sets.size(); ++i){
+			Bundle set = new Bundle();
+			sets.get(i).writeToBundle(set);
+			bundle.putBundle("set"+i, set);
+		}
+
+		return bundle;
+	}
+	
+	public static List<RacingSet> readSetsFromBundle(Bundle bundle){
+		int numSets = bundle.getInt("numSets");
+		List<RacingSet> ret = new ArrayList<RacingSet>(numSets);
+
+		//inflate two timers v
+		for(int i=0; i<numSets; ++i){
+			Bundle setBundle = bundle.getBundle("set"+i);
+			RacingSet rs = new RacingSet(setBundle);
+			ret.add(rs);
+		}
+		return ret;
+	}
+
 }

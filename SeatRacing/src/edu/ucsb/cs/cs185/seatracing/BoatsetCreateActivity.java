@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -39,6 +40,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 		Intent myIntent = getIntent();
 		if(myIntent.hasExtra("numPairs")){
+			numberPairs = myIntent.getIntExtra("numPairs", -1);
 			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),myIntent.getIntExtra("numPairs",-1));
 		}
 		else{
@@ -141,7 +143,6 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	@Override
 	public void numberPairsSelected(int numPairs) {
 		numberPairs = numPairs;
-		System.out.println("Selected: "+numPairs+" rowers!");
 
 		mPagerAdapter.switchToBoatPages(numPairs);
 		onPageSelected(0);
@@ -160,7 +161,6 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	@Override
 	public void onPageSelected(int currPage) {
 		//check for prev button
-		System.out.println("Page "+currPage+" selected");
 		if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.PAIR){
 			prevPage = -1;
 			prevButton.setEnabled(false);
@@ -175,6 +175,8 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 				nextPage=1;
 				nextButton.setText(R.string.next_button);
+				nextButton.setBackgroundResource(R.drawable.selectable_item_background);
+				nextButton.setTextColor(getResources().getColorStateList(R.color.switchable_text_color));
 				nextButton.setEnabled(true);
 			}
 			else{
@@ -183,6 +185,8 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 				prevButton.setEnabled(true);
 
 				nextPage=-1;
+				nextButton.setBackgroundResource(R.drawable.confirm_selectable_item_background);
+				nextButton.setTextColor(getResources().getColorStateList(R.color.switchable_text_color_inverted));
 				nextButton.setText(R.string.done_button);
 				nextButton.setEnabled(true);
 			}

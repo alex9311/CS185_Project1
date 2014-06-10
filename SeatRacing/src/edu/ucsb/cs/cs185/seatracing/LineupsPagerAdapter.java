@@ -12,27 +12,26 @@ import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 
 	Fragment emptyFragment;
-	List<RacingSet> sets;
+	List<RacingSet> mSets;
 	
 	public LineupsPagerAdapter(FragmentManager fm) {
 		super(fm);
-		sets = new ArrayList<RacingSet>();
+		mSets = new ArrayList<RacingSet>();
 	}
 
 	@Override
 	public Fragment getItem(int position) {
-		if(position<0 || position>sets.size()){
+		if(position<0 || position>mSets.size()){
 			throw new IllegalArgumentException("LineupsPagerAdapter does not have page "+position+"!");
 		}
-		System.out.println("Tried to get object at position: "+position);
 
-		if(position==sets.size()){
+		if(position==mSets.size()){
 			return new EmptyAddRacingSetFragment();
 		}
 		else{
-			LineupsFragment frag = new LineupsFragment();
+			LineupFragment frag = new LineupFragment();
 			Bundle bndl = new Bundle();
-			sets.get(position).writeToBundle(bndl);		
+			mSets.get(position).writeToBundle(bndl);		
 			frag.setArguments(bndl);
 			return frag;
 		}
@@ -40,19 +39,26 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return sets.size()+1;
+		return mSets.size()+1;
 	}
 	
 	@Override
 	public int getItemPosition(Object object){
-		System.out.println("Tried to get position of object: "+object);
 		return POSITION_NONE;
 		//return sets.indexOf(object);
 	}
 
 	public void addNewSet(RacingSet rs) {
-		sets.add(0,rs);
+		mSets.add(0,rs);
 		notifyDataSetChanged();
+	}
+	
+	public List<RacingSet> getRacingSets(){
+		return mSets;
+	}
+	
+	public void setRacingSets(List<RacingSet> sets){
+		mSets = sets;
 	}
 
 }

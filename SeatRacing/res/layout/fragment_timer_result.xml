@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="10dp"
+    android:orientation="horizontal" >
+
+    <edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer
+        android:id="@+id/frag_timer_chrono"
+        android:layout_width="0dip"
+        android:layout_height="match_parent"
+        android:layout_weight="6"
+        android:format="MM:SS:ss"
+        android:gravity="center"
+        android:textSize="@dimen/timer_text_size" />
+
+    <View
+        android:id="@+id/frag_time_divider"
+        android:layout_width="1dp"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="0dp"
+        android:background="?android:attr/dividerVertical" />
+
+    <TextView
+        android:id="@+id/frag_boatlist_label"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_weight="2"
+        android:gravity="center"
+        android:text="@string/finish_boatlist_default"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</LinearLayout>
