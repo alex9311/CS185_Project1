@@ -122,7 +122,7 @@ int bool abc_config_actionMenuItemAllCaps 0x7f060005
 int bool abc_config_allowActionMenuItemTextWithIcon 0x7f060004
 int bool abc_config_showMenuShortcutsWhenKeyboardPresent 0x7f060003
 int bool abc_split_action_bar_is_narrow 0x7f060002
-int color abc_search_url_text_holo 0x7f07000d
+int color abc_search_url_text_holo 0x7f07000f
 int color abc_search_url_text_normal 0x7f070000
 int color abc_search_url_text_pressed 0x7f070002
 int color abc_search_url_text_selected 0x7f070001
@@ -132,8 +132,10 @@ int color confirm_button_pressed_background 0x7f07000b
 int color load_race_button 0x7f070004
 int color new_race_button 0x7f070003
 int color race_history_button 0x7f070005
-int color switchable_text_color 0x7f07000e
-int color switchable_text_color_inverted 0x7f07000f
+int color switch_seat_background 0x7f07000d
+int color switch_seat_text 0x7f07000e
+int color switchable_text_color 0x7f070010
+int color switchable_text_color_inverted 0x7f070011
 int color text_disabled 0x7f070007
 int color text_disabled_inverted 0x7f070009
 int color text_enabled 0x7f070008
@@ -446,6 +448,7 @@ int string rower_name_default 0x7f0a0024
 int string switch_last_pair_label 0x7f0a001c
 int string timer_default 0x7f0a002f
 int string timer_done_button 0x7f0a002d
+int string timer_finish_button 0x7f0a0032
 int string timer_split_button 0x7f0a002c
 int string timer_start_button 0x7f0a002b
 int string title_activity_boatset_create 0x7f0a0011
