@@ -9,6 +9,7 @@ public class Boat implements Parcelable {
 	private int size;
 	private String name;
 	private Rower[] rowers;
+	private int id;
 
 	public Boat(int id, Bundle lineup){
 		loadFromBundle(id, lineup);
@@ -33,6 +34,14 @@ public class Boat implements Parcelable {
 
 	public void setRowers(Rower[] rowers){
 		this.rowers = rowers;
+	}
+	
+	public void setID(int newID){
+		this.id = newID;
+	}
+	
+	public int getID(){
+		return this.id;
 	}
 
 	public String[] getRowerNames(){
