@@ -1,5 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
@@ -52,7 +55,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
     // Rounds Table Columns names
     private static final String KEY_ROUNDS_ID = "id";
     private static final String KEY_ROUNDS_DATE = "date";
-    private static final String KEY_ROUNDS_SIZE = "size";
+    //private static final String KEY_ROUNDS_SIZE = "size";
  
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -74,8 +77,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
                 + KEY_RESULTS_DATE + " INTEGER" + ")";
         db.execSQL(CREATE_RESULTS_TABLE);
         String CREATE_ROUNDS_TABLE = "CREATE TABLE " + TABLE_ROUNDS + "("
-                + KEY_ROUNDS_ID + " INTEGER PRIMARY KEY," + KEY_ROUNDS_DATE + " INTEGER,"
-                + KEY_ROUNDS_SIZE + " INTEGER" + ")";
+                + KEY_ROUNDS_ID + " INTEGER PRIMARY KEY," + KEY_ROUNDS_DATE + " INTEGER" + ")";
+                //+ KEY_ROUNDS_SIZE + " INTEGER" + ")";
         db.execSQL(CREATE_ROUNDS_TABLE);
 		
 	}
@@ -144,7 +147,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         db.close(); // Closing database connection
     }
 	
-	void addRound(Round round) {
+	int addRound(Round round) {
         SQLiteDatabase db = this.getWritableDatabase();
  
         ContentValues values = new ContentValues();
@@ -153,8 +156,39 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         //values.put(KEY_ROUNDS_SIZE, round.size()); // Round Size
  
         // Inserting Row
-        db.insert(TABLE_ROUNDS, null, values);
+        int id = (int) db.insert(TABLE_ROUNDS, null, values);
         db.close(); // Closing database connection
+        
+        return id;
+    }
+	
+	// Getting list of Results
+    public List<Result> getResults(int roundID) {
+        List<Result> resultsList = new ArrayList<Result>();
+        // Select All Query
+        String selectQuery = "SELECT  * FROM " + TABLE_RESULTS
+        		+ " WHERE " + KEY_RESULTS_ID + " = " + Integer.toString(roundID) ;
+ 
+        SQLiteDatabase db = this.getWritableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+ 
+        // looping through all rows and adding to list
+        if (cursor.moveToFirst()) {
+            do {
+            	int round = Integer.parseInt(cursor.getString(0));
+            	int rower = Integer.parseInt(cursor.getString(1));
+            	int boat = Integer.parseInt(cursor.getString(2));
+            	int race = Integer.parseInt(cursor.getString(3));
+            	long time = Long.parseLong(cursor.getString(4));
+            	long date = Long.parseLong(cursor.getString(5));
+                Result result = new Result(round,rower,boat,race,time,date);
+                // Adding result to list
+                resultsList.add(result);
+            } while (cursor.moveToNext());
+        }
+ 
+        // return contact list
+        return resultsList;
     }
 
 }

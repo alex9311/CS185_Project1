@@ -5,10 +5,10 @@ public class Result {
 	private int rowerID;
 	private int boatID;
 	private int raceNum;
-	private int time;
-	private int date;
+	private long time;
+	private long date;
 	
-	public Result(int round, int rower, int boat, int raceIn, int timeIn, int dateIn){
+	public Result(int round, int rower, int boat, int raceIn, long timeIn, long dateIn){
 		roundID = round;
 		rowerID = rower;
 		boatID = boat;
@@ -33,11 +33,11 @@ public class Result {
 		return this.raceNum;
 	}
 	
-	public int time(){
+	public long time(){
 		return this.time;
 	}
 	
-	public int date(){
+	public long date(){
 		return this.date;
 	}
 

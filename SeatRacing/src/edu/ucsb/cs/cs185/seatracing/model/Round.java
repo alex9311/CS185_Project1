@@ -11,7 +11,7 @@ public class Round {
 	private int currentRace;
 	
 	private List<RacingSet> mRacingSets;
-	private Result[] results;
+	private List<Result> results;
 	
 	public Round(long dateCreatedIn){
 		dateCreated = dateCreatedIn;
@@ -23,7 +23,10 @@ public class Round {
 		mNumBoats = sets.size()*2;
 		mNumRowers = mNumBoats*sets.get(0).getBoat1().size();
 		mNumRaces = (int)Math.pow(2, mNumRowers);
-		results = new Result[mNumRaces];
+	}
+	
+	public void setResults(List<Result> results){
+		this.results = results;
 	}
 	
 	public List<RacingSet> getRacingSets(){
