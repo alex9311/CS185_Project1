@@ -8,6 +8,10 @@ public class Result {
 	private long time;
 	private long date;
 	
+	public Result(){
+		
+	}
+	
 	public Result(int round, int rower, int boat, int raceIn, long timeIn, long dateIn){
 		roundID = round;
 		rowerID = rower;
@@ -15,6 +19,30 @@ public class Result {
 		raceNum = raceIn;
 		time = timeIn;
 		date = dateIn;
+	}
+	
+	public void setRound(int round){
+		this.roundID = round;
+	}
+	
+	public void setRower(int rower){
+		this.rowerID = rower;
+	}
+	
+	public void setBoat(int boat){
+		this.boatID = boat;
+	}
+	
+	public void setRaceNum(int race){
+		this.raceNum = race;
+	}
+	
+	public void setTime(long time){
+		this.time = time;
+	}
+	
+	public void setDate(long date){
+		this.date = date;
 	}
 	
 	public int round(){
