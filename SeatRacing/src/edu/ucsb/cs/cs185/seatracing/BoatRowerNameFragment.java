@@ -59,7 +59,7 @@ public class BoatRowerNameFragment extends Fragment {
 		if(boatNameField!=null){
 			String entered = boatNameField.getText().toString();
 			if(entered.matches("")){
-				return (String)boatNameField.getHint();
+				return "Boat "+boatIndex;
 			}
 			else{
 				return entered;

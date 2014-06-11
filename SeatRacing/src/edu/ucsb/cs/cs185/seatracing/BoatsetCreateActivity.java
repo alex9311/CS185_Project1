@@ -21,6 +21,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 
 	private int numberPairs = 0;
+	private boolean switchLast = false;
 	private int prevPage=0;
 	private int nextPage=0;
 
@@ -106,6 +107,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		RacingSet rs = new RacingSet(b1, b2);
 
 		rs.writeToBundle(lineupBundle);
+		lineupBundle.putBoolean("switchLast", switchLast);
 
 		/*
 		lineupBundle.putInt("numRowers", numberPairs);
@@ -141,9 +143,9 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	}
 
 	@Override
-	public void numberPairsSelected(int numPairs) {
+	public void numberPairsSelected(int numPairs, boolean switchLast) {
 		numberPairs = numPairs;
-
+		this.switchLast = switchLast;
 		mPagerAdapter.switchToBoatPages(numPairs);
 		onPageSelected(0);
 	}

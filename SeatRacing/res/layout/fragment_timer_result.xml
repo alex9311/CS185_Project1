@@ -10,7 +10,6 @@
         android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_weight="6"
-        android:format="MM:SS:ss"
         android:gravity="center"
         android:textSize="@dimen/timer_text_size" />
 

@@ -18,6 +18,7 @@
     <string name="button_three_rowers">3</string>
     <string name="button_four_rowers">4</string>
     <string name="num_rowers_label">Select number of pairs to race:</string>
+    <string name="switch_last_pair_label">Switch last pair</string>
     <string name="title_activity_front_page">Seat Racing</string>
     <string name="button_new_race">New Race</string>
     <string name="button_load_race">Load</string>

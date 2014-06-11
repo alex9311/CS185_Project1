@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 
 public class NumberPairsSelectFragment extends Fragment implements OnClickListener {
 
@@ -16,6 +17,7 @@ public class NumberPairsSelectFragment extends Fragment implements OnClickListen
 	private Button twoRowersButton;
 	private Button threeRowersButton;
 	private Button fourRowersButton;
+	private CheckBox switchLastBox;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,6 +33,7 @@ public class NumberPairsSelectFragment extends Fragment implements OnClickListen
 		threeRowersButton.setOnClickListener(this);
 		fourRowersButton = (Button)rootView.findViewById(R.id.button_four_rowers);
 		fourRowersButton.setOnClickListener(this);
+		switchLastBox = (CheckBox)rootView.findViewById(R.id.checkbox_switch_last_pair);
 		
 		return rootView;
 	}
@@ -49,17 +52,18 @@ public class NumberPairsSelectFragment extends Fragment implements OnClickListen
 	@Override
 	public void onClick(View v) {
 		if(v!=null && mCallback!=null){
+			boolean switchLast = switchLastBox.isChecked();
 			if(v == oneRowerButton){
-				mCallback.numberPairsSelected(1);
+				mCallback.numberPairsSelected(1, switchLast);
 			}
 			else if(v == twoRowersButton){
-				mCallback.numberPairsSelected(2);
+				mCallback.numberPairsSelected(2, switchLast);
 			}
 			else if(v == threeRowersButton){
-				mCallback.numberPairsSelected(3);
+				mCallback.numberPairsSelected(3, switchLast);
 			}
 			else if(v == fourRowersButton){
-				mCallback.numberPairsSelected(4);
+				mCallback.numberPairsSelected(4, switchLast);
 			}
 		}
 	}
