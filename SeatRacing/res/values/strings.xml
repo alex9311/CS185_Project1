@@ -59,6 +59,8 @@
 		BoatA 3:31.5\n
 		BoatB 3:32.4\n\n	</string>
     <string name="title_activity_lineups_timer">Race</string>
+        <string name="title_activity_results">Results</string>
+    
     <string name="timer_start_button">Start</string>
     <string name="timer_split_button">Split</string>
     <string name="timer_done_button">Done</string>
