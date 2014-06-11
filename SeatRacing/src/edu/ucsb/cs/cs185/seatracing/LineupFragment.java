@@ -16,6 +16,8 @@ public class LineupFragment extends Fragment {
 	TextView boatAName;
 	TextView boatBName;
 	ListView lineupPairList;
+	
+	int highlightedSeat;
 
 	ArrayAdapter<String> boatAAdapter;
 	ArrayAdapter<String> boatBAdapter;
@@ -31,6 +33,7 @@ public class LineupFragment extends Fragment {
 		
 		
 		RacingSet rs = new RacingSet(getArguments());
+		highlightedSeat = getArguments().getInt("highlightedSeat",-1);
 		
 		boatAName.setText(rs.getBoat1().name());
 		boatBName.setText(rs.getBoat2().name());
@@ -40,6 +43,7 @@ public class LineupFragment extends Fragment {
 		if(lineupPairList.getAdapter()==null){
 			lineupPairList.setAdapter(new LineupPairListAdapter(getActivity(), rs.getRacingPairs()));
 		}
+		((LineupPairListAdapter)lineupPairList.getAdapter()).setHighlightedSeat(highlightedSeat);
 		
 		//load arguments
 		return rootView;
