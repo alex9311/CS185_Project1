@@ -32,7 +32,7 @@ public class BoatRowerNameFragment extends Fragment {
 
 		boatNameField = (EditText)rootView.findViewById(R.id.boat_name_field);
 
-		if(savedInstanceState==null){
+		if(savedInstanceState==null || rowers==null){
 			rowers = new Rower[numRowers];
 			for(int i=0; i<numRowers; ++i){
 				rowers[i] = new Rower(null);
@@ -51,7 +51,7 @@ public class BoatRowerNameFragment extends Fragment {
 			return rowers[position].name();
 		}
 		else{
-			return "Rower "+boatIndex+" - "+position;
+			return "Rower "+boatIndex+" - "+(position+1);
 		}
 	}
 
@@ -59,7 +59,7 @@ public class BoatRowerNameFragment extends Fragment {
 		if(boatNameField!=null){
 			String entered = boatNameField.getText().toString();
 			if(entered.matches("")){
-				return (String)boatNameField.getHint();
+				return "Boat "+boatIndex;
 			}
 			else{
 				return entered;

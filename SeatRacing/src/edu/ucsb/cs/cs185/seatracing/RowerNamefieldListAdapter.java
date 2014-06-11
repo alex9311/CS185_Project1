@@ -67,8 +67,8 @@ public class RowerNamefieldListAdapter extends ArrayAdapter<Rower> {
 		et.addTextChangedListener(tw);
 		listeners.put(convertView, tw);
 
-		tv.setText(mContext.getResources().getString(R.string.rower_label_default)+" "+position);
-		et.setHint("Rower "+boatIndex+" - "+position);
+		tv.setText(mContext.getResources().getString(R.string.rower_label_default)+" "+(position+1));
+		et.setHint("Rower "+boatIndex+" - "+(position+1));
 
 
 		return convertView;

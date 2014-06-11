@@ -15,8 +15,8 @@
     <View
         android:id="@+id/divider"
         android:layout_width="match_parent"
-        android:layout_marginTop="10dp"
         android:layout_height="1dp"
+        android:layout_marginTop="10dp"
         android:background="?android:attr/dividerHorizontal" />
 
     <LinearLayout
@@ -31,8 +31,10 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:background="@drawable/selectable_item_background"
-            android:text="@string/prev_button" />
+            android:text="@string/prev_button"
+            android:textColor="@color/switchable_text_color" />
 
         <Button
             android:id="@+id/next_button"
@@ -40,8 +42,10 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:clickable="true"
             android:background="@drawable/selectable_item_background"
-            android:text="@string/next_button" />
+            android:text="@string/next_button"
+            android:textColor="@color/switchable_text_color" />
     </LinearLayout>
 
 </LinearLayout>

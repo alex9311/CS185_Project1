@@ -1,8 +1,10 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Boat {
+public class Boat implements Parcelable {
 
 	private int size;
 	private String name;
@@ -98,6 +100,42 @@ public class Boat {
 		Rower temp = b1.rowers[position];
 		b1.rowers[position] = b2.rowers[position];
 		b2.rowers[position] = temp;
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(size);
+		dest.writeString(name);
+		dest.writeInt(rowers.length);
+		for (int i=0;i<rowers.length;i++){
+			rowers[i].writeToParcel(dest,flags);
+		}
+		
+	}
+	
+    public static final Parcelable.Creator<Boat> CREATOR = new Parcelable.Creator<Boat>() {
+    	public Boat createFromParcel(Parcel in) {
+    		return new Boat(in);
+    	}
+
+    	public Boat[] newArray(int size) {
+    		return new Boat[size];
+    	}
+    };
+
+	private Boat(Parcel in) {
+		size = in.readInt();
+		name = in.readString();
+		int num_rowers = in.readInt();
+		rowers = new Rower[num_rowers];
+		for(int i=0; i<num_rowers;i++){
+			rowers[i] = in.readParcelable(Rower.class.getClassLoader());
+		}
 	}
 
 }

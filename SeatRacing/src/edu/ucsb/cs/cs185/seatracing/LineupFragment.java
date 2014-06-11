@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
 import android.os.Bundle;
+import android.os.Parcel;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +11,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 
-public class LineupsFragment extends Fragment {
+public class LineupFragment extends Fragment {
 
 	TextView boatAName;
 	TextView boatBName;
@@ -44,10 +45,10 @@ public class LineupsFragment extends Fragment {
 		return rootView;
 	}
 	
-	public static LineupsFragment newInstance(RacingSet set){
-		LineupsFragment frag = new LineupsFragment();
+	public static LineupFragment newInstance(RacingSet set){
+		LineupFragment frag = new LineupFragment();
 		Bundle bndl = new Bundle();
-		set.writeToBundle(bndl);
+		bndl.putParcelable(null, set);
 		frag.setArguments(bndl);
 		return frag;
 	}

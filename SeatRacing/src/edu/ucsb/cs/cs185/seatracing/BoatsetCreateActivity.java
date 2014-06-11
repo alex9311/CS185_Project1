@@ -1,9 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
@@ -11,13 +9,19 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class BoatsetCreateActivity extends FragmentActivity 
 implements NumberPairsSelectListener, OnPageChangeListener {
 
 	public static final int NEW_LINEUP = 1;
 
+
+
 	private int numberPairs = 0;
+	private boolean switchLast = false;
 	private int prevPage=0;
 	private int nextPage=0;
 
@@ -35,22 +39,32 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		mPager = (ViewPager)findViewById(R.id.boatset_pager);
 		mPager.setOffscreenPageLimit(2);
 
-		mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager());
-
+		Intent myIntent = getIntent();
+		if(myIntent.hasExtra("numPairs")){
+			numberPairs = myIntent.getIntExtra("numPairs", -1);
+			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),myIntent.getIntExtra("numPairs",-1));
+		}
+		else{
+			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager());
+		}
 		mPager.setAdapter(mPagerAdapter);
 
 		prevButton = (Button)findViewById(R.id.prev_button);
 		prevButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				if(prevPage<0){
+					onBackPressed();
+				}
 				mPager.setCurrentItem(prevPage);
 			}
 		});
+
 		nextButton = (Button)findViewById(R.id.next_button);
 		nextButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				if(nextPage==-1){
+				if(nextPage<0){
 					//done, return from activity
 					Intent result = new Intent();
 					putLineupsData(result);
@@ -65,25 +79,53 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 		});
 
-		prevButton.setClickable(false);
-		nextButton.setClickable(false);
-
 		mPager.setOnPageChangeListener(this);
+		onPageSelected(0);
 	}
 
 	private void putLineupsData(Intent intent){
 		Bundle lineupBundle = new Bundle();
+
+
+		Boat b1 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName(), numberPairs);
+		Boat b2 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName(), numberPairs);
+		Rower[] b1Rowers = new Rower[numberPairs];
+		Rower[] b2Rowers = new Rower[numberPairs];
+
+		BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(0));
+		for(int j=0; j<numberPairs; ++j){
+			b1Rowers[j] = new Rower(frag.getRowerName(j));
+		}
+		frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(1));
+		for(int j=0; j<numberPairs; ++j){
+			b2Rowers[j] = new Rower(frag.getRowerName(j));
+		}
+
+		b1.setRowers(b1Rowers);
+		b2.setRowers(b2Rowers);
+
+		RacingSet rs = new RacingSet(b1, b2);
+
+		rs.writeToBundle(lineupBundle);
+		lineupBundle.putBoolean("switchLast", switchLast);
+
+		/*
 		lineupBundle.putInt("numRowers", numberPairs);
-		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
-		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(2)).getBoatName());
-		for(int i=1; i<3; ++i){
+		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName());
+		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
+		for(int i=0; i<2; ++i){
 			BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(i));
 			for(int j=0; j<numberPairs; ++j){
-				lineupBundle.putString("rower"+(i-1)+"-"+j+"Name", frag.getRowerName(j));
+				lineupBundle.putString("rower"+i+"-"+j+"Name", frag.getRowerName(j));
 			}
 		}
-		
-		intent.putExtra("lineup", lineupBundle);
+		 */
+		intent.putExtra("racingset", lineupBundle);
+
+		/*
+		lineupBundle.putParcelable("racingset", rs);
+		intent.putExtra("racingSetBundle", lineupBundle);
+		 */
 	}
 
 	//This borrowed from android docs
@@ -101,14 +143,11 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	}
 
 	@Override
-	public void numberPairsSelected(int numPairs) {
+	public void numberPairsSelected(int numPairs, boolean switchLast) {
 		numberPairs = numPairs;
-		System.out.println("Selected: "+numPairs+" rowers!");
-		mPagerAdapter.makeBoatOnePageAccessible(numPairs);
-		//TODO: hold off on second page until first is done?
-		mPagerAdapter.makeBoatTwoPageAccessible(numPairs);
-		mPager.setCurrentItem(BoatsetPagerAdapter.INDEX_SET_NAMES_1,true);
-
+		this.switchLast = switchLast;
+		mPagerAdapter.switchToBoatPages(numPairs);
+		onPageSelected(0);
 	}
 
 	@Override
@@ -124,30 +163,35 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	@Override
 	public void onPageSelected(int currPage) {
 		//check for prev button
-		System.out.println("Page "+currPage+" selected");
-		if(currPage > 0){
-			prevPage = currPage-1;
-			prevButton.setClickable(true);
+		if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.PAIR){
+			prevPage = -1;
+			prevButton.setEnabled(false);
+			nextButton.setEnabled(false);
 		}
-		else{
-			prevButton.setClickable(false);
-		}
+		else if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.LINEUPS){
 
-		//check for next button
-		if(currPage < mPagerAdapter.getCount()-1){
-			nextPage=currPage+1;
-			nextButton.setClickable(true);
-			nextButton.setText(getResources().getString(R.string.next_button));
+			if(mPager.getCurrentItem()==0){
+				prevPage = -1;
+				prevButton.setText(R.string.prev_button);
+				prevButton.setEnabled(false);
 
-		}
-		else if(currPage == mPagerAdapter.getCount()-1){
-			nextPage=-1;
-			nextButton.setClickable(true);
-			nextButton.setText(getResources().getString(R.string.done_button));
-		}
-		else{
-			nextButton.setClickable(false);
-			nextButton.setText(getResources().getString(R.string.next_button));
+				nextPage=1;
+				nextButton.setText(R.string.next_button);
+				nextButton.setBackgroundResource(R.drawable.selectable_item_background);
+				nextButton.setTextColor(getResources().getColorStateList(R.color.switchable_text_color));
+				nextButton.setEnabled(true);
+			}
+			else{
+				prevPage=0;
+				prevButton.setText(R.string.prev_button);
+				prevButton.setEnabled(true);
+
+				nextPage=-1;
+				nextButton.setBackgroundResource(R.drawable.confirm_selectable_item_background);
+				nextButton.setTextColor(getResources().getColorStateList(R.color.switchable_text_color_inverted));
+				nextButton.setText(R.string.done_button);
+				nextButton.setEnabled(true);
+			}
 		}
 	}
 }

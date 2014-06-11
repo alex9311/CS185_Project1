@@ -22,7 +22,9 @@
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.BoatsetCreateActivity"
-            android:label="@string/title_activity_boatset_create" >
+            android:label="@string/title_activity_boatset_create" 
+            android:windowSoftInputMode="stateVisible|adjustResize">
+            
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
