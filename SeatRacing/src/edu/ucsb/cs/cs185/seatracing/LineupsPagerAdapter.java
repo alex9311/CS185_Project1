@@ -11,6 +11,7 @@ import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 
 public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 
+	int highlightedSeat = -1;
 	Fragment emptyFragment;
 	List<RacingSet> mSets;
 	
@@ -31,7 +32,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		else{
 			LineupFragment frag = new LineupFragment();
 			Bundle bndl = new Bundle();
-			mSets.get(position).writeToBundle(bndl);		
+			mSets.get(position).writeToBundle(bndl);
+			bndl.putInt("highlightedSeat", highlightedSeat);
 			frag.setArguments(bndl);
 			return frag;
 		}
@@ -59,6 +61,10 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	public void setRacingSets(List<RacingSet> sets){
 		mSets = sets;
+	}
+	
+	public void setHighlightedSeat(int index){
+		highlightedSeat = index;
 	}
 
 }

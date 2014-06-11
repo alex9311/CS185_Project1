@@ -5,13 +5,13 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 
@@ -22,18 +22,19 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		LINEUPS,
 		RACING,
 		RESULT,
-		SWITCHING
+		SWITCHING,
+		DONE
 	}
 
 	private Handler mHandler = new Handler();
 	private Button timerButton;
-	
+
 
 	private int numPairs=-1;
 	private LineupTimerState state;
 	private List<RacingSet>sets;
 	private Round mCurrentRound;
-	
+
 	private LineupsPagerContainerFragment lineupsFrag;
 	private RunningTimersFragment timersFrag;
 
@@ -42,7 +43,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lineups_timer);
-		
+
 		if(mCurrentRound==null){
 			mCurrentRound = new Round(System.currentTimeMillis());
 		}
@@ -100,16 +101,31 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				break;
 			case RESULT:
 				//TODO: save results somewhere
+				writeResults(mCurrentRound);
 				emplaceLineupsPagerContainerFragment();
-				
-				timerButton.setText(R.string.timer_start_button);
-				
-				state = LineupTimerState.LINEUPS; //placeholder to skip switches for now
+
+
+				//placeholder to skip switches for now
+				performSwitches(mCurrentRound);
+				System.out.println("Finished round for race "+(mCurrentRound.getCurrentRace()+1)+" of "+mCurrentRound.getNumRaces());
+				if(mCurrentRound.getCurrentRace()+1 == mCurrentRound.getNumRaces()){
+					state = LineupTimerState.DONE;
+					timerButton.setText(R.string.timer_finish_button);
+				}
+				else{
+					mCurrentRound.setCurrentRace(mCurrentRound.getCurrentRace()+1);
+					state = LineupTimerState.LINEUPS;
+					timerButton.setText(R.string.timer_start_button);
+				}
 				//TODO: figure out switches, display dialog
 				break;
 			case SWITCHING:
-				//should not happen because this is a modal dialog?
+				//should not happen because this state is only during a modal dialog?
 				//is this state even needed?
+				//we go to done after switches are performed
+				break;
+			case DONE:
+				switchToResultsActivity(mCurrentRound);
 				break;
 			default:
 				break;
@@ -120,16 +136,21 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		}
 	}
 
+	private void writeResults(Round round) {
+		// TODO get times from timers frag, write to results
+
+	}
+
 	private void emplaceRunningTimerContainerFragment(){
 		if(state != LineupTimerState.RACING){
 			if(timersFrag==null){
 				timersFrag = new RunningTimersFragment();
 			}
-						
+
 			Bundle args = new Bundle();
 			sets = lineupsFrag.getAdapter().getRacingSets();
 			RacingSet.writeSetsToBundle(args, sets);
-			
+
 			timersFrag.setArguments(args);
 
 			getSupportFragmentManager().beginTransaction()
@@ -145,12 +166,36 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				lineupsFrag.setArguments(RacingSet.writeSetsToBundle(new Bundle(), sets));
 			}
 			getSupportFragmentManager().beginTransaction()
-				.attach(lineupsFrag)
-				.replace(R.id.lineups_timer_container, lineupsFrag)
-				.commit();
+			.attach(lineupsFrag)
+			.replace(R.id.lineups_timer_container, lineupsFrag)
+			.commit();
 
 			state = LineupTimerState.LINEUPS;
 		}
+	}
+
+	private void switchToResultsActivity(Round round){
+		//TODO: bundle info here and start activity
+	    Intent intent = new Intent(this, ResultsActivity.class);
+	    startActivity(intent);
+	}
+
+	private void performSwitches(Round round){
+		//TODO: display switch dialog frags, maybe here?
+		
+		int switchToMake = Round.getSwitchIndex(round.getCurrentRace(), round.switchingLast());
+		
+		System.out.println("Switching rowers at "+switchToMake);
+
+		
+		for(RacingSet rs : round.getRacingSets()){
+			Boat.switchRowers(rs.getBoat1(), rs.getBoat2(), switchToMake);
+		}
+		Bundle args = lineupsFrag.getArguments();
+		args.putInt("highlightedSeat", switchToMake);
+
+		lineupsFrag.setArguments(args);
+
 	}
 
 	@Override
@@ -175,9 +220,14 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					if(numPairs<0){
 						numPairs=rs.getBoat1().size();
 					}
-					
+
 					lineupsFrag.getAdapter().addNewSet(rs);
 					lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, false);
+
+					if(data.hasExtra("switchLast")){
+						mCurrentRound.setSwitchingLast(data.getBooleanExtra("switchLast", false));
+					}
+					mCurrentRound.setRacingSets(lineupsFrag.getAdapter().getRacingSets());
 
 					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
 					mHandler.postDelayed(new Runnable() {

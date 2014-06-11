@@ -14,11 +14,8 @@ public class LineupsPagerContainerFragment extends Fragment {
 
 	private ViewPager mPager;
 	private LineupsPagerAdapter mPagerAdapter;
+	private int highlightedSeat = -1;
 
-	public LineupsPagerContainerFragment(){
-	}
-	
-	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -26,13 +23,18 @@ public class LineupsPagerContainerFragment extends Fragment {
 		View rootView = inflater.inflate(R.layout.fragment_lineups_pager_container, container, false);          
 
 		mPager = (ViewPager)rootView.findViewById(R.id.lineups_pager);
-		
+
 		if(mPagerAdapter==null){
 			mPagerAdapter = new LineupsPagerAdapter(getActivity().getSupportFragmentManager());
 		}
-		
+
 		if(getArguments() != null && getArguments().getInt("numSets", 0)>0){
 			mPagerAdapter.setRacingSets(RacingSet.readSetsFromBundle(getArguments()));
+		}
+
+		if(getArguments()!=null){
+			highlightedSeat = getArguments().getInt("highlightedSeat", -1);
+			mPagerAdapter.setHighlightedSeat(highlightedSeat);
 		}
 
 		mPager.setAdapter(mPagerAdapter);
@@ -55,4 +57,5 @@ public class LineupsPagerContainerFragment extends Fragment {
 	public List<RacingSet> getRacingSets(){
 		return mPagerAdapter.getRacingSets();
 	}
+
 }

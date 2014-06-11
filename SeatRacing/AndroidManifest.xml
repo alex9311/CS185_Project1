@@ -43,6 +43,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
         </activity>
+                <activity
+            android:name="edu.ucsb.cs.cs185.seatracing.ResultsActivity"
+            android:label="@string/title_activity_results"
+            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
+        </activity>
     </application>
 
 </manifest>
