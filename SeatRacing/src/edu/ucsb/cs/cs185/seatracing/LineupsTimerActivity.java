@@ -5,6 +5,7 @@ import java.util.List;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Round;
 
 public class LineupsTimerActivity extends FragmentActivity implements AddNewSetListener, OnClickListener {
 
@@ -30,14 +32,20 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	private int numPairs=-1;
 	private LineupTimerState state;
 	private List<RacingSet>sets;
+	private Round mCurrentRound;
 	
 	private LineupsPagerContainerFragment lineupsFrag;
 	private RunningTimersFragment timersFrag;
+
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lineups_timer);
+		
+		if(mCurrentRound==null){
+			mCurrentRound = new Round(System.currentTimeMillis());
+		}
 
 		timerButton = (Button)findViewById(R.id.button_main_timer);
 		timerButton.setOnClickListener(this);
@@ -93,6 +101,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			case RESULT:
 				//TODO: save results somewhere
 				emplaceLineupsPagerContainerFragment();
+				
 				timerButton.setText(R.string.timer_start_button);
 				
 				state = LineupTimerState.LINEUPS; //placeholder to skip switches for now

@@ -8,6 +8,7 @@ import android.os.Parcelable;
 
 public class Rower implements Parcelable {
 	private String mName;
+	private int rowerId;
 	private List<Long> finishTimes;
 
 	public Rower(String name){
@@ -21,6 +22,14 @@ public class Rower implements Parcelable {
 
 	public void setName(String s){
 		this.mName=s;
+	}
+	
+	public int id(){
+		return this.rowerId;
+	}
+	
+	public void setId(int i){
+		this.rowerId=i;
 	}
 
 	public void addfinishTime(long time){
