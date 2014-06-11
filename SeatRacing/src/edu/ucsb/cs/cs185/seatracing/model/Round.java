@@ -1,5 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Round {
@@ -17,7 +18,7 @@ public class Round {
 	private int currentRace;
 	
 	private List<RacingSet> mRacingSets;
-	private Result[] results;
+	private List<Result> results;
 	
 	public Round(long dateCreatedIn){
 		dateCreated = dateCreatedIn;
@@ -34,7 +35,11 @@ public class Round {
 		else{
 			mNumRaces = (int)Math.pow(2, (mNumRowers/mNumBoats)-1);
 		}
-		results = new Result[mNumRaces];
+		results = new ArrayList<Result>(mNumRaces);
+	}
+	
+	public void setResults(List<Result> results){
+		this.results = results;
 	}
 	
 	public List<RacingSet> getRacingSets(){
