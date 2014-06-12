@@ -51,7 +51,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 		timerButton = (Button)findViewById(R.id.button_main_timer);
 		timerButton.setOnClickListener(this);
-		
+
 		stateView = (TextView)findViewById(R.id.state_label_view);
 
 		if(savedInstanceState==null){
@@ -105,12 +105,10 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			case RESULT:
 				//TODO: save results somewhere
 				writeResults(mCurrentRound);
+				performSwitches(mCurrentRound);
 				emplaceLineupsPagerContainerFragment(false);
 
-
-				//placeholder to skip switches for now
-				performSwitches(mCurrentRound);
-				System.out.println("Finished round for race "+(mCurrentRound.getCurrentRace()+1)+" of "+mCurrentRound.getNumRaces());
+				System.out.println("Finished race "+(mCurrentRound.getCurrentRace()+1)+" of "+mCurrentRound.getNumRaces());
 				if(mCurrentRound.getCurrentRace()+1 == mCurrentRound.getNumRaces()){
 					setState(LineupTimerState.DONE);
 					timerButton.setText(R.string.timer_finish_button);
@@ -143,7 +141,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		// TODO get times from timers frag, write to results
 
 	}
-	
+
 	private void setState(LineupTimerState newState){
 		state = newState;
 		switch (newState) {
@@ -179,7 +177,11 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				timersFrag = new RunningTimersFragment();
 			}
 
-			Bundle args = new Bundle();
+			Bundle args = timersFrag.getArguments();
+			if(args==null){
+				args = new Bundle();
+			}
+			
 			sets = lineupsFrag.getAdapter().getRacingSets();
 			RacingSet.writeSetsToBundle(args, sets);
 
@@ -193,10 +195,15 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private void emplaceLineupsPagerContainerFragment(boolean editable){
 		if(state != LineupTimerState.LINEUPS){
+			int highlightedSeat = -1;
+			if(lineupsFrag!=null && lineupsFrag.getArguments()!=null){
+				highlightedSeat = lineupsFrag.getArguments().getInt("highlightedSeat",-1);
+			}
 			lineupsFrag = new LineupsPagerContainerFragment();
 			if(sets!=null){
 				Bundle bndl = RacingSet.writeSetsToBundle(new Bundle(), sets);
 				bndl.putBoolean("editable", editable);
+				bndl.putInt("highlightedSeat", highlightedSeat);
 				lineupsFrag.setArguments(bndl);
 			}
 			getSupportFragmentManager().beginTransaction()
@@ -208,28 +215,29 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void switchToResultsActivity(Round round){
-	    Intent intent = new Intent(this, ResultsActivity.class);
-	    Bundle round_bundle = null;
-	    round.writeToBundle(1, round_bundle);
-	    intent.putExtra("name", round_bundle);
-	    startActivity(intent);
+		Intent intent = new Intent(this, ResultsActivity.class);
+		Bundle round_bundle = null;
+		round.writeToBundle(1, round_bundle);
+		intent.putExtra("name", round_bundle);
+		startActivity(intent);
 	}
 
 	private void performSwitches(Round round){
 		//TODO: display switch dialog frags, maybe here?
-		
+
 		int switchToMake = Round.getSwitchIndex(round.getCurrentRace(), round.switchingLast());
-		
+
 		System.out.println("Switching rowers at "+switchToMake);
 
-		
+
 		for(RacingSet rs : round.getRacingSets()){
 			Boat.switchRowers(rs.getBoat1(), rs.getBoat2(), switchToMake);
 		}
 		Bundle args = lineupsFrag.getArguments();
-		if(args!=null){
-			args.putInt("highlightedSeat", switchToMake);
+		if(args==null){
+			args = new Bundle();
 		}
+		args.putInt("highlightedSeat", switchToMake);
 
 		lineupsFrag.setArguments(args);
 	}
