@@ -47,10 +47,6 @@ public class Round {
 		this.results = results;
 	}
 	
-	public List<Result> getResults(){
-		return this.results;
-	}
-	
 	public void setID(int id){
 		this.id = id;
 	}
