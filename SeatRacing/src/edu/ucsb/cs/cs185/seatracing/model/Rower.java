@@ -69,4 +69,9 @@ public class Rower implements Parcelable {
 		mName = in.readString();
 		//in.readList(finishTimes, Long.class.getClassLoader());
 	}
+	
+	@Override
+	public String toString(){
+		return "Rower("+mName+")";
+	}
 }

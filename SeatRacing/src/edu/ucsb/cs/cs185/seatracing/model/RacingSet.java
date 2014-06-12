@@ -99,5 +99,10 @@ public class RacingSet implements Parcelable {
 		}
 		return ret;
 	}
+	
+	@Override
+	public String toString(){
+		return "Set: ["+mBoat1.toString()+", "+mBoat2.toString()+"]";
+	}
 
 }

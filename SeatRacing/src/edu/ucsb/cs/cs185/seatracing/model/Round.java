@@ -3,8 +3,6 @@ package edu.ucsb.cs.cs185.seatracing.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.ucsb.cs.cs185.seatracing.DatabaseHelper;
-
 import android.os.Bundle;
 
 public class Round {
@@ -85,6 +83,10 @@ public class Round {
 	
 	public List<Result> getResults(){
 		return this.results;
+	}
+	
+	public boolean hasSwitch(){
+		return (currentRace+1)!=mNumRaces;
 	}
 	
 	/**

@@ -10,6 +10,9 @@ public class Result {
 	private long time;
 	private long date;
 	
+	private Rower rower;
+	
+	
 	public Result(){
 		
 	}
@@ -27,12 +30,20 @@ public class Result {
 		date = dateIn;
 	}
 	
+	public void setRower(Rower rower){
+		this.rower = rower;
+	}
+	
 	public void setRound(int round){
 		this.roundID = round;
 	}
 	
 	public void setRower(int rower){
 		this.rowerID = rower;
+	}
+	
+	public Rower getRower(){
+		return this.rower;
 	}
 	
 	public void setBoat(int boat){
