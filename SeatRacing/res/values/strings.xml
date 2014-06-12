@@ -85,6 +85,8 @@
     <string name="race_num_default">Race #1</string>
     <string name="timer_finish_button">Results</string>
     
+        <string name="result_race_default">Race</string>
+   
     <string name="result_boat_default">Boat</string>
     <string name="result_time_default">Time</string>
     
