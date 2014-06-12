@@ -6,4 +6,5 @@
     
     <dimen name="timer_text_size">50sp</dimen>
 
+    <dimen name="boatpick_text_size">6sp</dimen>
 </resources>

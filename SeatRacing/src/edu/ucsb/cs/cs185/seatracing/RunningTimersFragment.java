@@ -14,8 +14,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.NumberPicker;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
 import edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer;
 
 public class RunningTimersFragment extends Fragment {
@@ -54,7 +57,7 @@ public class RunningTimersFragment extends Fragment {
 					View timer = timerView.findViewById(R.id.frag_timer_chrono);
 					timer.setOnClickListener(timerClickListener);
 					View boatList = timerView.findViewById(R.id.frag_boatlist_label);
-					//do shit
+					boatList.setOnClickListener(boatlistClickListener);
 					timerView.setId((i*10)+j);
 					mTimersViews.add(timerView);
 					mTimersContainerView.addView(timerView);
@@ -213,4 +216,50 @@ public class RunningTimersFragment extends Fragment {
 		}
 	};
 
+	private OnClickListener boatlistClickListener  = new OnClickListener() {
+		@Override
+		public void onClick(View v) {
+			if(! (v instanceof TextView)){
+				throw new IllegalArgumentException("Wrong view for boatlistClickListener!");
+			}
+			
+			View selectBoatView = BoatPicker.getView(RunningTimersFragment.this.getActivity(), mSets);
+			
+			final TextView boatNameView = (TextView)v;
+			final RadioGroup rg = (RadioGroup)selectBoatView.findViewById(R.id.boatpicker_radiogroup);
+			
+			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+					RunningTimersFragment.this.getActivity());
+
+			// set prompts.xml to alertdialog builder
+			alertDialogBuilder.setView(selectBoatView);
+
+			// set dialog message
+			alertDialogBuilder
+			.setCancelable(true)
+			.setPositiveButton("Confirm",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog,int id) {
+					int radioButtonID = rg.getCheckedRadioButtonId();
+					RadioButton radioButton = (RadioButton)rg.findViewById(radioButtonID);
+					boatNameView.setText(radioButton.getText());
+				}
+			})
+			.setNegativeButton("Cancel",
+					new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog,int id) {
+					dialog.cancel();
+				}
+			});
+
+			// create alert dialog
+			AlertDialog alertDialog = alertDialogBuilder.create();
+			// show it
+			alertDialog.show();
+
+		}
+	};
+	
+	
 }
+
