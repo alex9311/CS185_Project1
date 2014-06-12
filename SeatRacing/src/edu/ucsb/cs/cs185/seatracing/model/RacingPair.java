@@ -6,20 +6,22 @@ import android.os.Parcelable;
 
 public class RacingPair implements Parcelable{
 	
-	Rower r1;
-	Rower r2;
+	Boat mBoat1;
+	Boat mBoat2;
+	int index;
 	
-	public RacingPair(Rower r1, Rower r2){
-		this.r1 = r1;
-		this.r2 = r2;
+	public RacingPair(Boat b1, Boat b2, int seat){
+		this.mBoat1 = b1;
+		this.mBoat2 = b2;
+		this.index = seat;
 	}
 	
 	public Rower getRower1(){
-		return r1;
+		return mBoat1.getRower(index);
 	}
 	
 	public Rower getRower2(){
-		return r2;
+		return mBoat2.getRower(index);
 	}
 
 	@Override
@@ -29,8 +31,8 @@ public class RacingPair implements Parcelable{
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		r1.writeToParcel(dest, flags);
-		r2.writeToParcel(dest,flags);
+		//mBoat1.writeToParcel(dest, flags);
+		//mBoat2.writeToParcel(dest,flags);
 	}
 	
     public static final Parcelable.Creator<RacingPair> CREATOR = new Parcelable.Creator<RacingPair>() {
@@ -44,8 +46,8 @@ public class RacingPair implements Parcelable{
     };
 
 	private RacingPair(Parcel in) {
-		r1 = (Rower) in.readParcelable(Rower.class.getClassLoader());
-		r2 = (Rower) in.readParcelable(Rower.class.getClassLoader());
+		//r1 = (Rower) in.readParcelable(Rower.class.getClassLoader());
+		//r2 = (Rower) in.readParcelable(Rower.class.getClassLoader());
 	}
 
 }

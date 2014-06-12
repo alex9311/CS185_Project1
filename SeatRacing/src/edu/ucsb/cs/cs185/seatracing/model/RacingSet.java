@@ -43,7 +43,7 @@ public class RacingSet implements Parcelable {
 		RacingPair[] sets = new RacingPair[mBoat1.size()];
 		
 		for(int i=0; i<sets.length; ++i){
-			sets[i] = new RacingPair(mBoat1.getRower(i), mBoat2.getRower(i));
+			sets[i] = new RacingPair(mBoat1, mBoat2, i);
 		}
 		
 		return sets;
