@@ -28,14 +28,16 @@ public class ExtendedResultFragment extends Fragment {
 		mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.results_holder_view);
 
 		if(savedInstanceState==null){
-			Bundle round_bundle = getActivity().getIntent().getExtras();
-			
+			Bundle round_bundle = getActivity().getIntent().getExtras().getBundle("name");
 			mRound.loadResultsFromBundle(round_bundle);
 			List<Result> results = mRound.getResults();
 			int size = results.size();
+			Log.w("seat racer","size is: "+Integer.toString(size));
 			for(int i =0;i<size;i++){
+				Log.w("seat racers","yoyoyo");
 				results.get(i);
 				View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
+				result_row.setId(i);
 				mResultsContainerView.addView(result_row);
 			}
 		}	
