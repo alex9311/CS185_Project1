@@ -15,6 +15,7 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
@@ -158,28 +159,44 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		List<Result> results = round.getResults();
 		List<RacingSet> sets = round.getRacingSets();
 		Rower[] rowers;
-		int currtime = 0;
+	    long currtime = 0;
+		BoatResult[] boatTimes = timersFrag.getBoatTimes();
 		for(RacingSet rs: sets){
 			Boat boat1 = rs.getBoat1();
 			rowers = boat1.getRowers();
+			
+			for(BoatResult boatTime: boatTimes){
+				if(boatTime.boat==boat1){
+					currtime=boatTime.time;
+					break;
+				}
+			}
+			
 			for(Rower rower: rowers){
 				Result result1 = new Result(round.getID(),rower.id(),boat1.getID(),
-						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+						round.getCurrentRace(),currtime,date);
 				result1.setRower(rower.name());
 				results.add(result1);
 				db.addResult(result1);
 			}
-			currtime++;
+			
 			Boat boat2 = rs.getBoat2();
 			rowers = boat2.getRowers();
+			
+			for(BoatResult boatTime: boatTimes){
+				if(boatTime.boat==boat2){
+					currtime=boatTime.time;
+					break;
+				}
+			}
+			
 			for(Rower rower: rowers){
 				Result result2 = new Result(round.getID(),rower.id(),boat2.getID(),
-						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+						round.getCurrentRace(),currtime,date);
 				result2.setRower(rower.name());
 				results.add(result2);
 				db.addResult(result2);
 			}
-			currtime++;
 		}
 		round.setResults(results);
 	}
