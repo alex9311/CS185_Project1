@@ -103,7 +103,7 @@ public class Round {
 		int result_size = results.size();
 		bundle.putInt("result_size", result_size);
 		for(int i =0;i<result_size;i++){
-			Bundle new_result_bundle = null;
+			Bundle new_result_bundle = new Bundle();
 			results.get(i).writeToBundle(i,new_result_bundle);
 			bundle.putBundle(Integer.toString(i), new_result_bundle);
 		}

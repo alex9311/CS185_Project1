@@ -32,10 +32,9 @@ public class ExtendedResultFragment extends Fragment {
 			int size = results.size();
 			for(int i =0;i<size;i++){
 				results.get(i);
+				View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
+				mResultsContainerView.addView(result_row);
 			}
-			//TODO: iterate through round to get results and add them to extended_result_rows
-			View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
-			mResultsContainerView.addView(result_row);
 		}	
 
         return rootView;
