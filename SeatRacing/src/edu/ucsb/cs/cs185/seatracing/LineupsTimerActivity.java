@@ -1,7 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.ArrayList;
 import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -150,7 +150,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void writeResults(Round round) {
-		// TODO get times from timersFrag, write to results
 		long date = System.currentTimeMillis();
 		List<Result> results = round.getResults();
 		List<RacingSet> sets = round.getRacingSets();
@@ -162,6 +161,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			for(Rower rower: rowers){
 				Result result1 = new Result(round.getID(),rower.id(),boat1.getID(),
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+				result1.setRower(rower);
 				results.add(result1);
 				db.addResult(result1);
 			}
@@ -171,6 +171,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			for(Rower rower: rowers){
 				Result result2 = new Result(round.getID(),rower.id(),boat2.getID(),
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+				result2.setRower(rower);
 				results.add(result2);
 				db.addResult(result2);
 			}
