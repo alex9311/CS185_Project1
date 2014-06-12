@@ -3,6 +3,8 @@ package edu.ucsb.cs.cs185.seatracing.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.os.Bundle;
+
 public class Round {
 	
 	private static final int[] switches = {
@@ -84,5 +86,23 @@ public class Round {
 		//3y / 4n: 1, 2, 1, 3, 1, 2, 1
 		
 		return switches[raceNum];
+	}
+	
+	public void loadFromBundle(Bundle lineupBundle){
+		int size = lineupBundle.getInt("result_size");
+		for(int i=0;i<size;i++){
+			Bundle result_bundle = lineupBundle.getBundle(Integer.toString(i));
+			results.get(i).loadFromBundle(result_bundle);
+		}
+	}
+	
+	public void writeToBundle(int id, Bundle bundle){
+		int result_size = results.size();
+		bundle.putInt("result_size", result_size);
+		for(int i =0;i<result_size;i++){
+			Bundle new_result_bundle = null;
+			results.get(i).writeToBundle(i,new_result_bundle);
+			bundle.putBundle(Integer.toString(i), new_result_bundle);
+		}
 	}
 }

@@ -15,6 +15,6 @@
     <color name="confirm_button_pressed_background">#80DEFF</color>
     <color name="confirm_button_background">#669900</color>
     
-    <color name="switch_seat_background">#669900</color>
+    <color name="switch_seat_background">#0099FF</color>
     <color name="switch_seat_text">#FFFFFF</color>
 </resources>
