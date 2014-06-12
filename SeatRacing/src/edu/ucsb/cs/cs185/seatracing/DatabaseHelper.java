@@ -105,8 +105,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
         values.put(KEY_ROWERS_NAME, rower.name()); // Rower Name
  
         // Inserting Row
-        db.insert(TABLE_ROWERS, null, values);
+        int id = (int) db.insert(TABLE_ROWERS, null, values);
         db.close(); // Closing database connection
+        
+        if (id!=-1){
+        	rower.setId(id);
+        }
+        
     }
 	
 	int addBoat(Boat boat) {
@@ -152,8 +157,6 @@ public class DatabaseHelper extends SQLiteOpenHelper{
  
         ContentValues values = new ContentValues();
         values.put(KEY_ROUNDS_DATE, round.dateCreated()); // Round Date
-        //TODO: fix this
-        //values.put(KEY_ROUNDS_SIZE, round.size()); // Round Size
  
         // Inserting Row
         int id = (int) db.insert(TABLE_ROUNDS, null, values);
