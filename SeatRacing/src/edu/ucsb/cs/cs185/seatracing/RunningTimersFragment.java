@@ -17,6 +17,8 @@ import android.widget.NumberPicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
 import edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer;
@@ -27,6 +29,7 @@ public class RunningTimersFragment extends Fragment {
 	LinearLayout mTimersContainerView;
 	List<View> mTimersViews;
 	List<MillisecondChronometer> mTimers;
+	BoatResult[] results;
 
 	public int mNumStopped;
 
@@ -49,19 +52,26 @@ public class RunningTimersFragment extends Fragment {
 			Bundle args = getArguments();
 			boolean startImmediately = args.getBoolean("startNow", false);
 			mSets = RacingSet.readSetsFromBundle(args);
+			results = new BoatResult[mSets.size()*2];
+			for(int i=0; i<results.length; ++i){
+				results[i] = new BoatResult();
+			}
 
 			//inflate two timers v
 			for(int i=0; i<mSets.size(); ++i){
 				for(int j=0; j<2; ++j){
 					View timerView = inflater.inflate(R.layout.fragment_timer_result, container, false);
+					View boatNameView = timerView.findViewById(R.id.frag_boatlist_label);
 					View timer = timerView.findViewById(R.id.frag_timer_chrono);
 					timer.setOnClickListener(timerClickListener);
+					//timer.setId((i*2)+j);
 					View boatList = timerView.findViewById(R.id.frag_boatlist_label);
 					boatList.setOnClickListener(boatlistClickListener);
-					timerView.setId((i*10)+j);
+					//timerView.setId((i*2)+j);
 					mTimersViews.add(timerView);
 					mTimersContainerView.addView(timerView);
 					mTimers.add((MillisecondChronometer)timerView.findViewById(R.id.frag_timer_chrono));
+					boatNameView.setId((i*2)+j);
 				}
 			}
 			setTimerEditing(false);
@@ -121,11 +131,21 @@ public class RunningTimersFragment extends Fragment {
 		}
 		return times;
 	}
-	
-	public void setTimerEditing(boolean enable){
-			for(MillisecondChronometer timer : mTimers){
-				timer.setClickable(enable);
+
+	public BoatResult[] getBoatTimes(){
+		for(BoatResult res : results){
+			if(res.time<0){
+				res.time = mTimers.get((int)(-1*res.time)).getTimeElapsed();
 			}
+		}
+
+		return results;
+	}
+
+	public void setTimerEditing(boolean enable){
+		for(MillisecondChronometer timer : mTimers){
+			timer.setClickable(enable);
+		}
 	}
 
 	public static RunningTimersFragment newInstance(List<RacingSet> sets){
@@ -146,36 +166,36 @@ public class RunningTimersFragment extends Fragment {
 				throw new IllegalArgumentException("Wrong view for timerClickListener!");
 			}
 			final MillisecondChronometer timerView = (MillisecondChronometer)v;
-			
+
 			long timeBefore = timerView.getTimeElapsed();
-			
+
 			/*
 			 * From http://www.mkyong.com/android/android-prompt-user-input-dialog-example/
 			 */
 			LayoutInflater li = LayoutInflater.from(RunningTimersFragment.this.getActivity());
 			View adjustView = li.inflate(R.layout.fragment_dialog_adjust_finish_time, null);
-			
+
 			final NumberPicker minutesWheel = (NumberPicker)adjustView.findViewById(R.id.minutes_wheel);
 			minutesWheel.setMaxValue(59);
 			final NumberPicker secondsWheel = (NumberPicker)adjustView.findViewById(R.id.seconds_wheel);
 			secondsWheel.setMaxValue(59);
 			final NumberPicker millisecondsWheel = (NumberPicker)adjustView.findViewById(R.id.milliseconds_wheel);
 			millisecondsWheel.setMaxValue(99);
-		
-	        DecimalFormat df = new DecimalFormat("00");
-	        
-	        int remaining = (int)(timeBefore % (3600 * 1000));
-	        
-	        int minutes = (int)(remaining / (60 * 1000));
-	        remaining = (int)(remaining % (60 * 1000));
-	        minutesWheel.setValue(minutes);
-	        
-	        int seconds = (int)(remaining / 1000);
-	        remaining = (int)(remaining % (1000));
-	        secondsWheel.setValue(seconds);
-	        
-	        int milliseconds = (int)(((int)timeBefore % 1000) / 10);
-	        millisecondsWheel.setValue(milliseconds);
+
+			DecimalFormat df = new DecimalFormat("00");
+
+			int remaining = (int)(timeBefore % (3600 * 1000));
+
+			int minutes = (int)(remaining / (60 * 1000));
+			remaining = (int)(remaining % (60 * 1000));
+			minutesWheel.setValue(minutes);
+
+			int seconds = (int)(remaining / 1000);
+			remaining = (int)(remaining % (1000));
+			secondsWheel.setValue(seconds);
+
+			int milliseconds = (int)(((int)timeBefore % 1000) / 10);
+			millisecondsWheel.setValue(milliseconds);
 
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 					RunningTimersFragment.this.getActivity());
@@ -192,13 +212,13 @@ public class RunningTimersFragment extends Fragment {
 					long newTime = 0;
 					//set minutes
 					newTime+=minutesWheel.getValue()*1000*60;
-					
+
 					//set seconds
 					newTime+=secondsWheel.getValue()*1000;
-					
+
 					//set "ms"
 					newTime+=millisecondsWheel.getValue()*10;
-					
+
 					timerView.setTimeElapsed(newTime);
 				}
 			})
@@ -222,12 +242,12 @@ public class RunningTimersFragment extends Fragment {
 			if(! (v instanceof TextView)){
 				throw new IllegalArgumentException("Wrong view for boatlistClickListener!");
 			}
-			
+
 			View selectBoatView = BoatPicker.getView(RunningTimersFragment.this.getActivity(), mSets);
-			
+
 			final TextView boatNameView = (TextView)v;
 			final RadioGroup rg = (RadioGroup)selectBoatView.findViewById(R.id.boatpicker_radiogroup);
-			
+
 			AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 					RunningTimersFragment.this.getActivity());
 
@@ -243,6 +263,8 @@ public class RunningTimersFragment extends Fragment {
 					int radioButtonID = rg.getCheckedRadioButtonId();
 					RadioButton radioButton = (RadioButton)rg.findViewById(radioButtonID);
 					boatNameView.setText(radioButton.getText());
+					int index = boatNameView.getId();
+					results[index].boat = (Boat)radioButton.getTag();
 				}
 			})
 			.setNegativeButton("Cancel",
@@ -259,7 +281,7 @@ public class RunningTimersFragment extends Fragment {
 
 		}
 	};
-	
-	
+
+
 }
 
