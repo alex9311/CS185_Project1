@@ -264,6 +264,7 @@ public class RunningTimersFragment extends Fragment {
 					RadioButton radioButton = (RadioButton)rg.findViewById(radioButtonID);
 					boatNameView.setText(radioButton.getText());
 					int index = boatNameView.getId();
+					results[index].time = -1;
 					results[index].boat = (Boat)radioButton.getTag();
 				}
 			})

@@ -2,34 +2,50 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent" >
-    
-    
+
     <android.support.v4.view.ViewPager
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/pager"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_alignParentTop="true" />
-    
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/divider"
+        android:layout_alignParentTop="true" />
+
+    <View
+        android:id="@+id/divider"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/results_buttons"
+        android:layout_marginTop="10dp"
+        android:background="?android:attr/dividerHorizontal" />
+
     <LinearLayout
+        android:id="@+id/results_buttons"
+        style="?android:attr/buttonBarStyle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true" >
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal" >
 
         <Button
             android:id="@+id/button_results_save"
-            android:layout_width="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/button_results_save" />
+            android:background="@drawable/selectable_item_background"
+            android:text="@string/button_results_save"
+            android:textColor="@color/switchable_text_color" />
 
         <Button
             android:id="@+id/button_results_email"
-            android:layout_width="wrap_content"
+            style="?android:attr/buttonBarButtonStyle"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/button_results_email" />
-
+            android:background="@drawable/selectable_item_background"
+            android:text="@string/button_results_email"
+            android:textColor="@color/switchable_text_color" />
     </LinearLayout>
-    
+
 </RelativeLayout>
