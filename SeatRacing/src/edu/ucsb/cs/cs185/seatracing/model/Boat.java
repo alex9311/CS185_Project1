@@ -146,5 +146,18 @@ public class Boat implements Parcelable {
 			rowers[i] = in.readParcelable(Rower.class.getClassLoader());
 		}
 	}
+	
+	@Override
+	public String toString(){
+		StringBuilder sb = new StringBuilder();
+		
+		sb.append("Boat: "+this.name+": [");
+		for(Rower r : rowers){
+			sb.append(r.toString()+", ");
+		}
+		sb.append(" ]");
+		
+		return sb.toString();
+	}
 
 }

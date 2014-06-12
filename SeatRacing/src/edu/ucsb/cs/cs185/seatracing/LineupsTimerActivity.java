@@ -37,7 +37,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private int numPairs=-1;
 	private LineupTimerState state;
-	private List<RacingSet>sets;
 	private Round mCurrentRound;
 
 	private LineupsPagerContainerFragment lineupsFrag;
@@ -108,8 +107,13 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			case RESULT:
 				//TODO: save results somewhere
 				writeResults(mCurrentRound);
-				showSwitchDialog(mCurrentRound);
-				performSwitches(mCurrentRound);
+				System.out.println("Before switch: "+mCurrentRound.getRacingSets().get(0));
+				if(mCurrentRound.hasSwitch()){
+					showSwitchDialog(mCurrentRound);
+					performSwitches(mCurrentRound);
+				}
+
+				System.out.println("After switch: "+mCurrentRound.getRacingSets().get(0));
 				emplaceLineupsPagerContainerFragment(false);
 
 				System.out.println("Finished race "+(mCurrentRound.getCurrentRace()+1)+" of "+mCurrentRound.getNumRaces());
@@ -186,9 +190,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			if(args==null){
 				args = new Bundle();
 			}
-			
-			sets = lineupsFrag.getAdapter().getRacingSets();
-			RacingSet.writeSetsToBundle(args, sets);
+
+			RacingSet.writeSetsToBundle(args, mCurrentRound.getRacingSets());
 
 			timersFrag.setArguments(args);
 
@@ -201,12 +204,13 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	private void emplaceLineupsPagerContainerFragment(boolean editable){
 		if(state != LineupTimerState.LINEUPS){
 			int highlightedSeat = -1;
-			if(lineupsFrag!=null && lineupsFrag.getArguments()!=null){
+			if(lineupsFrag!=null && lineupsFrag.getArguments()!=null && mCurrentRound.hasSwitch()){
 				highlightedSeat = lineupsFrag.getArguments().getInt("highlightedSeat",-1);
 			}
 			lineupsFrag = new LineupsPagerContainerFragment();
-			if(sets!=null){
-				Bundle bndl = RacingSet.writeSetsToBundle(new Bundle(), sets);
+			if(mCurrentRound.getRacingSets()!=null){
+				System.out.println("Sent to lineupsFragment: "+mCurrentRound.getRacingSets().get(0));
+				Bundle bndl = RacingSet.writeSetsToBundle(new Bundle(), mCurrentRound.getRacingSets());
 				bndl.putBoolean("editable", editable);
 				bndl.putInt("highlightedSeat", highlightedSeat);
 				lineupsFrag.setArguments(bndl);
@@ -220,25 +224,25 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void switchToResultsActivity(Round round){
-	    Intent intent = new Intent(this, ResultsActivity.class);
-	    Bundle round_bundle = new Bundle();
-	    round.writeResultsToBundle(round_bundle);
-	    intent.putExtra("name", round_bundle);
-	    startActivity(intent);
+		Intent intent = new Intent(this, ResultsActivity.class);
+		Bundle round_bundle = new Bundle();
+		round.writeResultsToBundle(round_bundle);
+		intent.putExtra("name", round_bundle);
+		startActivity(intent);
 	}
-	
-	
+
+
 	/**
 	 * Taken from http://stackoverflow.com/questions/5810084/android-alertdialog-single-button
 	 * @param round
 	 */
 	private void showSwitchDialog(Round round){
-		
+
 		int switchToMake = Round.getSwitchIndex(round.getCurrentRace(), round.switchingLast());
 		StringBuilder alertMessage = new StringBuilder();
-		
+
 		alertMessage.append("Switch at "+(switchToMake+1)+":\n");
-		for(RacingSet rs : sets){
+		for(RacingSet rs : mCurrentRound.getRacingSets()){
 			Boat b1 = rs.getBoat1();
 			Boat b2 = rs.getBoat2();
 			Rower r1 = b1.getRower(switchToMake);
@@ -246,15 +250,15 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			alertMessage.append("\n\t"+r1.name()+" and "+r2.name()+"\n");
 			alertMessage.append("\t  ("+b1.name()+" and "+b2.name()+")\n");
 		}
-		
+
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		builder.setMessage(alertMessage.toString())
-		       .setCancelable(false)
-		       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-		           public void onClick(DialogInterface dialog, int id) {
-		                //do NOTHING BWAHAHAHAHA
-		           }
-		       });
+		.setCancelable(false)
+		.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				//do NOTHING BWAHAHAHAHA
+			}
+		});
 		AlertDialog alert = builder.create();
 		alert.show();
 	}
@@ -277,6 +281,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		args.putInt("highlightedSeat", switchToMake);
 
 		lineupsFrag.setArguments(args);
+		if(lineupsFrag.getView()!=null){
+			lineupsFrag.getView().invalidate();
+		}
 	}
 
 	@Override

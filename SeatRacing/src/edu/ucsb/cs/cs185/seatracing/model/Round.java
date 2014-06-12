@@ -76,6 +76,10 @@ public class Round {
 		return this.results;
 	}
 	
+	public boolean hasSwitch(){
+		return (currentRace+1)!=mNumRaces;
+	}
+	
 	/**
 	 * 
 	 * @param raceNum  Num of the race run just BEFORE this switch (0 index, 14 max)
