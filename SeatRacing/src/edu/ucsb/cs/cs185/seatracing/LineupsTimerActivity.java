@@ -220,10 +220,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void switchToResultsActivity(Round round){
-
 	    Intent intent = new Intent(this, ResultsActivity.class);
 	    Bundle round_bundle = new Bundle();
-	    round.writeToBundle(1, round_bundle);
+	    round.writeResultsToBundle(round_bundle);
 	    intent.putExtra("name", round_bundle);
 	    startActivity(intent);
 	}
