@@ -83,11 +83,6 @@ public class Round {
 	 * @return Which seat to switch next (0 index)
 	 */
 	public static int getSwitchIndex(int raceNum, boolean switchLast){
-		//   / 1n: null
-		//1y / 2n: 1
-		//2y / 3n: 1, 2, 1
-		//3y / 4n: 1, 2, 1, 3, 1, 2, 1
-		
 		return switches[raceNum];
 	}
 	
