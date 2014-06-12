@@ -88,4 +88,12 @@
     <string name="result_boat_default">Boat</string>
     <string name="result_time_default">Time</string>
     
+    <string name="state_label_default">Setting Lineups</string>
+    <string name="state_label_init">Initialize</string>
+    <string name="state_label_lineup">Adding Lineups</string>
+    <string name="state_label_racing">Race #</string>
+    <string name="state_label_switching">Performing Switch</string>
+    <string name="state_label_result">Finished Race #</string>
+    <string name="state_label_done">Done with Round</string>
+    
 </resources>

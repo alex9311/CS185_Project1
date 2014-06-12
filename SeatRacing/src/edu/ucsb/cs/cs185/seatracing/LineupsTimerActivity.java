@@ -11,6 +11,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
@@ -19,15 +20,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private enum LineupTimerState{
 		INIT,
-		LINEUPS,
+		LINEUPS, //only creating lineups
 		RACING,
 		RESULT,
-		SWITCHING,
+		SWITCHING, //reviewing lineups
 		DONE
 	}
 
 	private Handler mHandler = new Handler();
 	private Button timerButton;
+	private TextView stateView;
 
 
 	private int numPairs=-1;
@@ -37,7 +39,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private LineupsPagerContainerFragment lineupsFrag;
 	private RunningTimersFragment timersFrag;
-
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -50,9 +51,11 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 		timerButton = (Button)findViewById(R.id.button_main_timer);
 		timerButton.setOnClickListener(this);
+		
+		stateView = (TextView)findViewById(R.id.state_label_view);
 
 		if(savedInstanceState==null){
-			emplaceLineupsPagerContainerFragment();
+			emplaceLineupsPagerContainerFragment(true);
 		}
 	}
 
@@ -84,7 +87,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			switch(state){
 			case LINEUPS:
 				emplaceRunningTimerContainerFragment();
-				state = LineupTimerState.RACING;
+				setState(LineupTimerState.RACING);
 				timerButton.setText(R.string.timer_split_button);
 				break;
 			case RACING:
@@ -96,25 +99,25 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					timersFrag.splitOne();
 					//TODO: enable editing
 					timerButton.setText(R.string.timer_done_button);
-					state = LineupTimerState.RESULT;
+					setState(LineupTimerState.RESULT);
 				}
 				break;
 			case RESULT:
 				//TODO: save results somewhere
 				writeResults(mCurrentRound);
-				emplaceLineupsPagerContainerFragment();
+				emplaceLineupsPagerContainerFragment(false);
 
 
 				//placeholder to skip switches for now
 				performSwitches(mCurrentRound);
 				System.out.println("Finished round for race "+(mCurrentRound.getCurrentRace()+1)+" of "+mCurrentRound.getNumRaces());
 				if(mCurrentRound.getCurrentRace()+1 == mCurrentRound.getNumRaces()){
-					state = LineupTimerState.DONE;
+					setState(LineupTimerState.DONE);
 					timerButton.setText(R.string.timer_finish_button);
 				}
 				else{
 					mCurrentRound.setCurrentRace(mCurrentRound.getCurrentRace()+1);
-					state = LineupTimerState.LINEUPS;
+					setState(LineupTimerState.LINEUPS);
 					timerButton.setText(R.string.timer_start_button);
 				}
 				//TODO: figure out switches, display dialog
@@ -140,6 +143,35 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		// TODO get times from timers frag, write to results
 
 	}
+	
+	private void setState(LineupTimerState newState){
+		state = newState;
+		switch (newState) {
+		case INIT:
+			stateView.setText(R.string.state_label_init);
+			break;
+		case LINEUPS:
+			if(mCurrentRound.getCurrentRace()>0){
+				stateView.setText(R.string.state_label_switching);
+			}
+			else{
+				stateView.setText(R.string.state_label_lineup);
+			}
+			break;
+		case RACING:
+			stateView.setText(getResources().getString(R.string.state_label_racing)+(mCurrentRound.getCurrentRace()+1));
+			break;
+		case SWITCHING:
+			stateView.setText(R.string.state_label_switching);
+			break;
+		case RESULT:
+			stateView.setText(getResources().getString(R.string.state_label_result)+(mCurrentRound.getCurrentRace()+1));
+			break;
+		case DONE:
+			stateView.setText(R.string.state_label_done);
+			break;
+		}
+	}
 
 	private void emplaceRunningTimerContainerFragment(){
 		if(state != LineupTimerState.RACING){
@@ -159,18 +191,19 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		}
 	}
 
-	private void emplaceLineupsPagerContainerFragment(){
+	private void emplaceLineupsPagerContainerFragment(boolean editable){
 		if(state != LineupTimerState.LINEUPS){
 			lineupsFrag = new LineupsPagerContainerFragment();
 			if(sets!=null){
-				lineupsFrag.setArguments(RacingSet.writeSetsToBundle(new Bundle(), sets));
+				Bundle bndl = RacingSet.writeSetsToBundle(new Bundle(), sets);
+				bndl.putBoolean("editable", editable);
+				lineupsFrag.setArguments(bndl);
 			}
 			getSupportFragmentManager().beginTransaction()
-			.attach(lineupsFrag)
 			.replace(R.id.lineups_timer_container, lineupsFrag)
 			.commit();
 
-			state = LineupTimerState.LINEUPS;
+			setState(LineupTimerState.LINEUPS);
 		}
 	}
 
@@ -192,10 +225,11 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			Boat.switchRowers(rs.getBoat1(), rs.getBoat2(), switchToMake);
 		}
 		Bundle args = lineupsFrag.getArguments();
-		args.putInt("highlightedSeat", switchToMake);
+		if(args!=null){
+			args.putInt("highlightedSeat", switchToMake);
+		}
 
 		lineupsFrag.setArguments(args);
-
 	}
 
 	@Override
