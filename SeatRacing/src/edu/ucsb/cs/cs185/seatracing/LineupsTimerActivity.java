@@ -165,7 +165,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			for(Rower rower: rowers){
 				Result result1 = new Result(round.getID(),rower.id(),boat1.getID(),
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
-				result1.setRower(rower);
+				result1.setRower(rower.name());
 				results.add(result1);
 				db.addResult(result1);
 			}
@@ -175,7 +175,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			for(Rower rower: rowers){
 				Result result2 = new Result(round.getID(),rower.id(),boat2.getID(),
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
-				result2.setRower(rower);
+				result2.setRower(rower.name());
 				results.add(result2);
 				db.addResult(result2);
 			}
