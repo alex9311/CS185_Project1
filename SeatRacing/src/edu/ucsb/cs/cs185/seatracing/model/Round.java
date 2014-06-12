@@ -3,6 +3,8 @@ package edu.ucsb.cs.cs185.seatracing.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.ucsb.cs.cs185.seatracing.DatabaseHelper;
+
 import android.os.Bundle;
 
 public class Round {
@@ -16,6 +18,7 @@ public class Round {
 	private int mNumRaces;
 	private int mNumBoats;
 	private boolean switchingLast;
+	private int id;
 	
 	private int currentRace;
 	
@@ -42,6 +45,18 @@ public class Round {
 	
 	public void setResults(List<Result> results){
 		this.results = results;
+	}
+	
+	public List<Result> getResults(){
+		return this.results;
+	}
+	
+	public void setID(int id){
+		this.id = id;
+	}
+	
+	public int getID(){
+		return this.id;
 	}
 	
 	public List<RacingSet> getRacingSets(){

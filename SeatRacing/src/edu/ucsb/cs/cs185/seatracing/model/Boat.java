@@ -55,6 +55,10 @@ public class Boat implements Parcelable {
 	public Rower getRower(int position){
 		return rowers[position];
 	}
+	
+	public Rower[] getRowers(){
+		return rowers;
+	}
 
 	public String name(){
 		return this.name;
