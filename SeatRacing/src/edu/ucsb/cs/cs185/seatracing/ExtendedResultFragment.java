@@ -30,7 +30,7 @@ public class ExtendedResultFragment extends Fragment {
 		if(savedInstanceState==null){
 			Bundle round_bundle = getActivity().getIntent().getExtras();
 			
-			mRound.loadFromBundle(round_bundle);
+			mRound.loadResultsFromBundle(round_bundle);
 			List<Result> results = mRound.getResults();
 			int size = results.size();
 			for(int i =0;i<size;i++){

@@ -14,6 +14,10 @@ public class Result {
 		
 	}
 	
+	public Result(Bundle bundle){
+		loadFromBundle(bundle);
+	}
+	
 	public Result(int round, int rower, int boat, int raceIn, long timeIn, long dateIn){
 		roundID = round;
 		rowerID = rower;
@@ -80,7 +84,7 @@ public class Result {
 		date = lineupBundle.getLong("date");
 	}
 	
-	public void writeToBundle(int id, Bundle bundle){
+	public void writeToBundle(Bundle bundle){
 		bundle.putInt("roundID",roundID);
 		bundle.putInt("rowerID",rowerID);
 		bundle.putInt("boatID",boatID);
