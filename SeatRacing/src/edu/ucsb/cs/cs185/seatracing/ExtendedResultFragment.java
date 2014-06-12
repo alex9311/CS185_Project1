@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class ExtendedResultFragment extends Fragment {
 	
@@ -32,13 +33,16 @@ public class ExtendedResultFragment extends Fragment {
 			mRound.loadResultsFromBundle(round_bundle);
 			List<Result> results = mRound.getResults();
 			int size = results.size();
-			Log.w("seat racer","size is: "+Integer.toString(size));
+			Result curr_res = new Result();
 			for(int i =0;i<size;i++){
-				Log.w("seat racers","yoyoyo");
-				results.get(i);
+				curr_res = results.get(i);
 				View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
 				result_row.setId(i);
 				mResultsContainerView.addView(result_row);
+				TextView rower_name = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.boat_label);
+				rower_name.setText("test test test");
+				TextView time = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.time_label);
+				time.setText("test test test");
 			}
 		}	
 
