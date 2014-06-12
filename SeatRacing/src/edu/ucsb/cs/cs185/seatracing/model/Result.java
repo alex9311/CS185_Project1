@@ -10,7 +10,7 @@ public class Result {
 	private long time;
 	private long date;
 	
-	private Rower rower;
+	private String rower;
 	
 	
 	public Result(){
@@ -30,7 +30,7 @@ public class Result {
 		date = dateIn;
 	}
 	
-	public void setRower(Rower rower){
+	public void setRower(String rower){
 		this.rower = rower;
 	}
 	
@@ -42,7 +42,7 @@ public class Result {
 		this.rowerID = rower;
 	}
 	
-	public Rower getRower(){
+	public String getRower(){
 		return this.rower;
 	}
 	
