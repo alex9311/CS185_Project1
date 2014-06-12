@@ -28,6 +28,11 @@ public class ExtendedResultFragment extends Fragment {
 		if(savedInstanceState==null){
 			Bundle round_bundle = getActivity().getIntent().getExtras();
 			mRound.loadFromBundle(round_bundle);
+			List<Result> results = mRound.getResults();
+			int size = results.size();
+			for(int i =0;i<size;i++){
+				results.get(i);
+			}
 			//TODO: iterate through round to get results and add them to extended_result_rows
 			View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
 			mResultsContainerView.addView(result_row);

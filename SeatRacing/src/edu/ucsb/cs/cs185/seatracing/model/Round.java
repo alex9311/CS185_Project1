@@ -72,6 +72,9 @@ public class Round {
 		return this.mNumRaces;
 	}
 	
+	public List<Result> getResults(){
+		return this.results;
+	}
 	
 	/**
 	 * 
