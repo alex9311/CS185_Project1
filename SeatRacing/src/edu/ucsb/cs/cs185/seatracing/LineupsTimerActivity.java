@@ -1,7 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
 import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
@@ -42,14 +43,21 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private LineupsPagerContainerFragment lineupsFrag;
 	private RunningTimersFragment timersFrag;
+	
+	private DatabaseHelper db = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_lineups_timer);
 
+		if(db==null){
+			db = new DatabaseHelper(this);
+		}
+		
 		if(mCurrentRound==null){
 			mCurrentRound = new Round(System.currentTimeMillis());
+			mCurrentRound.setID(db.addRound(mCurrentRound));
 		}
 
 		timerButton = (Button)findViewById(R.id.button_main_timer);
@@ -142,8 +150,33 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void writeResults(Round round) {
-		// TODO get times from timers frag, write to results
-
+		// TODO get times from timersFrag, write to results
+		long date = System.currentTimeMillis();
+		List<Result> results = round.getResults();
+		List<RacingSet> sets = round.getRacingSets();
+		Rower[] rowers;
+		int currtime = 0;
+		for(RacingSet rs: sets){
+			Boat boat1 = rs.getBoat1();
+			rowers = boat1.getRowers();
+			for(Rower rower: rowers){
+				Result result1 = new Result(round.getID(),rower.id(),boat1.getID(),
+						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+				results.add(result1);
+				db.addResult(result1);
+				currtime++;
+			}
+			Boat boat2 = rs.getBoat2();
+			rowers = boat2.getRowers();
+			for(Rower rower: rowers){
+				Result result2 = new Result(round.getID(),rower.id(),boat2.getID(),
+						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
+				results.add(result2);
+				db.addResult(result2);
+				currtime++;
+			}
+		}
+		round.setResults(results);
 	}
 
 
