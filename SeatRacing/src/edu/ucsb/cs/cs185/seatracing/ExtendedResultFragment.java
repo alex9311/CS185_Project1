@@ -39,12 +39,17 @@ public class ExtendedResultFragment extends Fragment {
 				View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
 				result_row.setId(i);
 				mResultsContainerView.addView(result_row);
+				TextView race_name = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.race_label);
+				race_name.setText(Integer.toString(curr_res.raceNum()+1));
 				TextView rower_name = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.boat_label);
-				rower_name.setText("test test test");
+				rower_name.setText(curr_res.getRower());
 				TextView time = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.time_label);
-				time.setText("test test test");
+				int seconds = (int) (curr_res.time()/1000)%60;
+				int minutes = (int) (curr_res.time()/60000)%60;
+				time.setText(Integer.toString(minutes)+":"+Integer.toString(seconds));
 			}
 		}	
+		
 
         return rootView;
     }

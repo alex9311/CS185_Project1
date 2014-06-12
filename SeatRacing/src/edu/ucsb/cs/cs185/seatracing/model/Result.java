@@ -93,6 +93,8 @@ public class Result {
 		raceNum = lineupBundle.getInt("raceNum");
 		time = lineupBundle.getLong("time");
 		date = lineupBundle.getLong("date");
+		rower = lineupBundle.getString("rower");
+		
 	}
 	
 	public void writeToBundle(Bundle bundle){
@@ -102,6 +104,7 @@ public class Result {
 		bundle.putInt("raceNum",raceNum);
 		bundle.putLong("time", time);
 		bundle.putLong("date",date);
+		bundle.putString("rower",rower);
 	}
 
 }
