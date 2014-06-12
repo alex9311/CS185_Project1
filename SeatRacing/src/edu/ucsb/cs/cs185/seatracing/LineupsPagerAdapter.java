@@ -11,6 +11,7 @@ import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 
 public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 
+	boolean allowEditing=true;
 	int highlightedSeat = -1;
 	Fragment emptyFragment;
 	List<RacingSet> mSets;
@@ -25,8 +26,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		if(position<0 || position>mSets.size()){
 			throw new IllegalArgumentException("LineupsPagerAdapter does not have page "+position+"!");
 		}
-
-		if(position==mSets.size()){
+		
+		if(position==mSets.size() && allowEditing){
 			return new EmptyAddRacingSetFragment();
 		}
 		else{
@@ -41,7 +42,12 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return mSets.size()+1;
+		if(allowEditing){
+			return mSets.size()+1;
+		}
+		else{
+			return mSets.size();
+		}
 	}
 	
 	@Override
@@ -65,6 +71,11 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 	
 	public void setHighlightedSeat(int index){
 		highlightedSeat = index;
+	}
+
+	public void setEditable(boolean editable) {
+		this.allowEditing = editable;
+		notifyDataSetChanged();
 	}
 
 }

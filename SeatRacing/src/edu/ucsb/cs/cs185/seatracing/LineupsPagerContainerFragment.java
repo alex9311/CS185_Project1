@@ -35,6 +35,7 @@ public class LineupsPagerContainerFragment extends Fragment {
 		if(getArguments()!=null){
 			highlightedSeat = getArguments().getInt("highlightedSeat", -1);
 			mPagerAdapter.setHighlightedSeat(highlightedSeat);
+			mPagerAdapter.setEditable(getArguments().getBoolean("editable",true));
 		}
 
 		mPager.setAdapter(mPagerAdapter);

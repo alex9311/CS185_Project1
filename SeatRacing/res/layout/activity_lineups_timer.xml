@@ -5,16 +5,33 @@
     android:orientation="vertical"
     tools:context="edu.ucsb.cs.cs185.seatracing.LineupsTimerActivity" >
 
+    <TextView
+        android:id="@+id/state_label_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/state_label_default" />
+    
+        <View
+        android:id="@+id/divider1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="10dp"
+        android:background="?android:attr/dividerHorizontal" />
+    
+
     <!-- This is the container for the viewpager and timer results frag -->
 
     <FrameLayout
         android:id="@+id/lineups_timer_container"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_weight="5" />
+        android:layout_weight="5" >
+    </FrameLayout>
 
     <View
-        android:id="@+id/divider"
+        android:id="@+id/divider2"
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginTop="10dp"
