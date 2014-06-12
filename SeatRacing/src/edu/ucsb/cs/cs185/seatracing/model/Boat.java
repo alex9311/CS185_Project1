@@ -13,11 +13,13 @@ public class Boat implements Parcelable {
 
 	public Boat(int id, Bundle lineup){
 		loadFromBundle(id, lineup);
+		id = (int)System.currentTimeMillis();
 	}
 
 	public Boat(String name, int size){
 		this.size=size;
 		this.name = name;
+		id = (int)System.currentTimeMillis();
 	}
 
 	public void setRowers(String... rowers){
@@ -163,5 +165,6 @@ public class Boat implements Parcelable {
 		
 		return sb.toString();
 	}
+
 
 }
