@@ -96,4 +96,6 @@
     <string name="state_label_result">Finished Race #</string>
     <string name="state_label_done">Done with Round</string>
     
+    <string name="edit_times_label">Edit finish time:</string>
+    
 </resources>
