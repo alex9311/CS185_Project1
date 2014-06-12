@@ -1,5 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import android.os.Bundle;
+
 public class Result {
 	private int roundID;
 	private int rowerID;
@@ -67,6 +69,24 @@ public class Result {
 	
 	public long date(){
 		return this.date;
+	}
+	
+	public void loadFromBundle(Bundle lineupBundle){
+		roundID = lineupBundle.getInt("roundID");
+		rowerID = lineupBundle.getInt("rowerID");
+		boatID = lineupBundle.getInt("boatID");
+		raceNum = lineupBundle.getInt("raceNum");
+		time = lineupBundle.getLong("time");
+		date = lineupBundle.getLong("date");
+	}
+	
+	public void writeToBundle(int id, Bundle bundle){
+		bundle.putInt("roundID",roundID);
+		bundle.putInt("rowerID",rowerID);
+		bundle.putInt("boatID",boatID);
+		bundle.putInt("raceNum",raceNum);
+		bundle.putLong("time", time);
+		bundle.putLong("date",date);
 	}
 
 }
