@@ -165,8 +165,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
 				results.add(result1);
 				db.addResult(result1);
-				currtime++;
 			}
+			currtime++;
 			Boat boat2 = rs.getBoat2();
 			rowers = boat2.getRowers();
 			for(Rower rower: rowers){
@@ -174,8 +174,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 						round.getCurrentRace(),timersFrag.getTimes()[currtime],date);
 				results.add(result2);
 				db.addResult(result2);
-				currtime++;
 			}
+			currtime++;
 		}
 		round.setResults(results);
 	}
