@@ -166,5 +166,12 @@ public class MillisecondChronometer extends TextView {
 	public long getTimeElapsed() {
 		return timeElapsed;
 	}
-    
+
+   
+	public void setTimeElapsed(long newTime){
+		long now = System.currentTimeMillis();
+		mBase = now-newTime;
+		updateText(now);
+	}
+	
 }
