@@ -2,6 +2,8 @@ package edu.ucsb.cs.cs185.seatracing;
 
 import java.util.List;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +17,7 @@ import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
+import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class LineupsTimerActivity extends FragmentActivity implements AddNewSetListener, OnClickListener {
 
@@ -105,6 +108,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			case RESULT:
 				//TODO: save results somewhere
 				writeResults(mCurrentRound);
+				showSwitchDialog(mCurrentRound);
 				performSwitches(mCurrentRound);
 				emplaceLineupsPagerContainerFragment(false);
 
@@ -141,6 +145,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		// TODO get times from timers frag, write to results
 
 	}
+
 
 	private void setState(LineupTimerState newState){
 		state = newState;
@@ -221,6 +226,38 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	    round.writeToBundle(1, round_bundle);
 	    intent.putExtra("name", round_bundle);
 	    startActivity(intent);
+	}
+	
+	
+	/**
+	 * Taken from http://stackoverflow.com/questions/5810084/android-alertdialog-single-button
+	 * @param round
+	 */
+	private void showSwitchDialog(Round round){
+		
+		int switchToMake = Round.getSwitchIndex(round.getCurrentRace(), round.switchingLast());
+		StringBuilder alertMessage = new StringBuilder();
+		
+		alertMessage.append("Switch at "+(switchToMake+1)+":\n");
+		for(RacingSet rs : sets){
+			Boat b1 = rs.getBoat1();
+			Boat b2 = rs.getBoat2();
+			Rower r1 = b1.getRower(switchToMake);
+			Rower r2 = b2.getRower(switchToMake);
+			alertMessage.append("\n\t"+r1.name()+" and "+r2.name()+"\n");
+			alertMessage.append("\t  ("+b1.name()+" and "+b2.name()+")\n");
+		}
+		
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setMessage(alertMessage.toString())
+		       .setCancelable(false)
+		       .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+		           public void onClick(DialogInterface dialog, int id) {
+		                //do NOTHING BWAHAHAHAHA
+		           }
+		       });
+		AlertDialog alert = builder.create();
+		alert.show();
 	}
 
 	private void performSwitches(Round round){
