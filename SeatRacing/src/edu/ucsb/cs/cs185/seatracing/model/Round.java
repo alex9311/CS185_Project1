@@ -87,6 +87,9 @@ public class Round {
 		return this.mNumRaces;
 	}
 	
+	public List<Result> getResults(){
+		return this.results;
+	}
 	
 	/**
 	 * 
@@ -103,21 +106,30 @@ public class Round {
 		return switches[raceNum];
 	}
 	
-	public void loadFromBundle(Bundle lineupBundle){
+	/**
+	 * This MUST be called AFTER setRacingSets has been called
+	 * @param lineupBundle
+	 */
+	public void loadResultsFromBundle(Bundle lineupBundle){
+		this.dateCreated = lineupBundle.getLong("dateCreated", 0);
 		int size = lineupBundle.getInt("result_size");
+		if(results==null){
+			results = new ArrayList<Result>(size);
+		}
 		for(int i=0;i<size;i++){
-			Bundle result_bundle = lineupBundle.getBundle(Integer.toString(i));
-			results.get(i).loadFromBundle(result_bundle);
+			Bundle result_bundle = lineupBundle.getBundle("result"+i);
+			results.add(new Result(result_bundle));
 		}
 	}
 	
-	public void writeToBundle(int id, Bundle bundle){
+	public void writeResultsToBundle(Bundle bundle){
+		bundle.putLong("dateCreated", this.dateCreated);
 		int result_size = results.size();
 		bundle.putInt("result_size", result_size);
 		for(int i =0;i<result_size;i++){
-			Bundle new_result_bundle = null;
-			results.get(i).writeToBundle(i,new_result_bundle);
-			bundle.putBundle(Integer.toString(i), new_result_bundle);
+			Bundle new_result_bundle = new Bundle();
+			results.get(i).writeToBundle(new_result_bundle);
+			bundle.putBundle("result"+i, new_result_bundle);
 		}
 	}
 }

@@ -15,20 +15,25 @@
         android:theme="@style/AppTheme" >
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.LineupsActivity"
-            android:label="@string/app_name" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.BoatsetCreateActivity"
-            android:label="@string/title_activity_boatset_create" 
-            android:windowSoftInputMode="stateVisible|adjustResize">
-            
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_boatset_create"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
-            android:label="@string/title_activity_front_page" >
+            android:configChanges="keyboardHidden|orientation|screenSize"
+            android:label="@string/title_activity_front_page"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,16 +42,20 @@
         </activity>
         <activity
             android:name="edu.ucsb.cs.cs185.seatracing.LineupsTimerActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_lineups_timer"
-            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
         </activity>
-                <activity
+        <activity
             android:name="edu.ucsb.cs.cs185.seatracing.ResultsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="@string/title_activity_results"
-            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
+            android:screenOrientation="portrait" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
