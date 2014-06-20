@@ -135,7 +135,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					setState(LineupTimerState.LINEUPS);
 					timerButton.setText(R.string.timer_start_button);
 				}
-				//TODO: figure out switches, display dialog
 				break;
 			case SWITCHING:
 				//should not happen because this state is only during a modal dialog?
@@ -315,8 +314,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void performSwitches(Round round){
-		//TODO: display switch dialog frags, maybe here?
-
 		int switchToMake = Round.getSwitchIndex(round.getCurrentRace(), round.switchingLast());
 
 		System.out.println("Switching rowers at "+switchToMake);

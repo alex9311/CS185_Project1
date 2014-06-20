@@ -1,6 +1,5 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,23 +19,25 @@ import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.SplitTimer;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
 import edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer;
+import edu.ucsb.cs.cs185.seatracing.view.SplitTimerTextView;
 
 public class RunningTimersFragment extends Fragment {
 
 	List<RacingSet> mSets;
 	LinearLayout mTimersContainerView;
-	List<View> mTimersViews;
-	List<MillisecondChronometer> mTimers;
+	SplitTimer mTimer;
 	BoatResult[] results;
+	List<SplitTimerTextView> mTimerViews;
 
 	public int mNumStopped;
 
 	public RunningTimersFragment(){
 		mSets = new ArrayList<RacingSet>();
-		mTimersViews = new ArrayList<View>();
-		mTimers = new ArrayList<MillisecondChronometer>();
+		mTimerViews = new ArrayList<SplitTimerTextView>(8);
+		mTimer = new SplitTimer();
 		mNumStopped=0;
 	}
 
@@ -56,22 +57,24 @@ public class RunningTimersFragment extends Fragment {
 			for(int i=0; i<results.length; ++i){
 				results[i] = new BoatResult();
 			}
+			
+			mTimerViews.clear();
 
 			//inflate two timers v
 			for(int i=0; i<mSets.size(); ++i){
 				for(int j=0; j<2; ++j){
-					View timerView = inflater.inflate(R.layout.fragment_timer_result, container, false);
-					View boatNameView = timerView.findViewById(R.id.frag_boatlist_label);
-					View timer = timerView.findViewById(R.id.frag_timer_chrono);
-					timer.setOnClickListener(timerClickListener);
-					//timer.setId((i*2)+j);
-					View boatList = timerView.findViewById(R.id.frag_boatlist_label);
+					View timerAndListView = inflater.inflate(R.layout.fragment_timer_result, container, false);
+					
+					SplitTimerTextView timerView = (SplitTimerTextView)timerAndListView.findViewById(R.id.frag_timer_chrono);
+					TextView boatList = (TextView)timerAndListView.findViewById(R.id.frag_boatlist_label);
+					
+					timerView.setOnClickListener(timerClickListener);
 					boatList.setOnClickListener(boatlistClickListener);
 					//timerView.setId((i*2)+j);
-					mTimersViews.add(timerView);
-					mTimersContainerView.addView(timerView);
-					mTimers.add((MillisecondChronometer)timerView.findViewById(R.id.frag_timer_chrono));
-					boatNameView.setId((i*2)+j);
+					mTimersContainerView.addView(timerAndListView);
+					mTimerViews.add(timerView);
+					mTimer.addTimerUpdateListener(timerView);
+					boatList.setId((i*2)+j);
 				}
 			}
 			setTimerEditing(false);
@@ -88,16 +91,12 @@ public class RunningTimersFragment extends Fragment {
 	 * Starts all included timers. NOTE: This also resets values of all timers.
 	 */
 	public void startAllTimers(){
-		for(MillisecondChronometer timer : mTimers){
-			timer.start();
-		}
-
+		mNumStopped=0;
+		mTimer.start();
 	}
 
 	public void stopAllTimers(){
-		for(MillisecondChronometer timer : mTimers){
-			timer.stop();
-		}
+		mTimer.stop();
 	}
 
 	/**
@@ -105,8 +104,8 @@ public class RunningTimersFragment extends Fragment {
 	 * @return index of timer that was stopped
 	 */
 	public int splitOne(){
-		if(numTimersRemaining()>0){
-			mTimers.get(mNumStopped).stop();
+		if(numTimersRemaining()>0){			
+			mTimer.removeTimerUpdateListener(mTimerViews.get(mNumStopped));
 			mNumStopped++;
 			if(numTimersRemaining()==0){
 				setTimerEditing(true);
@@ -117,7 +116,7 @@ public class RunningTimersFragment extends Fragment {
 	}
 
 	public int numTimersRemaining(){
-		return mTimersViews.size()-mNumStopped;
+		return mTimerViews.size()-mNumStopped;
 	}
 
 	public int numTimersStopped(){
@@ -125,9 +124,10 @@ public class RunningTimersFragment extends Fragment {
 	}
 
 	public long[] getTimes(){
-		long[] times = new long[mTimers.size()];
-		for(int i=0; i<mTimers.size(); ++i){
-			times[i] = mTimers.get(i).getTimeElapsed();
+		int size = mTimerViews.size();
+		long[] times = new long[size];
+		for(int i=0; i<size; ++i){
+			times[i] = mTimerViews.get(i).getTimeElapsed();
 		}
 		return times;
 	}
@@ -135,7 +135,7 @@ public class RunningTimersFragment extends Fragment {
 	public BoatResult[] getBoatTimes(){
 		for(BoatResult res : results){
 			if(res.time<0){
-				res.time = mTimers.get((int)(-1*res.time)).getTimeElapsed();
+				res.time = mTimerViews.get((int)(-1*res.time)).getTimeElapsed();
 			}
 		}
 
@@ -143,7 +143,7 @@ public class RunningTimersFragment extends Fragment {
 	}
 
 	public void setTimerEditing(boolean enable){
-		for(MillisecondChronometer timer : mTimers){
+		for(SplitTimerTextView timer : mTimerViews){
 			timer.setClickable(enable);
 		}
 	}
@@ -165,7 +165,7 @@ public class RunningTimersFragment extends Fragment {
 			if(! (v instanceof MillisecondChronometer)){
 				throw new IllegalArgumentException("Wrong view for timerClickListener!");
 			}
-			final MillisecondChronometer timerView = (MillisecondChronometer)v;
+			final SplitTimerTextView timerView = (SplitTimerTextView)v;
 
 			long timeBefore = timerView.getTimeElapsed();
 
@@ -181,8 +181,6 @@ public class RunningTimersFragment extends Fragment {
 			secondsWheel.setMaxValue(59);
 			final NumberPicker millisecondsWheel = (NumberPicker)adjustView.findViewById(R.id.milliseconds_wheel);
 			millisecondsWheel.setMaxValue(99);
-
-			DecimalFormat df = new DecimalFormat("00");
 
 			int remaining = (int)(timeBefore % (3600 * 1000));
 

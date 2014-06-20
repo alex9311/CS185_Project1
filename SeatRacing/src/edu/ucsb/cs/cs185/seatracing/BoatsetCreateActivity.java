@@ -1,7 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing;
 
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;

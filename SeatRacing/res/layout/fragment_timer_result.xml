@@ -5,7 +5,7 @@
     android:padding="10dp"
     android:orientation="horizontal" >
 
-    <edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer
+    <edu.ucsb.cs.cs185.seatracing.view.SplitTimerTextView
         android:id="@+id/frag_timer_chrono"
         android:layout_width="0dip"
         android:layout_height="match_parent"
