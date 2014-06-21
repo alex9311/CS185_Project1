@@ -47,6 +47,11 @@ public class Round implements Parcelable{
 		return this.mRacingSets;
 	}
 	
+	public void addResult(RaceResult result){
+		result.setRaceNum(getCurrentRace());
+		this.mResults.add(result);
+	}
+	
 	public void setResults(List<RaceResult> results){
 		this.mResults = results;
 	}
@@ -101,11 +106,6 @@ public class Round implements Parcelable{
 	public static int getSwitchIndex(int raceNum, boolean switchLast){
 		return switches[raceNum];
 	}
-	
-	
-	public void writeToBundle(Bundle b){
-		
-	}
 
 	@Override
 	public int describeContents() {
@@ -140,12 +140,15 @@ public class Round implements Parcelable{
 		};
 		
 		private Round(Parcel in){
+			this.dateCreated = in.readLong();
 			this.mNumRowers = in.readInt();
 			this.mNumRaces = in.readInt();
 			this.mNumBoats = in.readInt();
 			this.switchingLast = (in.readInt() == 1);
 			this.id = in.readInt();
 			this.currentRace = in.readInt();
+			this.mRacingSets = new ArrayList<RacingSet>();
+			this.mResults = new ArrayList<RaceResult>();
 			in.readList(this.mRacingSets, RacingSet.class.getClassLoader());
 			in.readList(this.mResults, RaceResult.class.getClassLoader());
 		}

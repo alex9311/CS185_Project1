@@ -1,7 +1,5 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.List;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -16,8 +14,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
+import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
-import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
@@ -29,7 +27,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		RACING,
 		ORDERING,
 		RESULT,
-		SWITCHING, //reviewing lineups
 		DONE
 	}
 
@@ -140,11 +137,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					timerButton.setText(R.string.timer_start_button);
 				}
 				break;
-			case SWITCHING:
-				//should not happen because this state is only during a modal dialog?
-				//is this state even needed?
-				//we go to done after switches are performed
-				break;
 			case DONE:
 				switchToResultsActivity(mCurrentRound);
 				break;
@@ -158,62 +150,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void writeResults(Round round) {
-		long date = System.currentTimeMillis();
-		List<Result> results = round.getResults();
-		List<RacingSet> sets = round.getRacingSets();
-		Rower[] rowers;
-	    long currtime = 0;
-		BoatResult[] boatTimes = timersFrag.getBoatTimes();
-		for(RacingSet rs: sets){
-			Boat boat1 = rs.getBoat1();
-			rowers = boat1.getRowers();
-			
-			for(BoatResult boatTime: boatTimes){
-				if(boatTime.boat.equals(boat1)){
-					currtime = boatTime.time;
-					break;
-				}
-				/*
-				if(boatTime.boat==boat1){
-					currtime=boatTime.time;
-					break;
-				}
-				*/
-			}
-			
-			for(Rower rower: rowers){
-				Result result1 = new Result(round.getID(),rower.id(),boat1.getID(),
-						round.getCurrentRace(),currtime,date);
-				result1.setRower(rower.name());
-				results.add(result1);
-				db.addResult(result1);
-			}
-			
-			Boat boat2 = rs.getBoat2();
-			rowers = boat2.getRowers();
-			
-			for(BoatResult boatTime: boatTimes){
-				if(boatTime.boat.equals(boat2)){
-					currtime = boatTime.time;
-					break;
-				}
-				/*
-				if(boatTime.boat==boat2){
-					currtime=boatTime.time;
-					break;
-				}
-				*/
-			}
-			
-			for(Rower rower: rowers){
-				Result result2 = new Result(round.getID(),rower.id(),boat2.getID(),
-						round.getCurrentRace(),currtime,date);
-				result2.setRower(rower.name());
-				results.add(result2);
-				db.addResult(result2);
-			}
-		}
-		round.setResults(results);
+		RaceResult result = timersFrag.getRaceResult();
+		mCurrentRound.addResult(result);
 	}
 
 
@@ -236,9 +174,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			break;
 		case ORDERING:
 			stateView.setText(getResources().getString(R.string.state_label_ordering));
-			break;
-		case SWITCHING:
-			stateView.setText(R.string.state_label_switching);
 			break;
 		case RESULT:
 			stateView.setText(getResources().getString(R.string.state_label_result)+(mCurrentRound.getCurrentRace()+1));
@@ -295,9 +230,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private void switchToResultsActivity(Round round){
 		Intent intent = new Intent(this, ResultsActivity.class);
-		Bundle round_bundle = new Bundle();
-		round.writeResultsToBundle(round_bundle);
-		intent.putExtra("name", round_bundle);
+		intent.putExtra("round", mCurrentRound);
 		startActivity(intent);
 	}
 

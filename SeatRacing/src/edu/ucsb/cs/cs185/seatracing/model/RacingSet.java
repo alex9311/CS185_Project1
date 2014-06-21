@@ -9,9 +9,6 @@ import android.os.Parcelable;
 
 public class RacingSet implements Parcelable {
 	
-
-	
-	
 	private Boat mBoat1;
 	private Boat mBoat2;
 	
@@ -56,8 +53,8 @@ public class RacingSet implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		mBoat1.writeToParcel(dest, flags);
-		mBoat2.writeToParcel(dest, flags);		
+		dest.writeParcelable(mBoat1, flags);
+		dest.writeParcelable(mBoat2, flags);
 	}
 	
     public static final Parcelable.Creator<RacingSet> CREATOR = new Parcelable.Creator<RacingSet>() {
@@ -71,8 +68,8 @@ public class RacingSet implements Parcelable {
     };
 
 	private RacingSet(Parcel in) {
-		mBoat1 = (Boat) in.readParcelable(Boat.class.getClassLoader());
-		mBoat2 = (Boat) in.readParcelable(Boat.class.getClassLoader());
+		mBoat1 = in.readParcelable(Boat.class.getClassLoader());
+		mBoat2 = in.readParcelable(Boat.class.getClassLoader());
 	}
 	
 	public static Bundle writeSetsToBundle(Bundle bundle, List<RacingSet> sets){

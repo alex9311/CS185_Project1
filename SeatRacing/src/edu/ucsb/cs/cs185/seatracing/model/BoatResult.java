@@ -46,6 +46,7 @@ public class BoatResult implements Parcelable{
 	private BoatResult(Parcel in){
 		boat = in.readParcelable(Boat.class.getClassLoader());
 		time = in.readLong();
+		rowers = new ArrayList<Rower>();
 		in.readList(rowers, Rower.class.getClassLoader());
 	}
 	

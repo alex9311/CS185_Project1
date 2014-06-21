@@ -8,13 +8,26 @@ import android.os.Parcelable;
 
 public class RaceResult implements Parcelable{
 	private List<BoatResult> boatResults;
+	int raceNum;
 	
 	public RaceResult(){
 		boatResults = new ArrayList<BoatResult>();
 	}
 	
+	public void setRaceNum(int raceNum){
+		this.raceNum = raceNum;
+	}
+	
+	public int getRaceNum(){
+		return this.raceNum;
+	}
+		
 	public void addBoatResult(BoatResult b){
 		boatResults.add(b);
+	}
+	
+	public List<BoatResult> getBoatResults(){
+		return this.boatResults;
 	}
 
 	@Override
@@ -24,6 +37,7 @@ public class RaceResult implements Parcelable{
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeInt(raceNum);
 		dest.writeList(boatResults);
 	}
 	
@@ -41,6 +55,8 @@ public class RaceResult implements Parcelable{
 		};
 		
 		private RaceResult(Parcel in){
+			raceNum = in.readInt();
+			boatResults = new ArrayList<BoatResult>();
 			in.readList(this.boatResults, BoatResult.class.getClassLoader());
 		}
 }

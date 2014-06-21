@@ -19,6 +19,7 @@ public class Boat implements Parcelable {
 	public Boat(int id, Bundle lineup){
 		loadFromBundle(id, lineup);
 		id = (int)System.currentTimeMillis();
+		results = new ArrayList<BoatResult>();
 	}
 
 	public Boat(String name, int size){
@@ -161,7 +162,11 @@ public class Boat implements Parcelable {
 		size = in.readInt();
 		name = in.readString();
 		id = in.readInt();
-		rowers = (Rower[])in.readArray(Rower.class.getClassLoader());
+		Object[] temp = in.readArray(Rower.class.getClassLoader());
+		rowers = new Rower[temp.length];
+		for(int i=0; i<temp.length; ++i){
+			rowers[i]=(Rower)temp[i];
+		}
 	}
 	
 	@Override

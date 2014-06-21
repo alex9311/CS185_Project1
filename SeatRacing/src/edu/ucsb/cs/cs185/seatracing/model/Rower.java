@@ -71,6 +71,7 @@ public class Rower implements Parcelable {
 	private Rower(Parcel in) {
 		mName = in.readString();
 		rowerId = in.readInt();
+		results = new ArrayList<Long>();
 		in.readList(results, Long.class.getClassLoader());
 	}
 	

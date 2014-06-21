@@ -18,6 +18,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
+import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.SplitTimer;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
@@ -136,14 +137,19 @@ public class RunningTimersFragment extends Fragment {
 		return times;
 	}
 
-	public BoatResult[] getBoatTimes(){
+	public RaceResult getRaceResult(){
+		RaceResult race = new RaceResult();
+		
 		for(BoatResult res : results){
 			if(res.time<=0){
 				res.time = mTimerViews.get((int)(-1*res.time)).getTimeElapsed();
 			}
+			race.addBoatResult(res);
+			res.boat.addResult(res);
 		}
+		
 
-		return results;
+		return race;
 	}
 
 	public void setTimerEditing(boolean enable){
@@ -267,7 +273,7 @@ public class RunningTimersFragment extends Fragment {
 					if(radioButton!=null){
 						boatNameView.setText(radioButton.getText());
 						int index = boatNameView.getId();
-						results[index].time = -1;
+						results[index].time = -1*index;
 						results[index].boat = (Boat)radioButton.getTag();
 						checkBoatSelections();
 					}
