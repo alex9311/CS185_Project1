@@ -21,12 +21,13 @@ import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
-public class LineupsTimerActivity extends FragmentActivity implements AddNewSetListener, OnClickListener {
+public class LineupsTimerActivity extends FragmentActivity implements AddNewSetListener, OnClickListener, ResultsFinalizedListener {
 
 	private enum LineupTimerState{
 		INIT,
 		LINEUPS, //only creating lineups
 		RACING,
+		ORDERING,
 		RESULT,
 		SWITCHING, //reviewing lineups
 		DONE
@@ -106,13 +107,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					timersFrag.splitOne();
 				}
 				else{
-					//go to finished state
+					//go to ordering state
 					timersFrag.splitOne();
-					//TODO: enable editing
+					setState(LineupTimerState.ORDERING);
 					timerButton.setText(R.string.timer_done_button);
-					setState(LineupTimerState.RESULT);
+					timerButton.setEnabled(false);
 				}
 				break;
+			case ORDERING:
+				//this should not happen
+				throw new IllegalStateException("Got finish click in ordering state! Not ready to finish.");
 			case RESULT:
 				//TODO: save results somewhere
 				writeResults(mCurrentRound);
@@ -165,10 +169,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			rowers = boat1.getRowers();
 			
 			for(BoatResult boatTime: boatTimes){
+				if(boatTime.boat.equals(boat1)){
+					currtime = boatTime.time;
+					break;
+				}
+				/*
 				if(boatTime.boat==boat1){
 					currtime=boatTime.time;
 					break;
 				}
+				*/
 			}
 			
 			for(Rower rower: rowers){
@@ -183,10 +193,16 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			rowers = boat2.getRowers();
 			
 			for(BoatResult boatTime: boatTimes){
+				if(boatTime.boat.equals(boat2)){
+					currtime = boatTime.time;
+					break;
+				}
+				/*
 				if(boatTime.boat==boat2){
 					currtime=boatTime.time;
 					break;
 				}
+				*/
 			}
 			
 			for(Rower rower: rowers){
@@ -218,6 +234,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		case RACING:
 			stateView.setText(getResources().getString(R.string.state_label_racing)+(mCurrentRound.getCurrentRace()+1));
 			break;
+		case ORDERING:
+			stateView.setText(getResources().getString(R.string.state_label_ordering));
+			break;
 		case SWITCHING:
 			stateView.setText(R.string.state_label_switching);
 			break;
@@ -244,6 +263,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			RacingSet.writeSetsToBundle(args, mCurrentRound.getRacingSets());
 
 			timersFrag.setArguments(args);
+			timersFrag.setOnResultsFinalizedListener(this);
 
 			getSupportFragmentManager().beginTransaction()
 			.replace(R.id.lineups_timer_container,timersFrag)
@@ -375,6 +395,18 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				}
 			}
 		}
+	}
+
+	@Override
+	public void onResultsFinalized(BoatResult[] results) {
+		if(state != LineupTimerState.ORDERING){
+			throw new IllegalStateException("Got results ordering when not expected");
+		}
+		
+		//TODO: do something with returned results?
+		
+		timerButton.setEnabled(true);
+		setState(LineupTimerState.RESULT);
 	}
 
 

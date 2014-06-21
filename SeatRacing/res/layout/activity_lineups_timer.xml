@@ -43,6 +43,7 @@
         android:layout_height="0dip"
         android:layout_weight="1"
         android:background="@drawable/selectable_item_background"
+        android:textColor="@color/switchable_text_color"
         android:text="@string/timer_start_button" />
 
 </LinearLayout>

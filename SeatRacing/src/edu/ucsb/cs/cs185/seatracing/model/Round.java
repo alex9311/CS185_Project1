@@ -100,7 +100,7 @@ public class Round {
 	}
 	
 	/**
-	 * This MUST be called AFTER setRacingSets has been called
+	 * This is usually called AFTER setRacingSets has been called
 	 * @param lineupBundle
 	 */
 	public void loadResultsFromBundle(Bundle lineupBundle){

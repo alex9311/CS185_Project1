@@ -27,10 +27,12 @@ import edu.ucsb.cs.cs185.seatracing.view.SplitTimerTextView;
 public class RunningTimersFragment extends Fragment {
 
 	List<RacingSet> mSets;
+	List<Boat> mSelectedBoats;
 	LinearLayout mTimersContainerView;
 	SplitTimer mTimer;
 	BoatResult[] results;
 	List<SplitTimerTextView> mTimerViews;
+	private ResultsFinalizedListener mCallback;
 
 	public int mNumStopped;
 
@@ -38,6 +40,7 @@ public class RunningTimersFragment extends Fragment {
 		mSets = new ArrayList<RacingSet>();
 		mTimerViews = new ArrayList<SplitTimerTextView>(8);
 		mTimer = new SplitTimer();
+		mSelectedBoats = new ArrayList<Boat>();
 		mNumStopped=0;
 	}
 
@@ -56,18 +59,19 @@ public class RunningTimersFragment extends Fragment {
 			results = new BoatResult[mSets.size()*2];
 			for(int i=0; i<results.length; ++i){
 				results[i] = new BoatResult();
+				results[i].time = -1*i;
 			}
-			
+
 			mTimerViews.clear();
 
 			//inflate two timers v
 			for(int i=0; i<mSets.size(); ++i){
 				for(int j=0; j<2; ++j){
 					View timerAndListView = inflater.inflate(R.layout.fragment_timer_result, container, false);
-					
+
 					SplitTimerTextView timerView = (SplitTimerTextView)timerAndListView.findViewById(R.id.frag_timer_chrono);
 					TextView boatList = (TextView)timerAndListView.findViewById(R.id.frag_boatlist_label);
-					
+
 					timerView.setOnClickListener(timerClickListener);
 					boatList.setOnClickListener(boatlistClickListener);
 					//timerView.setId((i*2)+j);
@@ -134,7 +138,7 @@ public class RunningTimersFragment extends Fragment {
 
 	public BoatResult[] getBoatTimes(){
 		for(BoatResult res : results){
-			if(res.time<0){
+			if(res.time<=0){
 				res.time = mTimerViews.get((int)(-1*res.time)).getTimeElapsed();
 			}
 		}
@@ -241,7 +245,7 @@ public class RunningTimersFragment extends Fragment {
 				throw new IllegalArgumentException("Wrong view for boatlistClickListener!");
 			}
 
-			View selectBoatView = BoatPicker.getView(RunningTimersFragment.this.getActivity(), mSets);
+			View selectBoatView = BoatPicker.getView(RunningTimersFragment.this.getActivity(), mSets, results, v.getId());
 
 			final TextView boatNameView = (TextView)v;
 			final RadioGroup rg = (RadioGroup)selectBoatView.findViewById(R.id.boatpicker_radiogroup);
@@ -260,10 +264,16 @@ public class RunningTimersFragment extends Fragment {
 				public void onClick(DialogInterface dialog,int id) {
 					int radioButtonID = rg.getCheckedRadioButtonId();
 					RadioButton radioButton = (RadioButton)rg.findViewById(radioButtonID);
-					boatNameView.setText(radioButton.getText());
-					int index = boatNameView.getId();
-					results[index].time = -1;
-					results[index].boat = (Boat)radioButton.getTag();
+					if(radioButton!=null){
+						boatNameView.setText(radioButton.getText());
+						int index = boatNameView.getId();
+						results[index].time = -1;
+						results[index].boat = (Boat)radioButton.getTag();
+						checkBoatSelections();
+					}
+					else{
+						dialog.cancel();
+					}
 				}
 			})
 			.setNegativeButton("Cancel",
@@ -280,6 +290,32 @@ public class RunningTimersFragment extends Fragment {
 
 		}
 	};
+	
+	private void checkBoatSelections(){
+		if(allResultsOrdered()){
+			if(mCallback!=null){
+				mCallback.onResultsFinalized(results);
+			}
+		}
+		//else nothing
+	}
+	
+	private boolean allResultsOrdered(){
+		for(BoatResult res : results){
+			if(res.boat==null){
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	/**
+	 * Sets callback for finalizing ordered results. Call with 'null' to remove
+	 * @param listener
+	 */
+	public void setOnResultsFinalizedListener(ResultsFinalizedListener listener){
+		mCallback = listener;
+	}
 
 
 }

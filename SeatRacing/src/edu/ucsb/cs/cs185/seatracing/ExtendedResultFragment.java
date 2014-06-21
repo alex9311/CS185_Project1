@@ -1,5 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
@@ -29,28 +30,57 @@ public class ExtendedResultFragment extends Fragment {
 		mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.results_holder_view);
 
 		if(savedInstanceState==null){
-			Bundle round_bundle = getActivity().getIntent().getExtras().getBundle("name");
-			mRound.loadResultsFromBundle(round_bundle);
+			Bundle roundBundle = getActivity().getIntent().getExtras().getBundle("name");
+			mRound.loadResultsFromBundle(roundBundle);
 			List<Result> results = mRound.getResults();
-			int size = results.size();
-			Result curr_res = new Result();
-			for(int i =0;i<size;i++){
-				curr_res = results.get(i);
-				View result_row = inflater.inflate(R.layout.extended_result_row, container, false);
-				result_row.setId(i);
-				mResultsContainerView.addView(result_row);
-				TextView race_name = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.race_label);
-				race_name.setText(Integer.toString(curr_res.raceNum()+1));
-				TextView rower_name = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.boat_label);
-				rower_name.setText(curr_res.getRower());
-				TextView time = (TextView) mResultsContainerView.findViewById(i).findViewById(R.id.time_label);
-				int seconds = (int) (curr_res.time()/1000)%60;
-				int minutes = (int) (curr_res.time()/60000)%60;
-				time.setText(Integer.toString(minutes)+":"+Integer.toString(seconds));
+
+			for(int i =0;i<results.size();i++){
+				Result currentResult = results.get(i);
+				View resultRowView = inflater.inflate(R.layout.extended_result_row, container, false);
+				resultRowView.setId(i);
+				mResultsContainerView.addView(resultRowView);
+				
+				TextView race_name = (TextView) resultRowView.findViewById(R.id.race_label);
+				race_name.setText(Integer.toString(currentResult.raceNum()+1));
+				
+				TextView rower_name = (TextView) resultRowView.findViewById(R.id.boat_label);
+				rower_name.setText(currentResult.getRower());
+				
+				TextView timeView = (TextView) resultRowView.findViewById(R.id.time_label);
+				
+				timeView.setText(formatResultTime(currentResult.time()));
 			}
 		}	
 		
 
         return rootView;
     }
+    
+    private static String formatResultTime(long time){
+        DecimalFormat df = new DecimalFormat("00");
+
+        int hours = (int)(time / (3600 * 1000));
+        int remaining = (int)(time % (3600 * 1000));
+        
+        int minutes = (int)(remaining / (60 * 1000));
+        remaining = (int)(remaining % (60 * 1000));
+        
+        int seconds = (int)(remaining / 1000);
+        remaining = (int)(remaining % (1000));
+        
+        int milliseconds = (int)(((int)time % 1000) / 10);
+        
+        StringBuilder text = new StringBuilder();
+        
+        if (hours > 0) {
+        	text.append(df.format(hours) + ":");
+        }
+        
+       	text.append(df.format(minutes) + ":");
+       	text.append(df.format(seconds) + ":");
+       	text.append(df.format(milliseconds));
+       	
+       	return text.toString();
+    }
+    
 }

@@ -1,5 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import java.util.Arrays;
+
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -166,5 +168,62 @@ public class Boat implements Parcelable {
 		return sb.toString();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + id;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + Arrays.hashCode(rowers);
+		result = prime * result + size;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Boat other = (Boat) obj;
+		if (id != other.id)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (!Arrays.equals(rowers, other.rowers))
+			return false;
+		if (size != other.size)
+			return false;
+		return true;
+	}
+	
+	/*
+	@Override
+	public boolean equals(Object o){
+		if(o == null){
+			return false;
+		}
+		if(! (o instanceof Boat)){
+			return false;
+		}
+		
+		Boat b = (Boat)o;
+		
+		boolean res = true;
+		
+		res = res & (this.name() == b.name());
+		res = res & (this.rowers.length == b.getRowers().length);
+		for(int i=0; i<this.rowers.length; ++i){
+			res = res & (this.rowers[i].equals(b.getRowers()[i]));
+		}
+		
+		return res;
+	}
+	*/
 
 }

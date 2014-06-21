@@ -41,18 +41,18 @@ public class SplitTimerTextView extends TextView implements SplitTimerUpdateList
         
         int milliseconds = (int)(((int)time % 1000) / 10);
         
-        String text = "";
+        StringBuilder text = new StringBuilder();
         
         if (hours > 0) {
-        	text += df.format(hours) + ":";
+        	text.append(df.format(hours) + ":");
         }
         
-       	text += df.format(minutes) + ":";
-       	text += df.format(seconds) + ":";
-       	text += df.format(milliseconds);
+       	text.append(df.format(minutes) + ":");
+       	text.append(df.format(seconds) + ":");
+       	text.append(df.format(milliseconds));
         
        	mTimeElapsed = time;
-        setText(text);
+        setText(text.toString());
 	}
 	
 	public long getTimeElapsed(){

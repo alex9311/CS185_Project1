@@ -74,4 +74,57 @@ public class Rower implements Parcelable {
 	public String toString(){
 		return "Rower("+mName+")";
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((finishTimes == null) ? 0 : finishTimes.hashCode());
+		result = prime * result + ((mName == null) ? 0 : mName.hashCode());
+		result = prime * result + rowerId;
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Rower other = (Rower) obj;
+		if (finishTimes == null) {
+			if (other.finishTimes != null)
+				return false;
+		} else if (!finishTimes.equals(other.finishTimes))
+			return false;
+		if (mName == null) {
+			if (other.mName != null)
+				return false;
+		} else if (!mName.equals(other.mName))
+			return false;
+		if (rowerId != other.rowerId)
+			return false;
+		return true;
+	}
+	
+	/*
+	@Override
+	public boolean equals(Object o){
+		if(o == null){
+			return false;
+		}
+		if(! (o instanceof Rower)){
+			return false;
+		}
+		
+		Rower r = (Rower)o;
+		
+		return this.name().equals(r.name());
+	}
+	*/
+	
+	
 }
