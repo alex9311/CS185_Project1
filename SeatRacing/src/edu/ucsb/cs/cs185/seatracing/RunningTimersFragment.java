@@ -6,6 +6,7 @@ import java.util.List;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.SystemClock;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -85,19 +86,12 @@ public class RunningTimersFragment extends Fragment {
 			setTimerEditing(false);
 
 			if(startImmediately){
-				startAllTimers();
+				//find out when start button was first pressed and start from there
+				mTimer.start(args.getLong("start_time", SystemClock.elapsedRealtime()));
 			}
 		}
 
 		return rootView;
-	}
-
-	/**
-	 * Starts all included timers. NOTE: This also resets values of all timers.
-	 */
-	public void startAllTimers(){
-		mNumStopped=0;
-		mTimer.start();
 	}
 
 	public void stopAllTimers(){

@@ -30,8 +30,8 @@ public class SplitTimer {
 		mListeners.remove(listener);
 	}
 	
-	public void start(){
-		mBase = SystemClock.elapsedRealtime();
+	public void start(long startTime){
+		mBase = startTime;
 		mHandler.postDelayed(new Runnable() {
 			@Override
 			public void run() {
@@ -40,6 +40,10 @@ public class SplitTimer {
 			}
 
 		}, mMillisecondUpdateInterval);
+	}
+	
+	public void start(){
+		start(SystemClock.elapsedRealtime());
 	}
 	
 	public void stop(){

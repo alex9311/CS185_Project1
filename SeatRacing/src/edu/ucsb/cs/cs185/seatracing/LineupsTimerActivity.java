@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.SystemClock;
 import android.support.v4.app.FragmentActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -185,6 +186,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void emplaceRunningTimerContainerFragment(){
+		long startTime = SystemClock.elapsedRealtime();
 		if(state != LineupTimerState.RACING){
 			if(timersFrag==null){
 				timersFrag = new RunningTimersFragment();
@@ -196,6 +198,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			}
 
 			RacingSet.writeSetsToBundle(args, mCurrentRound.getRacingSets());
+			args.putLong("start_time", startTime);
 
 			timersFrag.setArguments(args);
 			timersFrag.setOnResultsFinalizedListener(this);
