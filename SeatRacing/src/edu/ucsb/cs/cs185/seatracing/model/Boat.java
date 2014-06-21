@@ -1,6 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing.model;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import android.os.Bundle;
 import android.os.Parcel;
@@ -10,8 +12,9 @@ public class Boat implements Parcelable {
 
 	private int size;
 	private String name;
-	private Rower[] rowers;
 	private int id;
+	private List<BoatResult> results;
+	private Rower[] rowers;
 
 	public Boat(int id, Bundle lineup){
 		loadFromBundle(id, lineup);
@@ -22,6 +25,12 @@ public class Boat implements Parcelable {
 		this.size=size;
 		this.name = name;
 		id = (int)System.currentTimeMillis();
+		
+		results = new ArrayList<BoatResult>();
+	}
+	
+	public void addResult(BoatResult result){
+		results.add(result);
 	}
 
 	public void setRowers(String... rowers){
@@ -128,11 +137,14 @@ public class Boat implements Parcelable {
 	public void writeToParcel(Parcel dest, int flags) {
 		dest.writeInt(size);
 		dest.writeString(name);
+		dest.writeInt(id);
+		dest.writeArray(rowers);
+		/*
 		dest.writeInt(rowers.length);
 		for (int i=0;i<rowers.length;i++){
 			rowers[i].writeToParcel(dest,flags);
 		}
-		
+		*/
 	}
 	
     public static final Parcelable.Creator<Boat> CREATOR = new Parcelable.Creator<Boat>() {
@@ -148,11 +160,8 @@ public class Boat implements Parcelable {
 	private Boat(Parcel in) {
 		size = in.readInt();
 		name = in.readString();
-		int num_rowers = in.readInt();
-		rowers = new Rower[num_rowers];
-		for(int i=0; i<num_rowers;i++){
-			rowers[i] = in.readParcelable(Rower.class.getClassLoader());
-		}
+		id = in.readInt();
+		rowers = (Rower[])in.readArray(Rower.class.getClassLoader());
 	}
 	
 	@Override

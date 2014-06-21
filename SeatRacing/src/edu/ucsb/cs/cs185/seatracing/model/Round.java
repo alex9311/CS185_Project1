@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
+import android.os.Parcel;
+import android.os.Parcelable;
 
-public class Round {
+public class Round implements Parcelable{
 	
 	private static final int[] switches = {
 		0, 1, 0, 2, 0, 1, 0, 3, 0, 1, 0, 2, 0, 1, 0
@@ -21,7 +23,7 @@ public class Round {
 	private int currentRace;
 	
 	private List<RacingSet> mRacingSets;
-	private List<Result> results;
+	private List<RaceResult> mResults;
 	
 	public Round(long dateCreatedIn){
 		dateCreated = dateCreatedIn;
@@ -38,11 +40,19 @@ public class Round {
 		else{
 			mNumRaces = (int)Math.pow(2, (mNumRowers/mNumBoats)-1);
 		}
-		results = new ArrayList<Result>(mNumRaces);
+		mResults = new ArrayList<RaceResult>(mNumRaces);
 	}
 	
-	public void setResults(List<Result> results){
-		this.results = results;
+	public List<RacingSet> getRacingSets(){
+		return this.mRacingSets;
+	}
+	
+	public void setResults(List<RaceResult> results){
+		this.mResults = results;
+	}
+	
+	public List<RaceResult> getResults(){
+		return mResults;
 	}
 	
 	public void setID(int id){
@@ -52,10 +62,7 @@ public class Round {
 	public int getID(){
 		return this.id;
 	}
-	
-	public List<RacingSet> getRacingSets(){
-		return this.mRacingSets;
-	}
+
 		
 	public long dateCreated(){
 		return this.dateCreated;
@@ -81,10 +88,6 @@ public class Round {
 		return this.mNumRaces;
 	}
 	
-	public List<Result> getResults(){
-		return this.results;
-	}
-	
 	public boolean hasSwitch(){
 		return (currentRace+1)!=mNumRaces;
 	}
@@ -99,30 +102,51 @@ public class Round {
 		return switches[raceNum];
 	}
 	
-	/**
-	 * This is usually called AFTER setRacingSets has been called
-	 * @param lineupBundle
-	 */
-	public void loadResultsFromBundle(Bundle lineupBundle){
-		this.dateCreated = lineupBundle.getLong("dateCreated", 0);
-		int size = lineupBundle.getInt("result_size");
-		if(results==null){
-			results = new ArrayList<Result>(size);
-		}
-		for(int i=0;i<size;i++){
-			Bundle result_bundle = lineupBundle.getBundle("result"+i);
-			results.add(new Result(result_bundle));
-		}
+	
+	public void writeToBundle(Bundle b){
+		
+	}
+
+	@Override
+	public int describeContents() {
+		return 0;
+	}
+
+	@Override
+	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeLong(dateCreated);
+		dest.writeInt(mNumRowers);
+		dest.writeInt(mNumRaces);
+		dest.writeInt(mNumBoats);
+		dest.writeInt(switchingLast ? 1 : 0);
+		dest.writeInt(id);
+		dest.writeInt(currentRace);
+		dest.writeList(mRacingSets);
+		dest.writeList(mResults);
 	}
 	
-	public void writeResultsToBundle(Bundle bundle){
-		bundle.putLong("dateCreated", this.dateCreated);
-		int result_size = results.size();
-		bundle.putInt("result_size", result_size);
-		for(int i =0;i<result_size;i++){
-			Bundle new_result_bundle = new Bundle();
-			results.get(i).writeToBundle(new_result_bundle);
-			bundle.putBundle("result"+i, new_result_bundle);
+	public static final Parcelable.Creator<Round> CREATOR
+		= new Parcelable.Creator<Round>() {
+			
+			@Override
+			public Round[] newArray(int size) {
+				return new Round[size];
+			}
+			
+			@Override
+			public Round createFromParcel(Parcel source) {
+				return new Round(source);
+			}
+		};
+		
+		private Round(Parcel in){
+			this.mNumRowers = in.readInt();
+			this.mNumRaces = in.readInt();
+			this.mNumBoats = in.readInt();
+			this.switchingLast = (in.readInt() == 1);
+			this.id = in.readInt();
+			this.currentRace = in.readInt();
+			in.readList(this.mRacingSets, RacingSet.class.getClassLoader());
+			in.readList(this.mResults, RaceResult.class.getClassLoader());
 		}
-	}
 }
