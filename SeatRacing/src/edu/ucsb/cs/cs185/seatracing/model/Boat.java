@@ -16,16 +16,18 @@ public class Boat implements Parcelable {
 	private List<BoatResult> results;
 	private Rower[] rowers;
 
+	/*
 	public Boat(int id, Bundle lineup){
 		loadFromBundle(id, lineup);
 		id = (int)System.currentTimeMillis();
 		results = new ArrayList<BoatResult>();
 	}
+	*/
 
 	public Boat(String name, int size){
 		this.size=size;
 		this.name = name;
-		id = (int)System.currentTimeMillis();
+		this.id = (int)System.currentTimeMillis();
 		
 		results = new ArrayList<BoatResult>();
 	}
@@ -83,33 +85,6 @@ public class Boat implements Parcelable {
 		return this.size;
 	}
 
-	public void loadFromBundle(int id, Bundle lineupBundle){
-		size = lineupBundle.getInt("numRowers");
-		rowers = new Rower[size];
-		if(id==0){
-			name = lineupBundle.getString("boatAName");
-		}
-		else if(id==1){
-			name = lineupBundle.getString("boatBName");
-		}
-		for(int j=0; j<size; ++j){
-			rowers[j] = new Rower(lineupBundle.getString("rower"+id+"-"+j+"Name"));
-		}
-	}
-	
-	public void writeToBundle(int id, Bundle bundle){
-		bundle.putInt("numRowers",size);
-		if(id==0){
-			bundle.putString("boatAName",name);
-		}
-		else if(id==1){
-			bundle.putString("boatBName",name);
-		}
-		for(int j=0; j<size; ++j){
-			bundle.putString("rower"+id+"-"+j+"Name", rowers[j].name());
-		}
-	}
-
 	/**
 	 * 
 	 * @param b1 One boat to switch from
@@ -140,12 +115,6 @@ public class Boat implements Parcelable {
 		dest.writeString(name);
 		dest.writeInt(id);
 		dest.writeArray(rowers);
-		/*
-		dest.writeInt(rowers.length);
-		for (int i=0;i<rowers.length;i++){
-			rowers[i].writeToParcel(dest,flags);
-		}
-		*/
 	}
 	
     public static final Parcelable.Creator<Boat> CREATOR = new Parcelable.Creator<Boat>() {
@@ -159,6 +128,7 @@ public class Boat implements Parcelable {
     };
 
 	private Boat(Parcel in) {
+		this(null, 0);
 		size = in.readInt();
 		name = in.readString();
 		id = in.readInt();
@@ -215,29 +185,5 @@ public class Boat implements Parcelable {
 			return false;
 		return true;
 	}
-	
-	/*
-	@Override
-	public boolean equals(Object o){
-		if(o == null){
-			return false;
-		}
-		if(! (o instanceof Boat)){
-			return false;
-		}
-		
-		Boat b = (Boat)o;
-		
-		boolean res = true;
-		
-		res = res & (this.name() == b.name());
-		res = res & (this.rowers.length == b.getRowers().length);
-		for(int i=0; i<this.rowers.length; ++i){
-			res = res & (this.rowers[i].equals(b.getRowers()[i]));
-		}
-		
-		return res;
-	}
-	*/
 
 }

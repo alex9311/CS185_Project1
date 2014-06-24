@@ -21,6 +21,7 @@ import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.SplitTimer;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
 import edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer;
@@ -57,7 +58,8 @@ public class RunningTimersFragment extends Fragment {
 		if(savedInstanceState==null || mSets.size()==0){
 			Bundle args = getArguments();
 			boolean startImmediately = args.getBoolean("startNow", false);
-			mSets = RacingSet.readSetsFromBundle(args);
+			//mSets = RacingSet.readSetsFromBundle(args);
+			mSets = RacingSet.readListFromParcelable(args.getParcelableArrayList("sets"));
 			results = new BoatResult[mSets.size()*2];
 			for(int i=0; i<results.length; ++i){
 				results[i] = new BoatResult();
@@ -155,7 +157,8 @@ public class RunningTimersFragment extends Fragment {
 	public static RunningTimersFragment newInstance(List<RacingSet> sets){
 		Bundle args = new Bundle();
 
-		RacingSet.writeSetsToBundle(args, sets);
+		//RacingSet.writeSetsToBundle(args, sets);
+		args.putParcelableArrayList("sets", RacingSet.getArrayList(sets));
 
 		RunningTimersFragment frag = new RunningTimersFragment();
 		frag.setArguments(args);

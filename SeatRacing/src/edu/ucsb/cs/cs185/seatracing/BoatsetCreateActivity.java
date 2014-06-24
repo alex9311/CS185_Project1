@@ -105,26 +105,8 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 		RacingSet rs = new RacingSet(b1, b2);
 
-		rs.writeToBundle(lineupBundle);
-		lineupBundle.putBoolean("switchLast", switchLast);
+		intent.putExtra("racingset", rs);
 
-		/*
-		lineupBundle.putInt("numRowers", numberPairs);
-		lineupBundle.putString("boatAName", ((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName());
-		lineupBundle.putString("boatBName", ((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName());
-		for(int i=0; i<2; ++i){
-			BoatRowerNameFragment frag = ((BoatRowerNameFragment)mPagerAdapter.getItem(i));
-			for(int j=0; j<numberPairs; ++j){
-				lineupBundle.putString("rower"+i+"-"+j+"Name", frag.getRowerName(j));
-			}
-		}
-		 */
-		intent.putExtra("racingset", lineupBundle);
-
-		/*
-		lineupBundle.putParcelable("racingset", rs);
-		intent.putExtra("racingSetBundle", lineupBundle);
-		 */
 	}
 
 	//This borrowed from android docs

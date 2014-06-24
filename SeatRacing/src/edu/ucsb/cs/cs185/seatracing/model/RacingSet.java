@@ -11,12 +11,7 @@ public class RacingSet implements Parcelable {
 	
 	private Boat mBoat1;
 	private Boat mBoat2;
-	
-	public RacingSet(Bundle lineups){
-		mBoat1 = new Boat(0, lineups);
-		mBoat2 = new Boat(1, lineups);
-	}
-	
+
 	public RacingSet(Boat b1, Boat b2){
 		this.mBoat1 = b1;
 		this.mBoat2 = b2;
@@ -29,13 +24,7 @@ public class RacingSet implements Parcelable {
 	public Boat getBoat2(){
 		return this.mBoat2;
 	}
-	
-	
-	public void writeToBundle(Bundle bundle){
-		mBoat1.writeToBundle(0, bundle);
-		mBoat2.writeToBundle(1, bundle);
-	}
-	
+
 	public RacingPair[] getRacingPairs(){
 		RacingPair[] sets = new RacingPair[mBoat1.size()];
 		
@@ -72,29 +61,23 @@ public class RacingSet implements Parcelable {
 		mBoat2 = in.readParcelable(Boat.class.getClassLoader());
 	}
 	
-	public static Bundle writeSetsToBundle(Bundle bundle, List<RacingSet> sets){
-		bundle.putInt("numSets", sets.size());
-		bundle.putBoolean("startNow", true);
-		for(int i=0; i<sets.size(); ++i){
-			Bundle set = new Bundle();
-			sets.get(i).writeToBundle(set);
-			bundle.putBundle("set"+i, set);
-		}
-
-		return bundle;
-	}
-	
-	public static List<RacingSet> readSetsFromBundle(Bundle bundle){
-		int numSets = bundle.getInt("numSets");
-		List<RacingSet> ret = new ArrayList<RacingSet>(numSets);
-
-		//inflate two timers v
-		for(int i=0; i<numSets; ++i){
-			Bundle setBundle = bundle.getBundle("set"+i);
-			RacingSet rs = new RacingSet(setBundle);
-			ret.add(rs);
+	public static List<RacingSet> readListFromParcelable(ArrayList<Parcelable> setsIn){
+		if(setsIn == null) return null;
+		List<RacingSet> ret = new ArrayList<RacingSet>(setsIn.size());
+		for(Parcelable p : setsIn){
+			if( ! (p instanceof RacingSet)) throw new ClassCastException("Input list contains parcelables not of type RacingSet!");
+			ret.add((RacingSet)p);
 		}
 		return ret;
+	}
+	
+	public static ArrayList<RacingSet> getArrayList(List<RacingSet> setsIn){
+		if(setsIn instanceof ArrayList<?>){
+			return (ArrayList<RacingSet>)setsIn;
+		}
+		else{
+			return new ArrayList<RacingSet>(setsIn);
+		}
 	}
 	
 	@Override

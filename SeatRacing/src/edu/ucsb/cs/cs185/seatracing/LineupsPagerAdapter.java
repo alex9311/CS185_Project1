@@ -33,7 +33,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 		else{
 			LineupFragment frag = new LineupFragment();
 			Bundle bndl = new Bundle();
-			mSets.get(position).writeToBundle(bndl);
+			bndl.putParcelable("racingset", mSets.get(position));
+			//mSets.get(position).writeToBundle(bndl);
 			bndl.putInt("highlightedSeat", highlightedSeat);
 			frag.setArguments(bndl);
 			return frag;

@@ -113,24 +113,5 @@ public class Rower implements Parcelable {
 			return false;
 		return true;
 	}
-
-
-	
-	/*
-	@Override
-	public boolean equals(Object o){
-		if(o == null){
-			return false;
-		}
-		if(! (o instanceof Rower)){
-			return false;
-		}
-		
-		Rower r = (Rower)o;
-		
-		return this.name().equals(r.name());
-	}
-	*/
-	
 	
 }

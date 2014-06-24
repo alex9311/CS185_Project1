@@ -1,5 +1,6 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import android.os.Bundle;
@@ -28,8 +29,8 @@ public class LineupsPagerContainerFragment extends Fragment {
 			mPagerAdapter = new LineupsPagerAdapter(getActivity().getSupportFragmentManager());
 		}
 
-		if(getArguments() != null && getArguments().getInt("numSets", 0)>0){
-			mPagerAdapter.setRacingSets(RacingSet.readSetsFromBundle(getArguments()));
+		if(getArguments() != null && getArguments().containsKey("sets") ){
+			mPagerAdapter.setRacingSets(RacingSet.readListFromParcelable(getArguments().getParcelableArrayList("sets")));
 		}
 
 		if(getArguments()!=null){

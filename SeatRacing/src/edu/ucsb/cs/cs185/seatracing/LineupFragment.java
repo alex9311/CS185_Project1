@@ -31,8 +31,7 @@ public class LineupFragment extends Fragment {
 		boatAName = (TextView) rootView.findViewById(R.id.boat_name_left);
 		boatBName = (TextView) rootView.findViewById(R.id.boat_name_right);
 		
-		
-		RacingSet rs = new RacingSet(getArguments());
+		RacingSet rs = getArguments().getParcelable("racingset");
 		highlightedSeat = getArguments().getInt("highlightedSeat",-1);
 		
 		boatAName.setText(rs.getBoat1().name());

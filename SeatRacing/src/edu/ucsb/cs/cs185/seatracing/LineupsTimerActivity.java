@@ -1,5 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -197,8 +199,10 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				args = new Bundle();
 			}
 
-			RacingSet.writeSetsToBundle(args, mCurrentRound.getRacingSets());
+			//RacingSet.writeSetsToBundle(args, mCurrentRound.getRacingSets());
+			args.putParcelableArrayList("sets", RacingSet.getArrayList(mCurrentRound.getRacingSets()));
 			args.putLong("start_time", startTime);
+			args.putBoolean("startNow", true);
 
 			timersFrag.setArguments(args);
 			timersFrag.setOnResultsFinalizedListener(this);
@@ -218,7 +222,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			lineupsFrag = new LineupsPagerContainerFragment();
 			if(mCurrentRound.getRacingSets()!=null){
 				System.out.println("Sent to lineupsFragment: "+mCurrentRound.getRacingSets().get(0));
-				Bundle bndl = RacingSet.writeSetsToBundle(new Bundle(), mCurrentRound.getRacingSets());
+				Bundle bndl = new Bundle();
+				bndl.putParcelableArrayList("sets", RacingSet.getArrayList(mCurrentRound.getRacingSets()));
 				bndl.putBoolean("editable", editable);
 				bndl.putInt("highlightedSeat", highlightedSeat);
 				lineupsFrag.setArguments(bndl);
@@ -307,7 +312,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					if(! data.hasExtra("racingset")){
 						throw new IllegalStateException("Got lineups result with no lineup.");
 					}
-					RacingSet rs = new RacingSet(data.getBundleExtra("racingset"));
+					RacingSet rs = data.getParcelableExtra("racingset");
 
 					if(numPairs<0){
 						numPairs=rs.getBoat1().size();
