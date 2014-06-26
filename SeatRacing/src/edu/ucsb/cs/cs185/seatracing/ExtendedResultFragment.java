@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,7 +26,7 @@ public class ExtendedResultFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		ViewGroup rootView = (ViewGroup) inflater.inflate(
-				R.layout.extended_result_fragment, container, false);
+				R.layout.fragment_extended_results, container, false);
 
 		mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.results_holder_view);
 
@@ -34,23 +35,35 @@ public class ExtendedResultFragment extends Fragment {
 
 			for(int i =0;i<mRound.getResults().size();i++){
 				RaceResult thisRaceResult = mRound.getResults().get(i);
+				
+				LinearLayout raceGroupView = (LinearLayout)inflater.inflate(R.layout.fragment_extended_result_group, mResultsContainerView,false);
 
+				if(i==0){
+					LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)raceGroupView.getLayoutParams();
+					params.setMargins(params.leftMargin, params.bottomMargin, params.rightMargin, params.bottomMargin);
+					raceGroupView.setLayoutParams(params);
+				}
+				
+				TextView raceLabel = (TextView) raceGroupView.findViewById(R.id.race_label);
+				raceLabel.setText("Race #"+(i+1));
+
+				
 				for(BoatResult thisBoatResult : thisRaceResult.getBoatResults()){
-					View resultRowView = inflater.inflate(R.layout.extended_result_row, container, false);
-					resultRowView.setId(i);
-					mResultsContainerView.addView(resultRowView);
 					
-					TextView race_name = (TextView) resultRowView.findViewById(R.id.race_label);
-					race_name.setText(Integer.toString(thisRaceResult.getRaceNum()+1));
-
-					TextView rower_name = (TextView) resultRowView.findViewById(R.id.boat_label);
-					rower_name.setText(thisBoatResult.boat.name());
+					View resultRowView = inflater.inflate(R.layout.fragment_extended_result_row, raceGroupView, false);
+										
+					resultRowView.setId(i);
+					raceGroupView.addView(resultRowView);
+					
+					TextView boatName = (TextView) resultRowView.findViewById(R.id.boat_label);
+					boatName.setText(thisBoatResult.boat.name());
 
 					TextView timeView = (TextView) resultRowView.findViewById(R.id.time_label);
-
 					timeView.setText(formatResultTime(thisBoatResult.time));
 
 				}
+				
+				mResultsContainerView.addView(raceGroupView);
 
 			}
 		}	
