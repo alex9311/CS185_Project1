@@ -90,6 +90,7 @@ public class RunningTimersFragment extends Fragment {
 			if(startImmediately){
 				//find out when start button was first pressed and start from there
 				mTimer.start(args.getLong("start_time", SystemClock.elapsedRealtime()));
+				mNumStopped = 0;
 			}
 		}
 
@@ -224,6 +225,7 @@ public class RunningTimersFragment extends Fragment {
 					//set "ms"
 					newTime+=millisecondsWheel.getValue()*10;
 
+					//TODO: link to model?
 					timerView.setTimeElapsed(newTime);
 				}
 			})

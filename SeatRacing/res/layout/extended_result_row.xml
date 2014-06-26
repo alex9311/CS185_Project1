@@ -7,7 +7,7 @@
 
     <TextView
         android:id="@+id/race_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_weight="2"
@@ -17,17 +17,17 @@
 
     <TextView
         android:id="@+id/boat_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
-        android:layout_weight="2"
+        android:layout_weight="3"
         android:gravity="center"
         android:text="@string/result_boat_default"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
         android:id="@+id/time_label"
-        android:layout_width="wrap_content"
+        android:layout_width="0dip"
         android:layout_height="match_parent"
         android:layout_marginLeft="10dp"
         android:layout_weight="2"
