@@ -43,6 +43,14 @@ public class Rower implements Parcelable {
 	public int getNumTimes(){
 		return results.size();
 	}
+	
+	public long getTotalTime(){
+		long acc = 0;
+		for(Long l : results){
+			acc+=l;
+		}
+		return acc;
+	}
 
 	@Override
 	public int describeContents() {

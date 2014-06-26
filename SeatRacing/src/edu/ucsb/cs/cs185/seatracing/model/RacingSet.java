@@ -61,7 +61,7 @@ public class RacingSet implements Parcelable {
 		mBoat2 = in.readParcelable(Boat.class.getClassLoader());
 	}
 	
-	public static List<RacingSet> readListFromParcelable(ArrayList<Parcelable> setsIn){
+	public static List<RacingSet> convertParcelableList(ArrayList<Parcelable> setsIn){
 		if(setsIn == null) return null;
 		List<RacingSet> ret = new ArrayList<RacingSet>(setsIn.size());
 		for(Parcelable p : setsIn){

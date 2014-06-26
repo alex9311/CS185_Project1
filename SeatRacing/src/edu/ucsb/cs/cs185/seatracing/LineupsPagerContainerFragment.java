@@ -30,7 +30,7 @@ public class LineupsPagerContainerFragment extends Fragment {
 		}
 
 		if(getArguments() != null && getArguments().containsKey("sets") ){
-			mPagerAdapter.setRacingSets(RacingSet.readListFromParcelable(getArguments().getParcelableArrayList("sets")));
+			mPagerAdapter.setRacingSets(RacingSet.convertParcelableList(getArguments().getParcelableArrayList("sets")));
 		}
 
 		if(getArguments()!=null){

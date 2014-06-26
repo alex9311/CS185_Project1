@@ -12,13 +12,18 @@ public class BoatResult implements Parcelable{
 	private List<Rower> rowers;
 	
 	public BoatResult(){
-		this(null, 0);
+		this(null, 0, null);
 	}
-	public BoatResult(Boat b, long t){
+	public BoatResult(Boat b, long t, List<Rower> rowersIn){
 		boat = b;
 		time = t;
-		rowers = new ArrayList<Rower>();
+		rowers = rowersIn;
 	}
+	
+	public void setRowers(List<Rower> rowersIn){
+		rowers = rowersIn;
+	}
+		
 	@Override
 	public int describeContents() {
 		return 0;

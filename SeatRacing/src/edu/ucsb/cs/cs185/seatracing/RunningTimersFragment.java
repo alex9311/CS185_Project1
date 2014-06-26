@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -21,7 +22,7 @@ import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
-import edu.ucsb.cs.cs185.seatracing.model.Round;
+import edu.ucsb.cs.cs185.seatracing.model.Rower;
 import edu.ucsb.cs.cs185.seatracing.model.SplitTimer;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
 import edu.ucsb.cs.cs185.seatracing.view.MillisecondChronometer;
@@ -58,8 +59,7 @@ public class RunningTimersFragment extends Fragment {
 		if(savedInstanceState==null || mSets.size()==0){
 			Bundle args = getArguments();
 			boolean startImmediately = args.getBoolean("startNow", false);
-			//mSets = RacingSet.readSetsFromBundle(args);
-			mSets = RacingSet.readListFromParcelable(args.getParcelableArrayList("sets"));
+			//mSets = RacingSet.convertParcelableList(args.getParcelableArrayList("sets"));
 			results = new BoatResult[mSets.size()*2];
 			for(int i=0; i<results.length; ++i){
 				results[i] = new BoatResult();
@@ -143,6 +143,10 @@ public class RunningTimersFragment extends Fragment {
 			}
 			race.addBoatResult(res);
 			res.boat.addResult(res);
+			for(Rower r : res.boat.getRowers()){
+				r.addResult(res.time);
+			}
+			res.setRowers(new ArrayList<Rower>(Arrays.asList(res.boat.getRowers())));
 		}
 		
 
@@ -153,6 +157,10 @@ public class RunningTimersFragment extends Fragment {
 		for(SplitTimerTextView timer : mTimerViews){
 			timer.setClickable(enable);
 		}
+	}
+	
+	public void setRacingSets(List<RacingSet> setsIn){
+		mSets = setsIn;
 	}
 
 	public static RunningTimersFragment newInstance(List<RacingSet> sets){

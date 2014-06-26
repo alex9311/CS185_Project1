@@ -49,5 +49,14 @@ public class RacingPair implements Parcelable{
 		//r1 = (Rower) in.readParcelable(Rower.class.getClassLoader());
 		//r2 = (Rower) in.readParcelable(Rower.class.getClassLoader());
 	}
+	
+	/**
+	 * Return the difference in cumulative times of each rower. 
+	 * This is a relatively expensive operation (save this result).
+	 * @return Difference in times (r1-r2) Values >0 indicate rower 1 won, <0 rower 2 won.
+	 */
+	public long getTimeDifferential(){
+		return getRower1().getTotalTime()-getRower2().getTotalTime();
+	}
 
 }

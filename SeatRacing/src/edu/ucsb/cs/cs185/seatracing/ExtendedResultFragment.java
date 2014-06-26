@@ -28,7 +28,7 @@ public class ExtendedResultFragment extends Fragment {
 		ViewGroup rootView = (ViewGroup) inflater.inflate(
 				R.layout.fragment_extended_results, container, false);
 
-		mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.results_holder_view);
+		mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.ext_results_holder_view);
 
 		if(savedInstanceState==null){	
 			mRound = getActivity().getIntent().getParcelableExtra("round");
@@ -36,7 +36,7 @@ public class ExtendedResultFragment extends Fragment {
 			for(int i =0;i<mRound.getResults().size();i++){
 				RaceResult thisRaceResult = mRound.getResults().get(i);
 				
-				LinearLayout raceGroupView = (LinearLayout)inflater.inflate(R.layout.fragment_extended_result_group, mResultsContainerView,false);
+				LinearLayout raceGroupView = (LinearLayout)inflater.inflate(R.layout.fragment_result_group, mResultsContainerView,false);
 
 				if(i==0){
 					LinearLayout.LayoutParams params = (LinearLayout.LayoutParams)raceGroupView.getLayoutParams();
@@ -44,7 +44,7 @@ public class ExtendedResultFragment extends Fragment {
 					raceGroupView.setLayoutParams(params);
 				}
 				
-				TextView raceLabel = (TextView) raceGroupView.findViewById(R.id.race_label);
+				TextView raceLabel = (TextView) raceGroupView.findViewById(R.id.group_label);
 				raceLabel.setText("Race #"+(i+1));
 
 				

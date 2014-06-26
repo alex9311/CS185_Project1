@@ -118,7 +118,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 				//this should not happen
 				throw new IllegalStateException("Got finish click in ordering state! Not ready to finish.");
 			case RESULT:
-				//TODO: save results somewhere
 				writeResults(mCurrentRound);
 				System.out.println("Before switch: "+mCurrentRound.getRacingSets().get(0));
 				if(mCurrentRound.hasSwitch()){
@@ -154,7 +153,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private void writeResults(Round round) {
 		RaceResult result = timersFrag.getRaceResult();
-		mCurrentRound.addResult(result);
+		round.addResult(result);
 	}
 
 
@@ -192,6 +191,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		if(state != LineupTimerState.RACING){
 			if(timersFrag==null){
 				timersFrag = new RunningTimersFragment();
+				timersFrag.setRacingSets(mCurrentRound.getRacingSets());
 			}
 
 			Bundle args = timersFrag.getArguments();

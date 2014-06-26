@@ -101,4 +101,9 @@
     
     <string name="edit_times_label">Edit finish time:</string>
     
+    <string name="win_column_header">Won</string>
+    <string name="lost_column_header">Lost</string>
+    <string name="time_diff_column_header">difference</string>
+    <string name="spread_default_text">(A 0w0t, B 0w0t)</string>
+    
 </resources>
