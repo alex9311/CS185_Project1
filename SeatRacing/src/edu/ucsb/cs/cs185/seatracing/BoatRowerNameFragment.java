@@ -6,16 +6,16 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.ListView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class BoatRowerNameFragment extends Fragment {
 
-	int numRowers;
+	int numRowers=-1;
 	char boatIndex;
-	ListView rowerNameList;
+	LinearLayout rowerNameContainer;
 	EditText boatNameField;
-	Rower[] rowers;
 
 	public BoatRowerNameFragment(){
 	}
@@ -24,34 +24,45 @@ public class BoatRowerNameFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 
-		numRowers = getArguments().getInt("numRowers");
-		boatIndex = getArguments().getChar("boatIndex");
-
 		ViewGroup rootView = (ViewGroup) inflater.inflate(
 				R.layout.fragment_boat_rower_name, container, false);
 
 		boatNameField = (EditText)rootView.findViewById(R.id.boat_name_field);
 
-		if(savedInstanceState==null || rowers==null){
-			rowers = new Rower[numRowers];
+		if(savedInstanceState==null || numRowers<0){
+			
+			numRowers = getArguments().getInt("numRowers");
+			boatIndex = getArguments().getChar("boatIndex");
+			
+			((TextView)rootView.findViewById(R.id.boat_name_label)).setText("Boat "+boatIndex);
+
+			rowerNameContainer = (LinearLayout)rootView.findViewById(R.id.rower_name_container);
+			rowerNameContainer.removeAllViews();
+			
 			for(int i=0; i<numRowers; ++i){
-				rowers[i] = new Rower(null);
+				View rowItem = inflater.inflate(R.layout.fragment_rower_namefield_label, rowerNameContainer, false);
+				((TextView)rowItem.findViewById(R.id.rower_namefield)).setHint("Rower "+boatIndex+" - "+(i+1));
+				rowItem.findViewById(R.id.rower_namefield).setId(i);
+				rowerNameContainer.addView(rowItem);
 			}
-			rowerNameList = (ListView)rootView.findViewById(R.id.rower_name_listview);
-			RowerNamefieldListAdapter adapter = new RowerNamefieldListAdapter(getActivity(), R.layout.fragment_rower_namefield_label, rowers);
-			adapter.setBoatIndex(boatIndex);
-			rowerNameList.setAdapter(adapter);
+			
 		}
 
 		return rootView;
 	}
 
 	public String getRowerName(int position){
-		if(rowers[position]!=null && rowers[position].name()!=null){
-			return rowers[position].name();
+		if(position<0 || position>=numRowers){
+			return null;
 		}
 		else{
-			return "Rower "+boatIndex+" - "+(position+1);
+			TextView tv = (TextView)(rowerNameContainer.getChildAt(position).findViewById(position));
+			if(tv.getText() == null || tv.getText().toString() == null || "".equals(tv.getText().toString())){
+				return "Rower "+boatIndex+" - "+(position+1);
+			}
+			else{
+				return tv.getText().toString();
+			}
 		}
 	}
 

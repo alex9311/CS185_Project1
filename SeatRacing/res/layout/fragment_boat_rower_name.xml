@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"    
-    android:orientation="vertical" >
+    android:paddingTop="@dimen/activity_vertical_margin" >
 
     <TextView
         android:id="@+id/boat_name_label"
@@ -22,14 +22,24 @@
         android:layout_height="wrap_content"
         android:ems="10"
         android:hint="@string/boat_name_hint"
-        android:nextFocusForward="@+id/rower_name_listview"
-        android:inputType="textNoSuggestions|textCapWords" >
+        android:inputType="textNoSuggestions|textCapWords"
+        android:nextFocusForward="@+id/rower_name_listview" >
+
         <requestFocus />
     </EditText>
 
-    <ListView
-        android:id="@+id/rower_name_listview"
+    <ScrollView
+        android:id="@+id/rower_name_scroller"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" >
+
+        <!-- Rower namefields will go here, added programatically -->
+        
+        <LinearLayout
+            android:id="@+id/rower_name_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+    </ScrollView>
 
 </LinearLayout>

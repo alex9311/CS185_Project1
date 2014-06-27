@@ -1,7 +1,5 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.ArrayList;
-
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;

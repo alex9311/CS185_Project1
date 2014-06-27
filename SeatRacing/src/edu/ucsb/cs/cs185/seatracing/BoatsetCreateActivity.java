@@ -19,7 +19,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 
 
-	private int numberPairs = 0;
+	private int numberPairs = -1;
 	private boolean switchLast = false;
 	private int prevPage=0;
 	private int nextPage=0;
@@ -34,19 +34,33 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_boatset_create);
+		
+		/**
+		 * In here, need to:
+		 * 		- if not created, create adapter
+		 * 		- set correct # pairs in adapter
+		 *			if we are creating a new adapter, assume first time
+		 * 		- set adapter to correct page
+		 */
 
 		mPager = (ViewPager)findViewById(R.id.boatset_pager);
 		mPager.setOffscreenPageLimit(2);
 
+		//==========
+		//TODO: fix this for orientation changes
 		Intent myIntent = getIntent();
-		if(myIntent.hasExtra("numPairs")){
+		
+		//If we are inflating for the first time
+		if(savedInstanceState!=null && savedInstanceState.containsKey("numPairs")){
+			numberPairs = savedInstanceState.getInt("numPairs", -1);
+		}
+		else if(mPagerAdapter == null && myIntent.hasExtra("numPairs")){ //if this is first set created
 			numberPairs = myIntent.getIntExtra("numPairs", -1);
-			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),myIntent.getIntExtra("numPairs",-1));
 		}
-		else{
-			mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager());
-		}
+
+		mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),numberPairs);
 		mPager.setAdapter(mPagerAdapter);
+		//==========
 
 		prevButton = (Button)findViewById(R.id.prev_button);
 		prevButton.setOnClickListener(new OnClickListener() {
@@ -74,18 +88,19 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 					mPager.setCurrentItem(nextPage);
 				}
 			}
-
-
 		});
-
 		mPager.setOnPageChangeListener(this);
-		onPageSelected(0);
+		
+		if(savedInstanceState != null && savedInstanceState.containsKey("pagerPosition")){
+			mPager.setCurrentItem(savedInstanceState.getInt("pagerPosition"));
+			onPageSelected(mPager.getCurrentItem());
+		}
+		else{
+			onPageSelected(0);
+		}
 	}
 
 	private void putLineupsData(Intent intent){
-		Bundle lineupBundle = new Bundle();
-
-
 		Boat b1 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName(), numberPairs);
 		Boat b2 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName(), numberPairs);
 		Rower[] b1Rowers = new Rower[numberPairs];
@@ -144,6 +159,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	@Override
 	public void onPageSelected(int currPage) {
 		//check for prev button
+		System.out.println("Selected page: "+currPage);
 		if(mPagerAdapter.getState() == BoatsetPagerAdapter.PairSelectState.PAIR){
 			prevPage = -1;
 			prevButton.setEnabled(false);
@@ -174,5 +190,12 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 				nextButton.setEnabled(true);
 			}
 		}
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle icicle){
+		super.onSaveInstanceState(icicle);
+		icicle.putInt("numPairs", numberPairs);
+		icicle.putInt("pagerPosition", mPager.getCurrentItem());
 	}
 }
