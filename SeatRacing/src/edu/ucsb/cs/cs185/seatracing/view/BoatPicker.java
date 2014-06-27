@@ -3,6 +3,7 @@ package edu.ucsb.cs.cs185.seatracing.view;
 import java.util.List;
 
 import android.content.Context;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
@@ -22,17 +23,19 @@ public class BoatPicker {
 		LinearLayout layout = new LinearLayout(context);
 	    layout.setOrientation(LinearLayout.VERTICAL);
 	    LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-	    p.weight = 1;
+	    //p.gravity = Gravity.CENTER;
+	    //p.weight = 1;
 	    
 	    RadioGroup rg = new RadioGroup(context);
 	    rg.setId(R.id.boatpicker_radiogroup);
-	    rg.setPadding(15,15,15,15);
+	    rg.setPadding(96,48,48,48);
+	    
 	    for(int i=0; i<sets.size(); ++i){
 	    	
 	    	RacingSet rs = sets.get(i);
 	    	
 		    RadioButton rb1 = new RadioButton(context);
-		    rb1.setPadding(5, 5, 5, 5);
+		    rb1.setPadding(8, 8, 8, 8);
 		    rb1.setText(rs.getBoat1().name());
 		    rb1.setTextSize(context.getResources().getDimension(R.dimen.boatpick_text_size));
 		    rb1.setLayoutParams(p);
@@ -42,7 +45,7 @@ public class BoatPicker {
 		    }
 		    
 		    RadioButton rb2 = new RadioButton(context);
-		    rb2.setPadding(5, 5, 5, 5);
+		    rb2.setPadding(8, 8, 8, 8);
 		    rb2.setText(rs.getBoat2().name());
 		    rb2.setTextSize(context.getResources().getDimension(R.dimen.boatpick_text_size));
 		    rb2.setLayoutParams(p);
