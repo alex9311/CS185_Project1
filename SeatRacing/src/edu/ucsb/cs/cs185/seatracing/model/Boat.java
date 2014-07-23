@@ -32,6 +32,13 @@ public class Boat implements Parcelable {
 		results = new ArrayList<BoatResult>();
 	}
 	
+	public void initBlankRowers(){
+		rowers = new Rower[size];
+		for(int i=0; i<size; ++i){
+			rowers[i] = new Rower(null);
+		}
+	}
+	
 	public void addResult(BoatResult result){
 		results.add(result);
 	}
@@ -76,6 +83,10 @@ public class Boat implements Parcelable {
 		return rowers;
 	}
 
+	public void setName(String name){
+		this.name = name;
+	}
+	
 	public String name(){
 		return this.name;
 	}

@@ -21,8 +21,25 @@ public class RacingSet implements Parcelable {
 		return this.mBoat1;
 	}
 	
+	public void setBoat1(Boat b){
+		this.mBoat1 = b;
+	}
+	
 	public Boat getBoat2(){
 		return this.mBoat2;
+	}
+	
+	public void setBoat2(Boat b){
+		this.mBoat2 = b;
+	}
+	
+	public void setBoat(int i, Boat b){
+		if(i==0){
+			this.mBoat1 = b;
+		}
+		else if(i==1){
+			this.mBoat2 = b;
+		}
 	}
 
 	public RacingPair[] getRacingPairs(){

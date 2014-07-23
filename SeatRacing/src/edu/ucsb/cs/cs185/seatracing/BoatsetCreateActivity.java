@@ -13,7 +13,7 @@ import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class BoatsetCreateActivity extends FragmentActivity 
-implements NumberPairsSelectListener, OnPageChangeListener {
+implements NumberPairsSelectListener, OnPageChangeListener, BoatLineupChangeListener {
 
 	public static final int NEW_LINEUP = 1;
 
@@ -29,6 +29,8 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 
 	private Button prevButton;
 	private Button nextButton;
+	
+	RacingSet mRacingSet;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -57,8 +59,17 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		else if(mPagerAdapter == null && myIntent.hasExtra("numPairs")){ //if this is first set created
 			numberPairs = myIntent.getIntExtra("numPairs", -1);
 		}
+		
+		//create model objects if necessary
+		if(numberPairs>0 && mRacingSet==null){
+			Boat b1 = new Boat(null, numberPairs);
+			b1.initBlankRowers();
+			Boat b2 = new Boat(null, numberPairs);
+			b2.initBlankRowers();
+			mRacingSet = new RacingSet(b1, b2);
+		}
 
-		mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),numberPairs);
+		mPagerAdapter = new BoatsetPagerAdapter(getSupportFragmentManager(),mRacingSet);
 		mPager.setAdapter(mPagerAdapter);
 		//==========
 
@@ -101,6 +112,7 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	}
 
 	private void putLineupsData(Intent intent){
+		/*
 		Boat b1 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(0)).getBoatName(), numberPairs);
 		Boat b2 = new Boat(((BoatRowerNameFragment)mPagerAdapter.getItem(1)).getBoatName(), numberPairs);
 		Rower[] b1Rowers = new Rower[numberPairs];
@@ -119,8 +131,9 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		b2.setRowers(b2Rowers);
 
 		RacingSet rs = new RacingSet(b1, b2);
-
-		intent.putExtra("racingset", rs);
+		 */
+		
+		intent.putExtra("racingset", mRacingSet);
 
 	}
 
@@ -142,7 +155,14 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 	public void numberPairsSelected(int numPairs, boolean switchLast) {
 		numberPairs = numPairs;
 		this.switchLast = switchLast;
-		mPagerAdapter.switchToBoatPages(numPairs);
+		
+		Boat b1 = new Boat(null, numberPairs);
+		b1.initBlankRowers();
+		Boat b2 = new Boat(null, numberPairs);
+		b2.initBlankRowers();
+		mRacingSet = new RacingSet(b1, b2);
+
+		mPagerAdapter.switchToBoatPages(mRacingSet);
 		onPageSelected(0);
 	}
 
@@ -198,4 +218,10 @@ implements NumberPairsSelectListener, OnPageChangeListener {
 		icicle.putInt("numPairs", numberPairs);
 		icicle.putInt("pagerPosition", mPager.getCurrentItem());
 	}
+
+	@Override
+	public void boatLineupChanges(int index, Boat b) {
+		mRacingSet.setBoat(index, b);
+	}
+	
 }

@@ -1,11 +1,11 @@
 package edu.ucsb.cs.cs185.seatracing;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 
 public class BoatsetPagerAdapter extends FragmentStatePagerAdapter {
 
@@ -22,29 +22,46 @@ public class BoatsetPagerAdapter extends FragmentStatePagerAdapter {
 
 	private PairSelectState state;
 
-	List<Fragment> pages;
+	int numPairs=-1;
 
-
+	RacingSet mRacingSet;
 
 	public BoatsetPagerAdapter(FragmentManager fm) {
-		this(fm, -1);
+		this(fm, null);
 	}
 
-	public BoatsetPagerAdapter(FragmentManager fm, int numPairs){
+	public BoatsetPagerAdapter(FragmentManager fm, RacingSet rs){
 		super(fm);
-		pages = new ArrayList<Fragment>(2);
-		if(numPairs>0){
-			switchToBoatPages(numPairs);
+		mRacingSet = rs;
+		if(rs != null){
+			switchToBoatPages(rs);
 		}
 		else{
-			pages.add(new NumberPairsSelectFragment());
 			state = PairSelectState.PAIR;
+			notifyDataSetChanged();
 		}
 	}
 
 	@Override
-	public Fragment getItem(int arg0) {
-		return pages.get(arg0);
+	public Fragment getItem(int position) {
+		if(state == PairSelectState.PAIR){
+			return new NumberPairsSelectFragment();
+		}
+		else if(state == PairSelectState.LINEUPS){
+			Fragment frag = new BoatRowerNameFragment();
+			Bundle args = new Bundle();
+			args.putInt("boatIndex", position);
+			if(position==0){
+				args.putParcelable("boat", mRacingSet.getBoat1());
+			}else if(position==1){
+				args.putParcelable("boat", mRacingSet.getBoat2());
+			}
+			frag.setArguments(args);
+			return frag;
+		}
+		else{
+			return null;
+		}
 	}
 
 	@Override
@@ -54,19 +71,27 @@ public class BoatsetPagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getCount() {
-		return pages.size();
+		if(state==PairSelectState.PAIR){
+			return 1;
+		}
+		else if(state==PairSelectState.LINEUPS){
+			return 2;
+		}
+		else return 0;
 	}
 
 	public PairSelectState getState(){
 		return this.state;
 	}
 
-	public void switchToBoatPages(int numRowers){
-		pages.clear();
-		pages.add(BoatRowerNameFragment.newInstance(numRowers, 'A'));
-		pages.add(BoatRowerNameFragment.newInstance(numRowers, 'B'));
+	public void switchToBoatPages(RacingSet rs){
 		state = PairSelectState.LINEUPS;
+		mRacingSet = rs;
 		notifyDataSetChanged();
+	}
+	
+	public RacingSet getRacingSet(){
+		return mRacingSet;
 	}
 
 }

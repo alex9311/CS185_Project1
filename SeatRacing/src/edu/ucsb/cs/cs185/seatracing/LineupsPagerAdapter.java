@@ -58,7 +58,8 @@ public class LineupsPagerAdapter extends FragmentStatePagerAdapter {
 	}
 
 	public void addNewSet(RacingSet rs) {
-		mSets.add(0,rs);
+		//mSets.add(0,rs);
+		mSets.add(rs);
 		notifyDataSetChanged();
 	}
 	
