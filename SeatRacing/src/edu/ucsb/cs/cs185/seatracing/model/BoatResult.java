@@ -9,6 +9,7 @@ import android.os.Parcelable;
 public class BoatResult implements Parcelable{
 	public Boat boat;
 	public long time;
+	public long date;
 	private List<Rower> rowers;
 	
 	public BoatResult(){
@@ -23,6 +24,32 @@ public class BoatResult implements Parcelable{
 	public void setRowers(List<Rower> rowersIn){
 		rowers = rowersIn;
 	}
+	
+	public void setDate(long date){
+		this.date = date;
+	}
+	
+	public List<Result> getResults(){
+		List<Result> ret = new ArrayList<Result>(rowers.size());
+		
+		for(Rower rower : rowers){
+			Result res = new Result();
+			
+			res.setBoat(boat.getID());
+			res.setTime(time);
+			res.setRower(rower.id());
+			res.setDate(date);
+			
+			ret.add(res);
+		}
+		
+		
+		return ret;
+	}
+	
+	public List<Rower> getRowers(){
+		return this.rowers;
+	}
 		
 	@Override
 	public int describeContents() {
@@ -34,6 +61,7 @@ public class BoatResult implements Parcelable{
 		dest.writeLong(time);
 		dest.writeList(rowers);
 	}
+
 	
 	public static final Parcelable.Creator<BoatResult> CREATOR
 		= new Parcelable.Creator<BoatResult>() {

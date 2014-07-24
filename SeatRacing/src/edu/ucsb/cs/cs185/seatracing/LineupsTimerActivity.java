@@ -1,5 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -13,10 +16,12 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
+import edu.ucsb.cs.cs185.seatracing.db.DatabaseHelper;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
@@ -43,7 +48,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	private LineupsPagerContainerFragment lineupsFrag;
 	private RunningTimersFragment timersFrag;
 	
-	private DatabaseHelper db = null;
+	private DatabaseHelper db;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -54,9 +59,14 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 			db = new DatabaseHelper(this);
 		}
 		
+		//TODO: check for loading round in progress
+		
 		if(mCurrentRound==null){
 			mCurrentRound = new Round(System.currentTimeMillis());
-			mCurrentRound.setID(db.addRound(mCurrentRound));
+			int id = db.addRound(mCurrentRound);
+			if(id<0){
+				throw new RuntimeException("SQLite error inserting Round into DB!");
+			}
 		}
 
 		timerButton = (Button)findViewById(R.id.button_main_timer);
@@ -150,8 +160,22 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	private void writeResults(Round round) {
-		RaceResult result = timersFrag.getRaceResult();
-		round.addResult(result);
+		RaceResult raceresult = timersFrag.getRaceResult();
+		raceresult.setRaceNum(mCurrentRound.getCurrentRace());
+		round.addResult(raceresult);
+		
+		//TODO: put results in DB
+		List<Result> results = new ArrayList<Result>();
+		for(BoatResult br : raceresult.getBoatResults()){
+			results.addAll(br.getResults());
+		}
+		
+		for(Result r : results){
+			r.setRound(mCurrentRound.getID());
+			r.setRaceNum(mCurrentRound.getCurrentRace());
+		}
+		
+		db.batchAddResults(results);
 	}
 
 
@@ -312,10 +336,6 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					}
 					RacingSet rs = data.getParcelableExtra("racingset");
 
-					if(numPairs<0){
-						numPairs=rs.getBoat1().size();
-					}
-
 					lineupsFrag.getAdapter().addNewSet(rs);
 					lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount()-1, false);
 
@@ -323,6 +343,20 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 						mCurrentRound.setSwitchingLast(data.getBooleanExtra("switchLast", false));
 					}
 					mCurrentRound.setRacingSets(lineupsFrag.getAdapter().getRacingSets());
+					
+					if(numPairs<0){
+						numPairs=rs.getBoat1().size();
+						db.setRoundSize(mCurrentRound);
+					}
+					
+					//add boats to db
+					db.addBoat(rs.getBoat1());
+					db.addBoat(rs.getBoat2());
+					
+					//add rowers to db
+					db.batchAddRowers(rs.getBoat1().getRowers());
+					db.batchAddRowers(rs.getBoat2().getRowers());
+					
 
 					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
 					mHandler.postDelayed(new Runnable() {
@@ -337,12 +371,11 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	@Override
-	public void onResultsFinalized(BoatResult[] results) {
+	public void onResultsFinalized(BoatResult[] boatresults) {
 		if(state != LineupTimerState.ORDERING){
 			throw new IllegalStateException("Got results ordering when not expected");
 		}
 		
-		//TODO: do something with returned results?
 		
 		timerButton.setEnabled(true);
 		setState(LineupTimerState.RESULT);

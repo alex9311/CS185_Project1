@@ -22,6 +22,7 @@ import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
 import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
+import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 import edu.ucsb.cs.cs185.seatracing.model.SplitTimer;
 import edu.ucsb.cs.cs185.seatracing.view.BoatPicker;
@@ -90,6 +91,10 @@ public class RunningTimersFragment extends Fragment {
 			if(startImmediately){
 				//find out when start button was first pressed and start from there
 				mTimer.start(args.getLong("start_time", SystemClock.elapsedRealtime()));
+				//also set that as the start date for all results
+				for(BoatResult r : results){
+					r.setDate(System.currentTimeMillis());
+				}
 				mNumStopped = 0;
 			}
 		}
@@ -313,6 +318,7 @@ public class RunningTimersFragment extends Fragment {
 		//else nothing
 	}
 	
+	//TODO: make sure this checks for duplicates as well
 	private boolean allResultsOrdered(){
 		for(BoatResult res : results){
 			if(res.boat==null){

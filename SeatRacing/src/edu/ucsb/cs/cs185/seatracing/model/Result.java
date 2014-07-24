@@ -34,20 +34,20 @@ public class Result {
 		this.rower = rower;
 	}
 	
-	public void setRound(int round){
-		this.roundID = round;
+	public void setRound(int roundId){
+		this.roundID = roundId;
 	}
 	
-	public void setRower(int rower){
-		this.rowerID = rower;
+	public void setRower(int rowerId){
+		this.rowerID = rowerId;
 	}
 	
 	public String getRower(){
 		return this.rower;
 	}
 	
-	public void setBoat(int boat){
-		this.boatID = boat;
+	public void setBoat(int boatId){
+		this.boatID = boatId;
 	}
 	
 	public void setRaceNum(int race){
@@ -66,11 +66,11 @@ public class Result {
 		return this.roundID;
 	}
 	
-	public int rower(){
+	public int rowerId(){
 		return this.rowerID;
 	}
 	
-	public int boat(){
+	public int boatId(){
 		return this.boatID;
 	}
 	
@@ -106,5 +106,6 @@ public class Result {
 		bundle.putLong("date",date);
 		bundle.putString("rower",rower);
 	}
+	
 
 }
