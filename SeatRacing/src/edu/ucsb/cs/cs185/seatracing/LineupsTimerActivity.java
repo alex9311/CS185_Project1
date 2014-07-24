@@ -56,7 +56,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		setContentView(R.layout.activity_lineups_timer);
 
 		if(db==null){
-			db = new DatabaseHelper(this);
+			db = DatabaseHelper.getInstance(getApplicationContext());
 		}
 		
 		//TODO: check for loading round in progress

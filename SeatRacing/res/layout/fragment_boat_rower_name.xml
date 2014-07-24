@@ -16,7 +16,7 @@
         android:text="@string/boat_name_default"
         android:textSize="20sp" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/boat_name_field"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,14 +26,14 @@
         android:nextFocusForward="@+id/rower_name_listview" >
 
         <requestFocus />
-    </EditText>
+    </AutoCompleteTextView>
 
     <ScrollView
         android:id="@+id/rower_name_scroller"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
 
-        <!-- Rower namefields will go here, added programatically -->
+        <!-- Rower namefields will go in this LinearLayout, added programatically -->
         
         <LinearLayout
             android:id="@+id/rower_name_container"

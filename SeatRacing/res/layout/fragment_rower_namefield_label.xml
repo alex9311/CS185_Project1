@@ -12,7 +12,7 @@
         android:layout_centerVertical="true"
         android:text="@string/rower_label_default" />
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/rower_namefield"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -23,6 +23,6 @@
         android:ems="10" >
 
         <requestFocus />
-    </EditText>
+    </AutoCompleteTextView>
 
 </RelativeLayout>

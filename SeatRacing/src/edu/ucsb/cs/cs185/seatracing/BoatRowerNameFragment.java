@@ -1,5 +1,8 @@
 package edu.ucsb.cs.cs185.seatracing;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -7,10 +10,13 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import edu.ucsb.cs.cs185.seatracing.db.DatabaseHelper;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
@@ -21,11 +27,17 @@ public class BoatRowerNameFragment extends Fragment {
 	int numRowers=-1;
 	int boatIndex;
 	LinearLayout rowerNameContainer;
-	EditText boatNameField;
+	AutoCompleteTextView boatNameField;
 	Boat mBoat;
+	DatabaseHelper db;
+	
+	List<String> boatSuggestions;
+	List<String> rowerSuggestions;
 
 	public BoatRowerNameFragment(){
 		System.out.println("created new BoatRowerNameFragment");
+		boatSuggestions = new ArrayList<String>();
+		rowerSuggestions = new ArrayList<String>();
 	}
 
 	@Override
@@ -33,11 +45,13 @@ public class BoatRowerNameFragment extends Fragment {
 			Bundle savedInstanceState) {
 
 		System.out.println("boatRowerNameFrag onCreateView(): tag = "+getTag());
+		
+		db = DatabaseHelper.getInstance(getActivity().getApplicationContext());
 
 		ViewGroup rootView = (ViewGroup) inflater.inflate(
 				R.layout.fragment_boat_rower_name, container, false);
 
-		boatNameField = (EditText)rootView.findViewById(R.id.boat_name_field);
+		boatNameField = (AutoCompleteTextView)rootView.findViewById(R.id.boat_name_field);
 		boatNameField.addTextChangedListener(new TextWatcher() {
 			@Override
 			public void onTextChanged(CharSequence s, int start, int before, int count) {
@@ -61,8 +75,27 @@ public class BoatRowerNameFragment extends Fragment {
 		rowerNameContainer = (LinearLayout)rootView.findViewById(R.id.rower_name_container);
 
 		if(savedInstanceState==null || numRowers<0){
+			
+			//we will fetch suggestion list, for now we fetch all of them
+			ArrayAdapter<String> boatAdapter = new ArrayAdapter<String>(getActivity(), 
+					android.R.layout.simple_dropdown_item_1line, db.getBoatNames());
+			boatNameField.setAdapter(boatAdapter);
+			boatNameField.setOnFocusChangeListener(new OnFocusChangeListener() {
+				@Override
+				public void onFocusChange(View v, boolean hasFocus) {
+					if(hasFocus){
+						boatNameField.showDropDown();
+					}
+					else{
+						boatNameField.dismissDropDown();  //??? necessary?
+					}
+				}
+			});
+			
+			rowerSuggestions = db.getRowerNames();
+			ArrayAdapter<String> rowerAdapter = new ArrayAdapter<String>(getActivity(),
+					android.R.layout.simple_dropdown_item_1line, rowerSuggestions);
 
-			//numRowers = getArguments().getInt("numRowers");
 			boatIndex = getArguments().getInt("boatIndex");
 			
 			mBoat = getArguments().getParcelable("boat");
@@ -77,7 +110,7 @@ public class BoatRowerNameFragment extends Fragment {
 			for(int i=0; i<numRowers; ++i){
 				View rowItem = inflater.inflate(R.layout.fragment_rower_namefield_label, rowerNameContainer, false);
 				((TextView)rowItem.findViewById(R.id.rower_namefield)).setHint("Rower "+boatIndex+" - "+(i+1));
-				final EditText rowerNamefield = (EditText)rowItem.findViewById(R.id.rower_namefield);
+				final AutoCompleteTextView rowerNamefield = (AutoCompleteTextView)rowItem.findViewById(R.id.rower_namefield);
 				final int rowerIndex = i;
 				rowerNamefield.addTextChangedListener(new TextWatcher() {
 					@Override
@@ -99,6 +132,8 @@ public class BoatRowerNameFragment extends Fragment {
 						onDataChanged();
 					}
 				});
+				rowerNamefield.setAdapter(rowerAdapter);
+				
 				mBoat.getRower(rowerIndex).setName(rowerNamefield.getHint().toString());
 
 				rowerNamefield.setId(i);

@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 5;
 
 	// Database Name
 	private static final String DATABASE_NAME = "seatRaceManager";
@@ -36,7 +36,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	// Boats Table Columns names
 	private static final String KEY_BOATS_ID = "boat_id";
 	private static final String KEY_BOATS_NAME = "name";
-	private static final String KEY_BOATS_SIZE = "size";
+	private static final String KEY_BOATS_SIZE = "max_size";
 
 	// Results table name
 	private static final String TABLE_RESULTS = "results";
@@ -58,7 +58,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	private static final String KEY_ROUNDS_DATE = "date";
 	private static final String KEY_ROUNDS_SIZE = "num_races";
 
-	public DatabaseHelper(Context context) {
+	//Singleton
+	private static DatabaseHelper instance;
+
+	public static synchronized DatabaseHelper getInstance(Context context){
+		if(instance==null){
+			instance = new DatabaseHelper(context);
+		}
+		return instance;
+	}
+
+	private DatabaseHelper(Context context) {
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
@@ -68,7 +78,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+ KEY_ROWERS_ID + " INTEGER PRIMARY KEY," + KEY_ROWERS_NAME + " TEXT NOT NULL UNIQUE " + ")";
 		db.execSQL(CREATE_ROWERS_TABLE);
 		String CREATE_BOATS_TABLE = "CREATE TABLE " + TABLE_BOATS + "("
-				+ KEY_BOATS_ID + " INTEGER PRIMARY KEY," + KEY_BOATS_NAME + " TEXT NOT NULL,"
+				+ KEY_BOATS_ID + " INTEGER PRIMARY KEY," + KEY_BOATS_NAME + " TEXT NOT NULL UNIQUE,"
 				+ KEY_BOATS_SIZE + " INTEGER" + ")";
 		db.execSQL(CREATE_BOATS_TABLE);
 		String CREATE_RESULTS_TABLE = "CREATE TABLE " + TABLE_RESULTS + "("
@@ -170,10 +180,16 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		int id;
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		Cursor cursor = db.query(TABLE_BOATS, new String[] { KEY_BOATS_ID }, KEY_BOATS_NAME + "=? AND "+KEY_BOATS_SIZE+"=?",
+		Cursor cursor = db.query(TABLE_BOATS, new String[] { KEY_BOATS_ID, KEY_BOATS_SIZE }, KEY_BOATS_NAME + "=? AND "+KEY_BOATS_SIZE+"=?",
 				new String[] { boat.name(), Integer.toString(boat.size()) }, null, null, null, null);
 		if (cursor != null && cursor.moveToFirst()){
 			id = Integer.parseInt(cursor.getString(0));
+			if(Integer.parseInt(cursor.getString(1)) < boat.size()){
+				//going to update max size
+				ContentValues update = new ContentValues();
+				update.put(KEY_BOATS_SIZE, boat.size());
+				db.update(TABLE_BOATS, update, KEY_BOATS_ID+" = "+id, null);
+			}
 		}else{
 			ContentValues values = new ContentValues();
 			values.put(KEY_BOATS_NAME, boat.name()); // Boat Name
@@ -293,4 +309,35 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		return resultsList;
 	}
 
+	public List<String> getBoatNames(){
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(TABLE_BOATS, new String[]{ KEY_BOATS_NAME }, null, null, null, null, null);
+		
+		List<String> ret = new ArrayList<String>(cursor.getCount());
+
+		if(cursor.moveToFirst()){
+			do{
+				String boatName = cursor.getString(0);
+				ret.add(boatName);
+			}while(cursor.moveToNext());
+		}
+		return ret;
+	}
+
+	public List<String> getRowerNames(){
+		SQLiteDatabase db = this.getReadableDatabase();
+
+		Cursor cursor = db.query(TABLE_ROWERS, new String[]{ KEY_ROWERS_NAME }, null, null, null, null, null);
+
+		List<String> ret = new ArrayList<String>(cursor.getCount());
+
+		if(cursor.moveToFirst()){
+			do{
+				String rowerName = cursor.getString(0);
+				ret.add(rowerName);
+			}while(cursor.moveToNext());
+		}
+		return ret;
+	}
 }
