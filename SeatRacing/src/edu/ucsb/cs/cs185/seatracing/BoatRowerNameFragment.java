@@ -83,7 +83,7 @@ public class BoatRowerNameFragment extends Fragment {
 			boatNameField.setOnFocusChangeListener(new OnFocusChangeListener() {
 				@Override
 				public void onFocusChange(View v, boolean hasFocus) {
-					if(hasFocus){
+					if(hasFocus && ((AutoCompleteTextView)v).getText().length()==0){
 						boatNameField.showDropDown();
 					}
 					else{

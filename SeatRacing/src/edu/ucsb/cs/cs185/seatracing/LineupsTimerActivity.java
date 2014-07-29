@@ -371,14 +371,19 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 	}
 
 	@Override
-	public void onResultsFinalized(BoatResult[] boatresults) {
-		if(state != LineupTimerState.ORDERING){
+	public void onResultsChanged(boolean complete, BoatResult[] boatresults) {
+		if(state != LineupTimerState.ORDERING && state!=LineupTimerState.RESULT){
 			throw new IllegalStateException("Got results ordering when not expected");
 		}
 		
-		
-		timerButton.setEnabled(true);
-		setState(LineupTimerState.RESULT);
+		if(complete){
+			timerButton.setEnabled(true);
+			setState(LineupTimerState.RESULT);
+		}
+		else{
+			timerButton.setEnabled(false);
+			setState(LineupTimerState.ORDERING);
+		}
 	}
 
 

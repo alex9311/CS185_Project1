@@ -32,7 +32,7 @@ import edu.ucsb.cs.cs185.seatracing.view.SplitTimerTextView;
 public class RunningTimersFragment extends Fragment {
 
 	List<RacingSet> mSets;
-	List<Boat> mSelectedBoats;
+	List<Boat> mBoats;
 	LinearLayout mTimersContainerView;
 	SplitTimer mTimer;
 	BoatResult[] results;
@@ -45,7 +45,7 @@ public class RunningTimersFragment extends Fragment {
 		mSets = new ArrayList<RacingSet>();
 		mTimerViews = new ArrayList<SplitTimerTextView>(8);
 		mTimer = new SplitTimer();
-		mSelectedBoats = new ArrayList<Boat>();
+		mBoats = new ArrayList<Boat>();
 		mNumStopped=0;
 	}
 
@@ -58,9 +58,9 @@ public class RunningTimersFragment extends Fragment {
 		mTimersContainerView = (LinearLayout)rootView.findViewById(R.id.timers_holder_view);
 
 		if(savedInstanceState==null || mSets.size()==0){
+			//TODO: handle case of not having mSets set manually, check in args?
 			Bundle args = getArguments();
 			boolean startImmediately = args.getBoolean("startNow", false);
-			//mSets = RacingSet.convertParcelableList(args.getParcelableArrayList("sets"));
 			results = new BoatResult[mSets.size()*2];
 			for(int i=0; i<results.length; ++i){
 				results[i] = new BoatResult();
@@ -71,6 +71,8 @@ public class RunningTimersFragment extends Fragment {
 
 			//inflate two timers v
 			for(int i=0; i<mSets.size(); ++i){
+				mBoats.add(mSets.get(i).getBoat1());
+				mBoats.add(mSets.get(i).getBoat2());
 				for(int j=0; j<2; ++j){
 					View timerAndListView = inflater.inflate(R.layout.fragment_timer_result, container, false);
 
@@ -141,7 +143,7 @@ public class RunningTimersFragment extends Fragment {
 
 	public RaceResult getRaceResult(){
 		RaceResult race = new RaceResult();
-		
+
 		for(BoatResult res : results){
 			if(res.time<=0){
 				res.time = mTimerViews.get((int)(-1*res.time)).getTimeElapsed();
@@ -153,7 +155,7 @@ public class RunningTimersFragment extends Fragment {
 			}
 			res.setRowers(new ArrayList<Rower>(Arrays.asList(res.boat.getRowers())));
 		}
-		
+
 
 		return race;
 	}
@@ -163,9 +165,14 @@ public class RunningTimersFragment extends Fragment {
 			timer.setClickable(enable);
 		}
 	}
-	
+
 	public void setRacingSets(List<RacingSet> setsIn){
 		mSets = setsIn;
+		mBoats.clear();
+		for(RacingSet rs : mSets){
+			mBoats.add(rs.getBoat1());
+			mBoats.add(rs.getBoat2());
+		}
 	}
 
 	public static RunningTimersFragment newInstance(List<RacingSet> sets){
@@ -308,29 +315,33 @@ public class RunningTimersFragment extends Fragment {
 
 		}
 	};
-	
+
 	private void checkBoatSelections(){
-		if(allResultsOrdered()){
-			if(mCallback!=null){
-				mCallback.onResultsFinalized(results);
-			}
+		if(mCallback!=null){
+			//this will pass true if results are onto, false if not
+			mCallback.onResultsChanged(allBoatsOrdered(), results);
 		}
-		//else nothing
 	}
-	
-	//TODO: make sure this checks for duplicates as well
-	private boolean allResultsOrdered(){
+
+	private boolean allBoatsOrdered(){
+		//TODO: make this less ugly
+		boolean[] used = new boolean[mBoats.size()];
 		for(BoatResult res : results){
-			if(res.boat==null){
+			int index = mBoats.indexOf(res.boat);
+			if(res.boat!=null && index < 0){
+				throw new IllegalStateException("Boat from results picker not registered!");
+			}
+			else if(res.boat==null || used[index]){
 				return false;
 			}
+			used[index] = true;
 		}
 		return true;
 	}
-	
+
 	/**
 	 * Sets callback for finalizing ordered results. Call with 'null' to remove
-	 * @param listener
+	 * @param listener listener to add
 	 */
 	public void setOnResultsFinalizedListener(ResultsFinalizedListener listener){
 		mCallback = listener;
