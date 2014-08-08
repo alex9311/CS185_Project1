@@ -17,12 +17,12 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="edu.ucsb.cs.cs185.seatracing.BoatsetCreateActivity"
+            android:name=".BoatsetCreateActivity"
             android:label="@string/title_activity_boatset_create"
             android:windowSoftInputMode="stateVisible|adjustResize" >
         </activity>
         <activity
-            android:name="edu.ucsb.cs.cs185.seatracing.FrontPageActivity"
+            android:name=".FrontPageActivity"
             android:label="@string/title_activity_front_page" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,17 +31,17 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="edu.ucsb.cs.cs185.seatracing.LineupsTimerActivity"
+            android:name=".LineupsTimerActivity"
             android:label="@string/title_activity_lineups_timer"
-            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            android:parentActivityName=".FrontPageActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
         </activity>
         <activity
-            android:name="edu.ucsb.cs.cs185.seatracing.ResultsActivity"
+            android:name=".ResultsActivity"
             android:label="@string/title_activity_results"
-            android:parentActivityName="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" >
+            android:parentActivityName=".FrontPageActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
@@ -65,6 +65,11 @@
             android:enabled="true"
             android:exported="false"
             android:label="Dropbox Sync" />
+
+        <activity
+            android:name=".HistoricResultsActivity"
+            android:label="@string/title_activity_historic_results" >
+        </activity>
     </application>
 
 </manifest>

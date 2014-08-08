@@ -2,13 +2,10 @@
 <resources>
 
     <string name="app_name">SeatRacing</string>
-    
     <string name="action_settings">Settings</string>
     <string name="action_save_session">Save</string>
     <string name="action_add_lineup">New Set</string>
-    
     <string name="title_activity_boatset_create">Create Set</string>
-    <string name="hello_world">Fuck the police</string>
     <string name="prev_button">Previous</string>
     <string name="next_button">Next</string>
     <string name="done_button">Done</string>
@@ -59,37 +56,32 @@
 		BoatA 3:31.5\n
 		BoatB 3:32.4\n\n	</string>
     <string name="title_activity_lineups_timer">Race</string>
-        <string name="title_activity_results">Results</string>
-    
+    <string name="title_activity_results">Results</string>
     <string name="timer_start_button">Start</string>
     <string name="timer_split_button">Split</string>
     <string name="timer_done_button">Done</string>
     <string name="add_new_set_button">New Racing Set</string>
-    
+
     <string-array name="mock_lineup_1">
         <item>Alex</item>
         <item>Bob</item>
         <item>Charles</item>
         <item>Danny</item>
     </string-array>
-    
     <string-array name="mock_lineup_2">
         <item>Adam</item>
         <item>Ben</item>
         <item>Chris</item>
         <item>Dillon</item>
     </string-array>
-    
+
     <string name="timer_default">00:00:00</string>
     <string name="finish_boatlist_default">________</string>
     <string name="race_num_default">Race #1</string>
     <string name="timer_finish_button">Results</string>
-    
-        <string name="result_race_default">Race</string>
-   
+    <string name="result_race_default">Race</string>
     <string name="result_boat_default">Boat</string>
     <string name="result_time_default">00:00:00</string>
-    
     <string name="state_label_default">Setting Lineups</string>
     <string name="state_label_init">Initialize</string>
     <string name="state_label_lineup">Adding Lineups</string>
@@ -98,12 +90,12 @@
     <string name="state_label_result">Finished Race #</string>
     <string name="state_label_done">Done with Round</string>
     <string name="state_label_ordering">Selecting Finish Order</string>
-    
     <string name="edit_times_label">Edit finish time:</string>
-    
     <string name="win_column_header">Won</string>
     <string name="lost_column_header">Lost</string>
     <string name="time_diff_column_header">difference</string>
     <string name="spread_default_text">(A 0w0t, B 0w0t)</string>
-    
+    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_historic_results">Results History</string>
+
 </resources>

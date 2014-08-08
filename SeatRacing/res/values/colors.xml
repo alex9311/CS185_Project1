@@ -19,4 +19,10 @@
     <color name="switch_seat_text">#FFFFFF</color>
     
     <color name="paper_background">#E5E5E5</color>
+    
+    <color name="subtitle_grey">#BFBFBF</color>
+    
+    <color name="history_progress_notstarted">#ba656d</color>
+    <color name="history_progress_started">#b3ba65</color>
+    <color name="history_progress_finished">#65ba70</color>
 </resources>

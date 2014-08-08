@@ -9,16 +9,20 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
 import edu.ucsb.cs.cs185.seatracing.model.Rower;
 
 public class DatabaseHelper extends SQLiteOpenHelper{
 
+	private static final String TAG = "SeatRaceDBHelper";
+	
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 5;
+	private static final int DATABASE_VERSION = 8;
 
 	// Database Name
 	private static final String DATABASE_NAME = "seatRaceManager";
@@ -49,6 +53,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	private static final String KEY_RESULTS_RACE = "race_index";
 	private static final String KEY_RESULTS_TIME = "res_time";
 	private static final String KEY_RESULTS_DATE = "date";
+	private static final String KEY_RESULTS_SEAT = "seat";
 
 	// Rounds table name
 	private static final String TABLE_ROUNDS = "rounds";
@@ -57,6 +62,17 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 	private static final String KEY_ROUNDS_ID = "round_id";
 	private static final String KEY_ROUNDS_DATE = "date";
 	private static final String KEY_ROUNDS_SIZE = "num_races";
+
+	// Lineups table name
+	private static final String TABLE_LINEUPS = "lineups";
+
+	// Lineup Table Columns names
+	private static final String KEY_LINEUPS_ID = "lineup_id";
+	private static final String KEY_LINEUPS_ROUNDID = "round_id";
+	private static final String KEY_LINEUPS_ROWERID = "rower_id";
+	private static final String KEY_LINEUPS_BOATID = "boat_id";
+	private static final String KEY_LINEUPS_SEAT = "seat";
+	private static final String KEY_LINEUPS_SET = "set_index";
 
 	//Singleton
 	private static DatabaseHelper instance;
@@ -78,22 +94,30 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+ KEY_ROWERS_ID + " INTEGER PRIMARY KEY," + KEY_ROWERS_NAME + " TEXT NOT NULL UNIQUE " + ")";
 		db.execSQL(CREATE_ROWERS_TABLE);
 		String CREATE_BOATS_TABLE = "CREATE TABLE " + TABLE_BOATS + "("
-				+ KEY_BOATS_ID + " INTEGER PRIMARY KEY," + KEY_BOATS_NAME + " TEXT NOT NULL UNIQUE,"
+				+ KEY_BOATS_ID + " INTEGER PRIMARY KEY," + KEY_BOATS_NAME + " TEXT UNIQUE NOT NULL,"
 				+ KEY_BOATS_SIZE + " INTEGER" + ")";
 		db.execSQL(CREATE_BOATS_TABLE);
 		String CREATE_RESULTS_TABLE = "CREATE TABLE " + TABLE_RESULTS + "("
 				+ KEY_RESULTS_ID + " INTEGER PRIMARY KEY," + KEY_RESULTS_ROUNDID + " INTEGER NOT NULL,"
 				+ KEY_RESULTS_ROWERID + " INTEGER NOT NULL," + KEY_RESULTS_BOATID + " INTEGER NOT NULL,"
 				+ KEY_RESULTS_RACE + " INTEGER," + KEY_RESULTS_TIME + " INTEGER NOT NULL,"
-				+ KEY_RESULTS_DATE + " INTEGER,"
+				+ KEY_RESULTS_DATE + " INTEGER," + KEY_RESULTS_SEAT + " INTEGER NOT NULL,"
 				+ "FOREIGN KEY(" + KEY_RESULTS_ROWERID + ") REFERENCES " + TABLE_ROWERS + "(" + KEY_ROWERS_ID + "),"
 				+ "FOREIGN KEY(" + KEY_RESULTS_BOATID + ") REFERENCES " + TABLE_BOATS + "(" + KEY_BOATS_ID + "),"
 				+ "FOREIGN KEY(" + KEY_RESULTS_ROUNDID + ") REFERENCES " + TABLE_RESULTS + "(" + KEY_RESULTS_ID + ") )";
 		db.execSQL(CREATE_RESULTS_TABLE);
 		String CREATE_ROUNDS_TABLE = "CREATE TABLE " + TABLE_ROUNDS + "("
 				+ KEY_ROUNDS_ID + " INTEGER PRIMARY KEY," + KEY_ROUNDS_DATE + " INTEGER,"
-				+ KEY_ROUNDS_SIZE + " INTEGER" + ")";
+				+ KEY_ROUNDS_SIZE + " INTEGER DEFAULT 0" + ")";
 		db.execSQL(CREATE_ROUNDS_TABLE);
+		String CREATE_LINEUPS_TABLE = "CREATE TABLE " + TABLE_LINEUPS + "("
+				+ KEY_LINEUPS_ID + " INTEGER PRIMARY KEY," + KEY_LINEUPS_ROUNDID + " INTEGER NOT NULL,"
+				+ KEY_LINEUPS_ROWERID + " INTEGER NOT NULL," + KEY_LINEUPS_BOATID + " INTEGER NOT NULL,"
+				+ KEY_LINEUPS_SEAT + " INTEGER NOT NULL," + KEY_LINEUPS_SET + " INTEGER NOT NULL,"
+				+ "FOREIGN KEY(" + KEY_LINEUPS_ROUNDID + ") REFERENCES " + TABLE_ROUNDS + "(" + KEY_ROUNDS_ID + "),"
+				+ "FOREIGN KEY(" + KEY_LINEUPS_ROWERID + ") REFERENCES " + TABLE_ROWERS + "(" + KEY_ROWERS_ID + "),"
+				+ "FOREIGN KEY(" + KEY_LINEUPS_BOATID + ") REFERENCES " + TABLE_BOATS + "(" + KEY_BOATS_ID + ") )";
+		db.execSQL(CREATE_LINEUPS_TABLE);
 	}
 
 	@Override
@@ -103,6 +127,9 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_BOATS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULTS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUNDS);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_LINEUPS);
+		
+		Log.i(TAG, "upgrading DB: "+oldVersion+" to "+newVersion);
 
 		// Create tables again
 		onCreate(db);
@@ -139,9 +166,13 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 		return id;
 	}
-
+	
 	public void batchAddRowers(Rower[] rowers){
-		SQLiteDatabase db = this.getWritableDatabase();
+		batchAddRowers(rowers, this.getWritableDatabase());
+	}
+
+	public void batchAddRowers(Rower[] rowers, SQLiteDatabase db){
+		//SQLiteDatabase db = this.getWritableDatabase();
 
 		try{
 			db.beginTransaction();
@@ -170,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		}
 
 	}
-
+	
 	/**
 	 * This adds the provided boat to the database, or if already present
 	 * simply updates the ID of the model object.
@@ -180,8 +211,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		int id;
 		SQLiteDatabase db = this.getWritableDatabase();
 
-		Cursor cursor = db.query(TABLE_BOATS, new String[] { KEY_BOATS_ID, KEY_BOATS_SIZE }, KEY_BOATS_NAME + "=? AND "+KEY_BOATS_SIZE+"=?",
-				new String[] { boat.name(), Integer.toString(boat.size()) }, null, null, null, null);
+		Cursor cursor = db.query(TABLE_BOATS, new String[] { KEY_BOATS_ID, KEY_BOATS_SIZE }, KEY_BOATS_NAME + "=?",
+				new String[] { boat.name() }, null, null, null, null);
 		if (cursor != null && cursor.moveToFirst()){
 			id = Integer.parseInt(cursor.getString(0));
 			if(Integer.parseInt(cursor.getString(1)) < boat.size()){
@@ -238,6 +269,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				values.put(KEY_RESULTS_RACE, result.raceNum()); // Result RaceNum
 				values.put(KEY_RESULTS_TIME, result.time()); // Result Time
 				values.put(KEY_RESULTS_DATE, result.date()); // Result Date
+				values.put(KEY_RESULTS_SEAT, result.seat()); // Result Seat
 
 				// Inserting Row
 				db.insertOrThrow(TABLE_RESULTS, null, values);
@@ -280,6 +312,51 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.close();
 	}
 
+	/**
+	 * Adds lineup, rowers, and boats if necessary.
+	 * Will not add duplicate rowers or boats if already present.
+	 * Assumes round already added, and round id is valid.
+	 * This must be called before the first switch to be valid!
+	 * @param rs racingset to add
+	 * @param roundID id of round to add lineups to
+	 */
+	public void addLineups(int roundID, int setID, RacingSet rs) {
+		SQLiteDatabase db = this.getWritableDatabase();
+
+		try{
+			db.beginTransaction();
+
+			//maybe add boats and rowers from here? should be safe from dups, just slower
+			//addBoat(rs.getBoat1());
+			//addBoat(rs.getBoat2());
+
+			for(int i=0; i<rs.getBoats().length; ++i){
+				for(int j=0; j<rs.getBoat1().getRowers().length; ++j){
+					//Rower r = rs.getBoats()[i].getRower(j);
+					//addRower(r);
+					//add to lineup
+					ContentValues values = new ContentValues();
+					values.put(KEY_LINEUPS_ROUNDID, roundID);
+					values.put(KEY_LINEUPS_ROWERID, rs.getBoats()[i].getRower(j).id());
+					values.put(KEY_LINEUPS_BOATID, rs.getBoats()[i].getID());
+					values.put(KEY_LINEUPS_SEAT, j);
+					values.put(KEY_LINEUPS_SET, setID);
+					db.insert(TABLE_LINEUPS, null, values);
+				}
+			}
+
+			db.setTransactionSuccessful();
+		}
+		catch(SQLException sqle){
+			sqle.printStackTrace();
+		}
+		finally{
+			db.endTransaction();
+			db.close();
+		}
+
+	}
+
 	// Getting list of Results
 	public List<Result> getResults(int roundID) {
 		List<Result> resultsList = new ArrayList<Result>();
@@ -299,7 +376,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				int race = Integer.parseInt(cursor.getString(3));
 				long time = Long.parseLong(cursor.getString(4));
 				long date = Long.parseLong(cursor.getString(5));
-				Result result = new Result(round,rower,boat,race,time,date);
+				int seat = Integer.parseInt(cursor.getString(6));
+				Result result = new Result(round,rower,boat, seat, race, time,date);
 				// Adding result to list
 				resultsList.add(result);
 			} while (cursor.moveToNext());
@@ -313,7 +391,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		SQLiteDatabase db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(TABLE_BOATS, new String[]{ KEY_BOATS_NAME }, null, null, null, null, null);
-		
+
 		List<String> ret = new ArrayList<String>(cursor.getCount());
 
 		if(cursor.moveToFirst()){
@@ -340,4 +418,19 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		}
 		return ret;
 	}
+	
+	public Cursor getHistoricResultsCursor(){
+		SQLiteDatabase db = this.getReadableDatabase();
+				
+		Cursor cursor = db.rawQuery("SELECT rn."+KEY_ROUNDS_ID+" AS _id, rn."+KEY_ROUNDS_DATE
+				+", rn."+KEY_ROUNDS_SIZE+", COUNT(DISTINCT rs."+KEY_RESULTS_RACE
+				+") AS num_race_results, COUNT(DISTINCT ln."+KEY_LINEUPS_BOATID
+				+") AS num_boats, COUNT(DISTINCT ln."+KEY_LINEUPS_ROWERID+") AS total_rowers FROM "
+				+TABLE_ROUNDS+" as rn LEFT JOIN "+TABLE_RESULTS+" AS rs ON (rs."+KEY_RESULTS_ROUNDID+" = rn."
+				+KEY_ROUNDS_ID+") LEFT JOIN "+TABLE_LINEUPS+" AS ln ON (ln."+KEY_LINEUPS_ROUNDID+" = rn."+KEY_ROUNDS_ID
+				+") GROUP BY rn."+KEY_ROUNDS_ID, null);
+		
+		return cursor;
+	}
+	
 }

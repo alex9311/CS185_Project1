@@ -8,45 +8,49 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 public class RacingSet implements Parcelable {
-	
-	private Boat mBoat1;
-	private Boat mBoat2;
+		
+	private Boat[] mBoats;
 
 	public RacingSet(Boat b1, Boat b2){
-		this.mBoat1 = b1;
-		this.mBoat2 = b2;
+		mBoats = new Boat[2];
+		mBoats[0] = b1;
+		mBoats[1] = b2;
 	}
 	
 	public Boat getBoat1(){
-		return this.mBoat1;
+		return mBoats[0];
 	}
 	
 	public void setBoat1(Boat b){
-		this.mBoat1 = b;
+		this.mBoats[0] = b;
 	}
 	
 	public Boat getBoat2(){
-		return this.mBoat2;
+		return this.mBoats[1];
 	}
 	
 	public void setBoat2(Boat b){
-		this.mBoat2 = b;
+		this.mBoats[1] = b;
+	}
+	
+	public Boat[] getBoats(){
+		return this.mBoats;
 	}
 	
 	public void setBoat(int i, Boat b){
 		if(i==0){
-			this.mBoat1 = b;
+			this.mBoats[0] = b;
 		}
 		else if(i==1){
-			this.mBoat2 = b;
+			this.mBoats[1] = b;
 		}
 	}
 
 	public RacingPair[] getRacingPairs(){
-		RacingPair[] sets = new RacingPair[mBoat1.size()];
+		RacingPair[] sets = new RacingPair[mBoats[0].size()];
 		
 		for(int i=0; i<sets.length; ++i){
-			sets[i] = new RacingPair(mBoat1, mBoat2, i);
+			sets[i] = new RacingPair(mBoats[0], mBoats[1], i);
 		}
 		
 		return sets;
@@ -59,8 +63,8 @@ public class RacingSet implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
-		dest.writeParcelable(mBoat1, flags);
-		dest.writeParcelable(mBoat2, flags);
+		dest.writeParcelable(mBoats[0], flags);
+		dest.writeParcelable(mBoats[1], flags);
 	}
 	
     public static final Parcelable.Creator<RacingSet> CREATOR = new Parcelable.Creator<RacingSet>() {
@@ -74,8 +78,9 @@ public class RacingSet implements Parcelable {
     };
 
 	private RacingSet(Parcel in) {
-		mBoat1 = in.readParcelable(Boat.class.getClassLoader());
-		mBoat2 = in.readParcelable(Boat.class.getClassLoader());
+		mBoats = new Boat[2];
+		mBoats[0] = in.readParcelable(Boat.class.getClassLoader());
+		mBoats[1] = in.readParcelable(Boat.class.getClassLoader());
 	}
 	
 	public static List<RacingSet> convertParcelableList(ArrayList<Parcelable> setsIn){
@@ -99,7 +104,7 @@ public class RacingSet implements Parcelable {
 	
 	@Override
 	public String toString(){
-		return "Set: ["+mBoat1.toString()+", "+mBoat2.toString()+"]";
+		return "Set: ["+mBoats[0].toString()+", "+mBoats[1].toString()+"]";
 	}
 
 }

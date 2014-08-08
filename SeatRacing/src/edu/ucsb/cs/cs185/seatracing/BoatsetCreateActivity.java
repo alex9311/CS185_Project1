@@ -134,7 +134,7 @@ implements NumberPairsSelectListener, OnPageChangeListener, BoatLineupChangeList
 		 */
 		
 		intent.putExtra("racingset", mRacingSet);
-
+		intent.putExtra("switchLast", switchLast);
 	}
 
 	//This borrowed from android docs

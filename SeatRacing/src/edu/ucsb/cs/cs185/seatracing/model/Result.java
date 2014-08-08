@@ -9,6 +9,7 @@ public class Result {
 	private int raceNum;
 	private long time;
 	private long date;
+	private int seat;
 	
 	private String rower;
 	
@@ -21,7 +22,7 @@ public class Result {
 		loadFromBundle(bundle);
 	}
 	
-	public Result(int round, int rower, int boat, int raceIn, long timeIn, long dateIn){
+	public Result(int round, int rower, int boat, int seat, int raceIn, long timeIn, long dateIn){
 		roundID = round;
 		rowerID = rower;
 		boatID = boat;
@@ -60,6 +61,14 @@ public class Result {
 	
 	public void setDate(long date){
 		this.date = date;
+	}
+	
+	public void setSeat(int seat){
+		this.seat=seat;
+	}
+	
+	public int seat(){
+		return this.seat;
 	}
 	
 	public int round(){

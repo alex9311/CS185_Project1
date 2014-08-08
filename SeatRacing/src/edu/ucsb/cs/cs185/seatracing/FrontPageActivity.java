@@ -42,7 +42,8 @@ public class FrontPageActivity extends Activity {
 		raceHistoryButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				// TODO for now do nothing
+				Intent intent = new Intent(FrontPageActivity.this,HistoricResultsActivity.class);
+				startActivity(intent);
 			}
 		});
 	}

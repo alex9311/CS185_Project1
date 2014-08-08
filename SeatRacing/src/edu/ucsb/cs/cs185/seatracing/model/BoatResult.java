@@ -32,13 +32,15 @@ public class BoatResult implements Parcelable{
 	public List<Result> getResults(){
 		List<Result> ret = new ArrayList<Result>(rowers.size());
 		
-		for(Rower rower : rowers){
+		for(int i=0; i<rowers.size(); ++i){
+			Rower rower = rowers.get(i);
 			Result res = new Result();
 			
 			res.setBoat(boat.getID());
 			res.setTime(time);
 			res.setRower(rower.id());
 			res.setDate(date);
+			res.setSeat(i);
 			
 			ret.add(res);
 		}

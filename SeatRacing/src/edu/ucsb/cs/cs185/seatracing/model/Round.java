@@ -35,7 +35,7 @@ public class Round implements Parcelable{
 		mNumBoats = sets.size()*2;
 		mNumRowers = mNumBoats*sets.get(0).getBoat1().size();
 		if(switchingLast){
-			mNumRaces = (int)Math.pow(2, mNumRowers);
+			mNumRaces = (int)Math.pow(2, mNumRowers/mNumBoats);
 		}
 		else{
 			mNumRaces = (int)Math.pow(2, (mNumRowers/mNumBoats)-1);

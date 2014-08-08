@@ -331,7 +331,7 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 		if(resultCode == RESULT_OK){
 			if(requestCode == BoatsetCreateActivity.NEW_LINEUP){
 				if(state==LineupTimerState.LINEUPS){
-					if(! data.hasExtra("racingset")){
+					if(data==null || (! data.hasExtra("racingset"))){
 						throw new IllegalStateException("Got lineups result with no lineup.");
 					}
 					RacingSet rs = data.getParcelableExtra("racingset");
@@ -356,7 +356,9 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 					//add rowers to db
 					db.batchAddRowers(rs.getBoat1().getRowers());
 					db.batchAddRowers(rs.getBoat2().getRowers());
-					
+										
+					//add lineups
+					db.addLineups(mCurrentRound.getID(), mCurrentRound.getRacingSets().size()-1, rs);
 
 					//lineupsFrag.getPager().setCurrentItem(lineupsFrag.getAdapter().getCount(),true);
 					mHandler.postDelayed(new Runnable() {
