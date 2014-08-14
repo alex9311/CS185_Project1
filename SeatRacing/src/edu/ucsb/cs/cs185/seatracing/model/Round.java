@@ -81,6 +81,23 @@ public class Round implements Parcelable{
 		currentRace = race;
 	}
 	
+	/**
+	 * This will perform scheduled switches from current race to indicated race number
+	 * @param race race number to switch until
+	 */
+	public void switchToRaceNum(int race){
+		if(race<currentRace){
+			throw new IllegalArgumentException("Cannot switch to race "+race+", already at race "+currentRace);
+		}
+		
+		for(int i=currentRace; i<race; ++i){
+			int switchToMake = Round.getSwitchIndex(getCurrentRace(), switchingLast());
+			for(RacingSet rs : mRacingSets){
+				Boat.switchRowers(rs.getBoat1(), rs.getBoat2(), switchToMake);
+			}
+		}
+	}
+	
 	public void setSwitchingLast(boolean sl){
 		switchingLast = sl;
 	}
@@ -105,6 +122,10 @@ public class Round implements Parcelable{
 	 */
 	public static int getSwitchIndex(int raceNum, boolean switchLast){
 		return switches[raceNum];
+	}
+	
+	public static boolean switchingLast(int numRaces, int boatSize){
+		return Math.pow(2, boatSize) >= (numRaces-0.00001); //using fp error pad here
 	}
 
 	@Override

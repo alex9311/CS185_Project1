@@ -260,7 +260,8 @@ public class LineupsTimerActivity extends FragmentActivity implements AddNewSetL
 
 	private void switchToResultsActivity(Round round){
 		Intent intent = new Intent(this, ResultsActivity.class);
-		intent.putExtra("round", mCurrentRound);
+		intent.putExtra("roundId", mCurrentRound.getID());
+		//intent.putExtra("round", mCurrentRound);
 		startActivity(intent);
 	}
 

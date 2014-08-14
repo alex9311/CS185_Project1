@@ -1,6 +1,7 @@
 package edu.ucsb.cs.cs185.seatracing.db;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import android.content.ContentValues;
@@ -8,9 +9,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.util.SparseArray;
 import edu.ucsb.cs.cs185.seatracing.model.Boat;
+import edu.ucsb.cs.cs185.seatracing.model.BoatResult;
+import edu.ucsb.cs.cs185.seatracing.model.RaceResult;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Result;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
@@ -19,7 +24,7 @@ import edu.ucsb.cs.cs185.seatracing.model.Rower;
 public class DatabaseHelper extends SQLiteOpenHelper{
 
 	private static final String TAG = "SeatRaceDBHelper";
-	
+
 	// All Static variables
 	// Database Version
 	private static final int DATABASE_VERSION = 8;
@@ -128,7 +133,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_RESULTS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ROUNDS);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_LINEUPS);
-		
+
 		Log.i(TAG, "upgrading DB: "+oldVersion+" to "+newVersion);
 
 		// Create tables again
@@ -166,7 +171,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 		return id;
 	}
-	
+
 	public void batchAddRowers(Rower[] rowers){
 		batchAddRowers(rowers, this.getWritableDatabase());
 	}
@@ -201,7 +206,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		}
 
 	}
-	
+
 	/**
 	 * This adds the provided boat to the database, or if already present
 	 * simply updates the ID of the model object.
@@ -387,6 +392,162 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		return resultsList;
 	}
 
+	/**
+	 * This will return the racing sets for the given round with their results filled up to 
+	 * the current race. Currently lineups are not set to their proper stat upon resuming, 
+	 * nor are lineups stored in BoatResults properly.
+	 * @param roundID ID of round to get info for
+	 * @return 
+	 */
+	public Round getResultFilledRound(int roundID){
+		try{
+			Round round;
+			
+			//first grab racing sets
+			SQLiteDatabase db = this.getReadableDatabase();
+			Cursor cursor = db.rawQuery("SELECT MAX("+KEY_LINEUPS_SET+"), MAX("+KEY_LINEUPS_SEAT
+					+"), COUNT(*) AS num_rowers, r."+KEY_ROUNDS_DATE+", "+KEY_ROUNDS_SIZE+" FROM "+TABLE_LINEUPS+" AS l LEFT JOIN "+TABLE_ROUNDS
+					+" AS r ON l."+KEY_LINEUPS_ROUNDID+"=r."+KEY_ROUNDS_ID+" WHERE l."+KEY_LINEUPS_ROUNDID+" = ?", 
+					new String[]{ ""+roundID });
+
+			//first get size info
+			if(! cursor.moveToFirst()){
+				return null;
+			}
+			int numSets = cursor.getInt(0)+1;
+			int boatSize = cursor.getInt(1)+1;
+			int totalRowers = cursor.getInt(2);
+			long date = cursor.getLong(3);
+			int num_races = cursor.getInt(4);
+			
+			round = new Round(date);
+			
+			round.setID(roundID);
+			round.setSwitchingLast(Round.switchingLast(num_races, boatSize));
+			
+			List <RacingSet> setList = new ArrayList<RacingSet>(numSets);
+			for(int i=0; i<numSets; ++i){
+				setList.add(new RacingSet(null, null));
+			}
+			
+
+			cursor.close();
+
+			//now get boat names and init boats
+			cursor = db.rawQuery("SELECT DISTINCT b."+KEY_BOATS_ID+", "+KEY_BOATS_NAME+", "+KEY_LINEUPS_SET+" FROM "+TABLE_BOATS
+					+" AS b INNER JOIN "+TABLE_LINEUPS+" AS l ON l."+KEY_LINEUPS_BOATID+"=b."+KEY_BOATS_ID+" AND "+KEY_LINEUPS_ROUNDID+"=?", new String[]{""+roundID});
+			if(! cursor.moveToFirst()){
+				return null;
+			}
+
+
+			SparseArray<Boat> boats = new SparseArray<Boat>();
+			do{
+				RacingSet rs = setList.get(cursor.getInt(2));
+				Boat b = new Boat(cursor.getString(1), boatSize);
+				b.initBlankRowers();
+				int id = cursor.getInt(0);
+				b.setID(id);
+				boats.append(id, b);
+				rs.setBoat(rs.getBoat1() == null ? 0 : 1, b);
+			}while(cursor.moveToNext());
+			cursor.close();
+
+			//now get lineups info (rower names and IDs)
+			cursor = db.rawQuery("SELECT l."+KEY_LINEUPS_ROWERID+", "+KEY_ROWERS_NAME
+					+", "+KEY_LINEUPS_BOATID+", "+KEY_LINEUPS_SEAT+", "+KEY_LINEUPS_SET+" FROM "+TABLE_LINEUPS
+					+" AS l INNER JOIN "+TABLE_ROWERS+" AS r ON r."+KEY_ROWERS_ID+"=l."+KEY_LINEUPS_ROWERID+" WHERE "
+					+KEY_LINEUPS_ROUNDID+"=?", new String[]{""+roundID});
+			if(! cursor.moveToFirst()){
+				return null;
+			}
+
+			SparseArray<Rower> rowers = new SparseArray<Rower>();
+			do{
+				RacingSet rs = setList.get(cursor.getInt(4));
+				Boat b=rs.getBoat1();
+				if(b.getID() != cursor.getInt(2)){
+					b=rs.getBoat2();
+				}
+				Rower r = b.getRower(cursor.getInt(3));
+				String name = cursor.getString(1);
+				int id = cursor.getInt(0);
+				r.setName(name);
+				r.setId(id);
+				rowers.put(id, r);
+			}while(cursor.moveToNext());
+			cursor.close();
+			
+			round.setRacingSets(setList);
+
+			//now advance lineups
+			//TODO: do we need to switch these?
+			//r.switchToRaceNum(race);
+
+
+			//now fill in result info
+			HashMap<Integer, RaceResult> race_results = new HashMap<Integer, RaceResult>();
+			
+			cursor = db.rawQuery("SELECT "+KEY_RESULTS_ROWERID+", "+KEY_RESULTS_BOATID+", "+KEY_RESULTS_RACE
+					+", "+KEY_RESULTS_TIME+" FROM "+TABLE_RESULTS+" WHERE "+KEY_RESULTS_ROUNDID+"= ? ORDER BY "
+					+KEY_RESULTS_ROWERID+", "+KEY_RESULTS_RACE+" ASC", new String[]{ ""+roundID });
+			if(!cursor.moveToFirst()){
+				return null;
+			}
+			do{
+				int rower_id = cursor.getInt(0);
+				//int boat_id = cursor.getInt(1);
+				//int race_index = cursor.getInt(2);
+				long time = cursor.getLong(3);
+				Rower r = rowers.get(rower_id);
+				r.addResult(time);
+			}while(cursor.moveToNext());
+			cursor.close();
+			
+			//requery for boat and race results
+			cursor = db.rawQuery("SELECT DISTINCT "+KEY_RESULTS_BOATID+", "+KEY_RESULTS_RACE
+					+", "+KEY_RESULTS_TIME+" FROM "+TABLE_RESULTS+" WHERE "+KEY_RESULTS_ROUNDID
+					+"= ? ORDER BY "+KEY_RESULTS_RACE+" ASC", new String[]{""+roundID});
+			if(!cursor.moveToFirst()){
+				return null;
+			}
+			do{
+				int boat_id = cursor.getInt(0);
+				int race_index =cursor.getInt(1);
+				int time = cursor.getInt(2);
+				
+				
+				Boat b = boats.get(boat_id);
+				BoatResult br = new BoatResult(b, time, null);
+				RaceResult rr = race_results.get(race_index);
+				if(rr==null){
+					rr = new RaceResult();
+					race_results.put(race_index, rr);
+					rr.setRaceNum(race_index);
+				}
+				
+				rr.addBoatResult(br);
+				b.addResult(br);
+			} while(cursor.moveToNext());
+
+			round.setRacingSets(setList);
+			round.setResults(new ArrayList<RaceResult>(race_results.values()));
+			
+			return round;
+
+		}
+		catch(SQLiteException sqlee){
+			sqlee.printStackTrace();
+		}
+		return null;
+	}
+
+	public List<RaceResult> getRaceResults(int roundID){
+		
+		
+		return null;
+	}
+
 	public List<String> getBoatNames(){
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -418,10 +579,10 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 		}
 		return ret;
 	}
-	
+
 	public Cursor getHistoricResultsCursor(){
 		SQLiteDatabase db = this.getReadableDatabase();
-				
+
 		Cursor cursor = db.rawQuery("SELECT rn."+KEY_ROUNDS_ID+" AS _id, rn."+KEY_ROUNDS_DATE
 				+", rn."+KEY_ROUNDS_SIZE+", COUNT(DISTINCT rs."+KEY_RESULTS_RACE
 				+") AS num_race_results, COUNT(DISTINCT ln."+KEY_LINEUPS_BOATID
@@ -429,8 +590,8 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+TABLE_ROUNDS+" as rn LEFT JOIN "+TABLE_RESULTS+" AS rs ON (rs."+KEY_RESULTS_ROUNDID+" = rn."
 				+KEY_ROUNDS_ID+") LEFT JOIN "+TABLE_LINEUPS+" AS ln ON (ln."+KEY_LINEUPS_ROUNDID+" = rn."+KEY_ROUNDS_ID
 				+") GROUP BY rn."+KEY_ROUNDS_ID, null);
-		
+
 		return cursor;
 	}
-	
+
 }

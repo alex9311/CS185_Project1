@@ -1,3 +1,5 @@
 <resources>
     <item name="boatpicker_radiogroup" type="id"/>
+    <item name="history_result_type" type="id" />
+    <item name="history_result_round_id" type="id" />
 </resources>

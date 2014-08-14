@@ -38,12 +38,10 @@ public class RacingSet implements Parcelable {
 	}
 	
 	public void setBoat(int i, Boat b){
-		if(i==0){
-			this.mBoats[0] = b;
+		if(i<0 || i>this.mBoats.length){
+			throw new IndexOutOfBoundsException();
 		}
-		else if(i==1){
-			this.mBoats[1] = b;
-		}
+		this.mBoats[i] = b;
 	}
 
 	public RacingPair[] getRacingPairs(){

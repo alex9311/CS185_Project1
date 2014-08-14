@@ -29,18 +29,19 @@ public class ResultsActivity extends FragmentActivity {
         save_button.setOnClickListener(new OnClickListener() {
            @Override
            public void onClick(View v) {
-              // save button was clicked!
+              // TODO: something, save button was clicked!
            }
           });
         Button email_button = (Button) findViewById(R.id.button_results_email);
         email_button.setOnClickListener(new OnClickListener() {
            @Override
            public void onClick(View v) {
-              // email button was clicked!
+              // TODO: something, email button was clicked!
            }
           });
     }
 
+    /*
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {
@@ -52,6 +53,7 @@ public class ResultsActivity extends FragmentActivity {
             mPager.setCurrentItem(mPager.getCurrentItem() - 1);
         }
     }
+*/
 
     public class ScreenSlidePagerAdapter extends FragmentPagerAdapter {
         public ScreenSlidePagerAdapter(android.support.v4.app.FragmentManager fm) {

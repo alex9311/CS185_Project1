@@ -41,7 +41,7 @@
         <activity
             android:name=".ResultsActivity"
             android:label="@string/title_activity_results"
-            android:parentActivityName=".FrontPageActivity" >
+            android:parentActivityName=".HistoricResultsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="edu.ucsb.cs.cs185.seatracing.FrontPageActivity" />
@@ -68,7 +68,8 @@
 
         <activity
             android:name=".HistoricResultsActivity"
-            android:label="@string/title_activity_historic_results" >
+            android:label="@string/title_activity_historic_results"
+            android:parentActivityName=".FrontPageActivity" >
         </activity>
     </application>
 

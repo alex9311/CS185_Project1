@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import edu.ucsb.cs.cs185.seatracing.db.DatabaseHelper;
 import edu.ucsb.cs.cs185.seatracing.model.RacingPair;
 import edu.ucsb.cs.cs185.seatracing.model.RacingSet;
 import edu.ucsb.cs.cs185.seatracing.model.Round;
@@ -27,7 +28,18 @@ public class DesmondResultFragment extends Fragment {
         mResultsContainerView = (LinearLayout)rootView.findViewById(R.id.des_results_holder_view);
         
         if(savedInstanceState==null){
-        	mRound = getActivity().getIntent().getParcelableExtra("round");
+        	
+        	int roundId = getActivity().getIntent().getIntExtra("roundId", -1);
+        	
+        	if(roundId<0){
+        		throw new IllegalArgumentException("Invalid/missing roundId argument for results!");
+        	}
+        	
+        	
+        	
+        	
+        	//mRound = getActivity().getIntent().getParcelableExtra("round");
+        	mRound  = DatabaseHelper.getInstance(this.getActivity().getApplicationContext()).getResultFilledRound(roundId);
         	
         	for(int i=0; i<mRound.getRacingSets().size(); ++i){
         		
@@ -49,7 +61,7 @@ public class DesmondResultFragment extends Fragment {
         		for(RacingPair rp : rs.getRacingPairs()){
         			long diff = rp.getTimeDifferential();
         			Rower winner, loser;
-        			if(diff>0){
+        			if(diff<0){
         				winner = rp.getRower1();
         				loser = rp.getRower2();
         			}
@@ -78,7 +90,7 @@ public class DesmondResultFragment extends Fragment {
         		
         		mResultsContainerView.addView(setResultGroupView);
         	}
-        	        	
+        	   	
         }
 
         return rootView;

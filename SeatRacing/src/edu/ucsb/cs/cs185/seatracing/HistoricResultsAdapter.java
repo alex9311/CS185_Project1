@@ -15,6 +15,10 @@ import android.widget.TextView;
 
 public class HistoricResultsAdapter extends CursorAdapter {
 	
+	public static enum ResultType {
+		NOT_STARTED, STARTED, FINISHED
+	};
+	
 	DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm", Locale.US);
 
 	public HistoricResultsAdapter(Context context, Cursor c, int flags) {
@@ -39,11 +43,11 @@ public class HistoricResultsAdapter extends CursorAdapter {
 		int num_rowers = Integer.parseInt(cursor.getString(5));
 		
 		if(num_boats <= 0){
-			nameLabel.setText("Round "+round_id+": no sets added");
-			//TODO: go to lineups, allow adding sets
+			nameLabel.setText("Round "+round_id+": empty");
+			//TODO: link to lineups, allow adding sets
 		}
 		else{
-			nameLabel.setText("Round "+round_id+": "+num_boats/2+" sets of "+num_rowers/num_boats);
+			nameLabel.setText("Round "+round_id+": "+num_boats/2+" set"+ (num_boats/2>1 ? "s" : "")+" with "+num_rowers/num_boats+"s");
 			
 			//TODO: if complete, set to link to results, else go to lineups, allow adding sets
 		}
@@ -53,13 +57,20 @@ public class HistoricResultsAdapter extends CursorAdapter {
 		
 		if(num_results!=0 && num_results == num_races){
 			progressLabel.setTextColor(context.getResources().getColor(R.color.history_progress_finished));
+			//set tag or something here
+			recycleView.setTag(R.id.history_result_type, ResultType.FINISHED);
 		}
 		else if(num_results>0 && num_results < num_races){
 			progressLabel.setTextColor(context.getResources().getColor(R.color.history_progress_started));
+			recycleView.setTag(R.id.history_result_type, ResultType.STARTED);
 		}
 		else{
 			progressLabel.setTextColor(context.getResources().getColor(R.color.history_progress_notstarted));
+			recycleView.setTag(R.id.history_result_type, ResultType.NOT_STARTED);
 		}
+		
+		
+		recycleView.setTag(R.id.history_result_round_id,round_id);
 	}
 
 	@Override
